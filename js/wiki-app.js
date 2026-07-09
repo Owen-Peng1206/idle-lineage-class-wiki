@@ -137,6 +137,242 @@ function generateClassIcons(reqStr) {
     return html;
 }
 
+const effNamesMap = {
+    'cleave': '切割',
+    'crush': '重擊',
+    'pierce': '穿透',
+    'combo': '雙擊',
+    'magicstrike': '魔擊',
+    'magicburst': '魔爆',
+    'mp_drain': '吸收魔力',
+    'dice_death': '死神之骰'
+};
+
+function getItemEffectsHtml(item) {
+    let effects = [];
+    
+    if (item.eff && effNamesMap[item.eff]) {
+        effects.push(`<span class="bg-indigo-900/40 text-indigo-300 text-[11px] px-2 py-1 rounded border border-indigo-700/50"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>${effNamesMap[item.eff]}</span>`);
+    }
+    
+    if (item.spellProc || item.meleeHitSpell) effects.push(`<span class="bg-indigo-900/40 text-indigo-300 text-[11px] px-2 py-1 rounded border border-indigo-700/50"><i class="fa-solid fa-bolt mr-1"></i>魔法發動</span>`);
+    if (item.procSkill || item.procStatusSkill) effects.push(`<span class="bg-indigo-900/40 text-indigo-300 text-[11px] px-2 py-1 rounded border border-indigo-700/50"><i class="fa-solid fa-fire mr-1"></i>技能發動</span>`);
+    if (item.procPoison) effects.push(`<span class="bg-green-900/40 text-green-300 text-[11px] px-2 py-1 rounded border border-green-700/50"><i class="fa-solid fa-skull mr-1"></i>毒素發動</span>`);
+    if (item.ignHardSkin) effects.push(`<span class="bg-orange-900/40 text-orange-300 text-[11px] px-2 py-1 rounded border border-orange-700/50"><i class="fa-solid fa-burst mr-1"></i>貫穿硬皮</span>`);
+    if (item.set) effects.push(`<span class="bg-yellow-900/40 text-yellow-300 text-[11px] px-2 py-1 rounded border border-yellow-700/50"><i class="fa-solid fa-layer-group mr-1"></i>套裝效果</span>`);
+    
+    if (effects.length === 0) return '';
+    return `<div class="mt-2 flex flex-wrap gap-1">${effects.join('')}</div>`;
+}
+
+const wikiMapNames = {
+    "town_silver_knight": "銀騎士村莊",
+    "town_elf": "妖精森林村莊",
+    "town_talking": "說話之島村莊",
+    "town_gludio": "燃柳村莊",
+    "town_giran": "奇岩城鎮",
+    "town_heine": "海音城鎮",
+    "town_oren": "歐瑞村莊",
+    "town_aden": "亞丁城鎮",
+    "town_ivory_tower": "象牙塔（1~3樓）",
+    "town_witon": "威頓村莊",
+    "town_sherine": "席琳神殿",
+    "town_silent": "沉默洞穴",
+    "town_hyperia": "希培利亞",
+    "town_behemoth": "貝希摩斯",
+    "town_flame_audience": "炎魔謁見所",
+    "silver_knight": "銀騎士村周邊",
+    "talking_island": "說話之島周邊",
+    "zone_01": "妖精森林周邊",
+    "talking_island_port": "說話之島港口",
+    "elf_forest": "妖魔森林",
+    "gludio": "古魯丁周邊",
+    "windwood": "風木周邊",
+    "desert": "沙漠",
+    "kent": "肯特周邊",
+    "dragon_valley": "龍之谷",
+    "fire_dragon": "火龍窟",
+    "giran": "奇岩周邊",
+    "heine": "海音周邊",
+    "twilight_mt": "黃昏山脈",
+    "mirror_forest": "鏡子森林",
+    "zone_02": "歐瑞周邊",
+    "zone_03": "歐瑞雪原",
+    "zone_04": "艾爾摩激戰地",
+    "zone_05": "國境要塞",
+    "silent_outer": "沉默洞穴周邊",
+    "elf_grave": "精靈墓穴",
+    "hidden_cave": "大洞穴隱遁者村莊地區",
+    "giant_tomb": "古代巨人之墓",
+    "zone_06": "古魯丁地監1樓",
+    "zone_07": "古魯丁地監2樓",
+    "zone_08": "古魯丁地監3樓",
+    "zone_09": "古魯丁地監4樓",
+    "zone_10": "古魯丁地監5樓",
+    "zone_11": "古魯丁地監6樓",
+    "zone_12": "古魯丁地監7樓",
+    "zone_13": "說話之島地監1樓",
+    "zone_14": "說話之島地監2樓",
+    "zone_15": "眠龍洞穴1樓",
+    "zone_16": "眠龍洞穴2樓",
+    "zone_17": "眠龍洞穴3樓",
+    "crystal_cave1": "水晶洞穴1樓",
+    "crystal_cave2": "水晶洞穴2樓",
+    "crystal_cave3": "水晶洞穴3樓",
+    "zone_18": "奇岩地監1樓",
+    "zone_19": "奇岩地監2樓",
+    "zone_20": "奇岩地監3樓",
+    "zone_21": "奇岩地監4樓",
+    "zone_22": "沙漠地監1樓",
+    "zone_23": "沙漠地監2樓",
+    "zone_24": "沙漠地監3樓",
+    "zone_25": "沙漠地監4樓",
+    "zone_26": "龍之谷地監1樓",
+    "zone_27": "龍之谷地監2樓",
+    "zone_28": "龍之谷地監3樓",
+    "zone_29": "龍之谷地監4樓",
+    "zone_30": "龍之谷地監5樓",
+    "zone_31": "龍之谷地監6樓",
+    "zone_32": "螞蟻洞窟1樓",
+    "zone_33": "螞蟻洞窟2樓",
+    "zone_34": "地下通道1樓",
+    "zone_35": "地下通道2樓",
+    "zone_36": "地下通道3樓",
+    "eva_kingdom": "伊娃王國",
+    "zone_37": "象牙塔4樓",
+    "zone_38": "象牙塔5樓",
+    "zone_39": "象牙塔6樓",
+    "zone_40": "象牙塔7樓",
+    "zone_41": "象牙塔8樓",
+    "rastabad_cave1": "拉斯塔巴德地下洞穴1樓",
+    "rastabad_cave2": "拉斯塔巴德地下洞穴2樓",
+    "rastabad_cave3": "拉斯塔巴德地下洞穴3樓",
+    "rastabad_gate": "拉斯塔巴德正門",
+    "rastabad_beast": "魔獸訓練場",
+    "dark_magic_lab": "黑魔法研究室",
+    "necro_training": "冥法軍訓練場",
+    "elder_room": "格蘭肯神殿．長老之室",
+    "demon_temple": "魔族神殿",
+    "shadow_temple": "暗影神殿",
+    "training": "新兵修練場",
+    "dream_island": "夢幻之島",
+    "king_baranka_room": "魔獸君王之室",
+    "law_king_room": "法令君王之室",
+    "necro_king_room": "冥法君王之室",
+    "assassin_king_room": "暗殺君王之室",
+    "antaras_lair": "安塔瑞斯棲息地",
+    "fafurion_lair": "法利昂洞穴",
+    "valakas_lair": "巴拉卡斯巢穴",
+    "town_pride": "傲慢之塔1樓",
+    "pride_2_10": "傲慢之塔2~10樓",
+    "pride_11_20": "傲慢之塔11~20樓",
+    "pride_21_30": "傲慢之塔21~30樓",
+    "pride_31_40": "傲慢之塔31~40樓",
+    "pride_41_50": "傲慢之塔41~50樓",
+    "pride_51_60": "傲慢之塔51~60樓",
+    "pride_61_70": "傲慢之塔61~70樓",
+    "pride_71_80": "傲慢之塔71~80樓",
+    "pride_81_90": "傲慢之塔81~90樓",
+    "pride_91_100": "傲慢之塔91~100樓",
+    "town_rift": "時空裂痕入口",
+    "thebes_desert": "底比斯沙漠",
+    "thebes_pyramid": "底比斯金字塔內部",
+    "thebes_temple": "底比斯 歐西里斯祭壇",
+    "town_pirate_village": "海賊島村莊",
+    "pirate_wild": "海賊島周邊",
+    "pirate_dungeon": "海賊島地監",
+    "town_windwood_castle": "風木城",
+    "windwood_dungeon": "風木地監",
+    "hidden_lab_nolife": "無生命體研究室",
+    "hidden_lab_darkmagic": "黑魔法研究室",
+    "hidden_seal_spirit": "精靈的封印地",
+    "hidden_seal_monster": "魔獸的封印地",
+    "hidden_seal_demon": "惡魔的封印地",
+    "hidden_antqueen": "螞蟻女王藏身處"
+};
+
+let mobMapCache = {};
+function getMonsterMapsText(monsterNameStr) {
+    if (mobMapCache[monsterNameStr]) return mobMapCache[monsterNameStr];
+    
+    if (typeof DB === 'undefined' || !DB.mobs) return '未知';
+    
+    const mobIds = Object.keys(DB.mobs).filter(id => DB.mobs[id].n === monsterNameStr);
+    if (mobIds.length === 0) return '未知地圖';
+    
+    const mapsFound = [];
+    if (DB.maps) {
+        for (const [mapKey, mobList] of Object.entries(DB.maps)) {
+            if (mobList.some(id => mobIds.includes(id))) {
+                let mapName = wikiMapNames[mapKey] || (DB.towns && DB.towns[mapKey] ? DB.towns[mapKey].n : mapKey);
+                
+                if (mapName === mapKey) {
+                    if (mapKey.startsWith('pride_f')) {
+                        const floor = mapKey.replace('pride_f', '');
+                        mapName = `傲慢之塔${floor}樓`;
+                    } else if (mapKey === 'oblivion_travel') {
+                        mapName = '遺忘之島(乘船處)';
+                    } else if (mapKey === 'oblivion_island') {
+                        mapName = '遺忘之島';
+                    }
+                }
+
+                if (!mapsFound.includes(mapName)) {
+                    mapsFound.push(mapName);
+                }
+            }
+        }
+    }
+    
+    const result = mapsFound.length > 0 ? mapsFound.join(', ') : '特殊區域/副本';
+    mobMapCache[monsterNameStr] = result;
+    return result;
+}
+
+function getItemDropsHtml(itemId) {
+    if (!wikiData.drops) return '';
+    const drops = wikiData.drops.filter(d => d.itemId === itemId);
+    if (drops.length === 0) {
+        return `<div class="text-[11px] text-gray-600 mt-3 border-t border-gray-800/50 pt-2"><i class="fa-solid fa-ghost mr-1"></i>無怪物掉落</div>`;
+    }
+    
+    drops.sort((a, b) => b.chance - a.chance);
+    
+    let html = `<div class="mt-3 border-t border-gray-800/50 pt-2">
+        <div class="text-[11px] text-gray-500 mb-1.5 flex items-center">
+            <i class="fa-solid fa-box-open mr-1.5"></i>掉落怪物:
+        </div>
+        <div class="flex flex-wrap gap-1.5">`;
+        
+    const maxShow = 6;
+    if (drops.length <= maxShow) {
+        drops.forEach(d => {
+            const mapsText = getMonsterMapsText(d.monster);
+            html += `<span class="bg-gray-800 text-gray-300 text-[10px] px-1.5 py-0.5 rounded border border-gray-700 cursor-help" title="掉落機率: ${d.chance}%&#10;出沒地圖: ${mapsText}">${d.monster}</span>`;
+        });
+        html += `</div></div>`;
+    } else {
+        const toShow = drops.slice(0, 5);
+        const toHide = drops.slice(5);
+        
+        toShow.forEach(d => {
+            const mapsText = getMonsterMapsText(d.monster);
+            html += `<span class="bg-gray-800 text-gray-300 text-[10px] px-1.5 py-0.5 rounded border border-gray-700 cursor-help" title="掉落機率: ${d.chance}%&#10;出沒地圖: ${mapsText}">${d.monster}</span>`;
+        });
+        
+        html += `<span class="bg-primary-900/50 text-primary-300 text-[10px] px-1.5 py-0.5 rounded border border-primary-700/50 cursor-pointer hover:bg-primary-800 transition-colors" onclick="this.nextElementSibling.classList.remove('hidden'); this.nextElementSibling.classList.add('flex', 'flex-wrap', 'gap-1.5', 'w-full', 'mt-1'); this.remove();">More..</span>`;
+        
+        html += `<div class="hidden">`;
+        toHide.forEach(d => {
+            const mapsText = getMonsterMapsText(d.monster);
+            html += `<span class="bg-gray-800 text-gray-300 text-[10px] px-1.5 py-0.5 rounded border border-gray-700 cursor-help" title="掉落機率: ${d.chance}%&#10;出沒地圖: ${mapsText}">${d.monster}</span>`;
+        });
+        html += `</div></div></div>`;
+    }
+    
+    return html;
+}
+
 /**
  * 渲染單個道具卡片 HTML
  */
@@ -161,12 +397,14 @@ function createItemCard(item) {
             <div class="mb-3">
                 ${generateItemBadges(item)}
                 ${generateClassIcons(item.req)}
+                ${getItemEffectsHtml(item)}
             </div>
             
             <div class="mt-auto pt-3 border-t border-gray-800">
                 <p class="text-sm text-gray-400 leading-relaxed text-sm">
                     ${desc}
                 </p>
+                ${getItemDropsHtml(item.id)}
                 <div class="mt-3 text-xs text-gray-600 font-mono">
                     ID: ${item.id}
                 </div>
