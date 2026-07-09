@@ -1,0 +1,384 @@
+/**
+ * Wiki 製作百科模組
+ * 讀取遊戲原始 CRAFT_RECIPES 資料，依 NPC（城鎮）分組展示製作配方。
+ */
+
+// ==========================================
+// NPC 中文名稱與所在城鎮對應表
+// ==========================================
+const CRAFT_NPC_INFO = {
+    npc_moli:         { name: '茉莉',         location: '銀騎士村',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
+    npc_finn:         { name: '芬',           location: '銀騎士村',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
+    npc_joel:         { name: '喬爾',         location: '銀騎士村',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
+    npc_falin:        { name: '法林',         location: '說話之島',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
+    npc_ryan:         { name: '萊恩',         location: '說話之島',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
+    npc_ladal:        { name: '拉達爾',       location: '說話之島',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
+    npc_rabiani:      { name: '拉比安尼',     location: '說話之島',   title: '製作',        icon: 'fa-book',             color: 'text-yellow-300' },
+    npc_nalien:       { name: '那翰',         location: '妖精森林',   title: '製作',        icon: 'fa-music',            color: 'text-green-400' },
+    npc_narupa:       { name: '娜魯帕',       location: '妖精森林',   title: '製作',        icon: 'fa-leaf',             color: 'text-green-400' },
+    npc_elfqueen:     { name: '精靈女皇',     location: '妖精森林',   title: '製作',        icon: 'fa-crown',            color: 'text-emerald-300' },
+    npc_elf:          { name: '精靈',         location: '妖精森林',   title: '製作',        icon: 'fa-leaf',             color: 'text-green-300' },
+    npc_ent:          { name: '安特',         location: '妖精森林',   title: '製作',        icon: 'fa-tree',             color: 'text-green-600' },
+    npc_pan:          { name: '潘',           location: '妖精森林',   title: '製作',        icon: 'fa-fire-flame-curved',color: 'text-orange-400' },
+    npc_rekne:        { name: '芮克妮',       location: '妖精森林',   title: '製作',        icon: 'fa-spider',           color: 'text-purple-400' },
+    npc_brabo:        { name: '布拉伯',       location: '妖精森林',   title: '製作',        icon: 'fa-sword',            color: 'text-blue-400' },
+    npc_robinson:     { name: '羅賓孫',       location: '妖精森林',   title: '製作',        icon: 'fa-bow-arrow',        color: 'text-red-400' },
+    npc_moliya:       { name: '莫麗雅',       location: '奇岩',       title: '製作',        icon: 'fa-hat-wizard',       color: 'text-purple-400' },
+    npc_hector:       { name: '海克特',       location: '奇岩',       title: '製作',        icon: 'fa-hammer',           color: 'text-slate-400' },
+    npc_herbert:      { name: '哈巴特',       location: '奇岩',       title: '製作',        icon: 'fa-scissors',         color: 'text-pink-400' },
+    npc_lentis:       { name: '倫提斯',       location: '奇岩',       title: '製作',        icon: 'fa-ring',             color: 'text-cyan-400' },
+    npc_sebas:        { name: '賽巴斯',       location: '奇岩',       title: '寶石加工',    icon: 'fa-gem',              color: 'text-sky-400' },
+    npc_lumiel:       { name: '琉米埃爾',     location: '海音',       title: '製作',        icon: 'fa-star',             color: 'text-blue-300' },
+    npc_ibelbin:      { name: '伊貝爾賓',     location: '歐瑞村莊',   title: '製作',        icon: 'fa-khanda',           color: 'text-red-400' },
+    npc_david:        { name: '大衛',         location: '歐瑞村莊',   title: '寶石加工',    icon: 'fa-gem',              color: 'text-cyan-300' },
+    npc_upni:         { name: '烏普尼',       location: '亞丁',       title: '製作',        icon: 'fa-scroll',           color: 'text-yellow-400' },
+    npc_norse:        { name: '諾斯',         location: '亞丁',       title: '寵物裝備製作',icon: 'fa-paw',              color: 'text-orange-300' },
+    npc_bamut:        { name: '巴姆特',       location: '傲慢之塔入口',title: '製作',       icon: 'fa-cloak',            color: 'text-violet-400' },
+    npc_tas:          { name: '塔斯',         location: '象牙塔',     title: '製作',        icon: 'fa-flask',            color: 'text-lime-400' },
+    npc_dytite:       { name: '迪泰特',       location: '象牙塔',     title: '解除封印',    icon: 'fa-unlock',           color: 'text-indigo-400' },
+    npc_keluya:       { name: '客盧亞',       location: '威頓村',     title: '製作',        icon: 'fa-hammer',           color: 'text-amber-300' },
+    npc_zeus_golem:   { name: '宙斯之熔岩高崙',location:'威頓村',    title: '製作',        icon: 'fa-mountain-sun',     color: 'text-orange-500' },
+    npc_bartel:       { name: '巴特爾',       location: '希培利亞村莊',title: '製作',       icon: 'fa-gem',              color: 'text-violet-300' },
+    npc_pir:          { name: '皮爾',         location: '貝希摩斯',   title: '製作',        icon: 'fa-fire',             color: 'text-red-500' },
+    npc_kupu:         { name: '庫普',         location: '沉默洞穴',   title: '製作',        icon: 'fa-hammer',           color: 'text-gray-400' },
+    npc_kororanz:     { name: '可羅蘭斯',     location: '沉默洞穴',   title: '製作',        icon: 'fa-book-skull',       color: 'text-slate-300' },
+    npc_flame_shadow: { name: '炎魔之影',     location: '炎魔謁見所', title: '製作',        icon: 'fa-fire',             color: 'text-red-400' },
+    npc_imp:          { name: '小惡魔',       location: '炎魔謁見所', title: '製作',        icon: 'fa-spider',           color: 'text-red-300' },
+    npc_flame_smith:  { name: '炎魔鐵匠',     location: '炎魔謁見所', title: '製作',        icon: 'fa-hammer',           color: 'text-orange-500' },
+    npc_flame_aide:   { name: '炎魔的輔佐官', location: '炎魔謁見所', title: '耳環製作',    icon: 'fa-earring',          color: 'text-pink-400' },
+};
+
+// ==========================================
+// 城鎮分組順序
+// ==========================================
+const TOWN_ORDER = [
+    '銀騎士村', '說話之島', '妖精森林',
+    '奇岩', '海音', '歐瑞村莊', '亞丁',
+    '傲慢之塔入口', '象牙塔', '威頓村',
+    '希培利亞村莊', '貝希摩斯', '沉默洞穴',
+    '炎魔謁見所'
+];
+
+// ==========================================
+// 輔助函數
+// ==========================================
+
+/** 取得物品名稱（優先查 DB） */
+function craftGetItemName(id) {
+    if (!id) return id;
+    if (id === 'gold') return '💰 金幣';
+    if (typeof DB !== 'undefined' && DB.items && DB.items[id]) {
+        return DB.items[id].n;
+    }
+    return id;
+}
+
+/** 取得物品圖示顏色 class */
+function craftGetItemColorClass(id) {
+    if (!id || id === 'gold') return 'text-yellow-400';
+    if (typeof DB !== 'undefined' && DB.items && DB.items[id]) {
+        const item = DB.items[id];
+        if (item.grade === 'legend' || item.gr === 'legend') return 'text-orange-400';
+        if (item.grade === 'rare'   || item.gr === 'rare')   return 'text-yellow-400';
+        if (item.grade === 'magic'  || item.gr === 'magic')  return 'text-blue-400';
+        if (item.type === 'wpn') return 'text-red-300';
+        if (item.type === 'arm') return 'text-blue-300';
+        if (item.type === 'acc') return 'text-purple-300';
+    }
+    return 'text-gray-300';
+}
+
+/** 渲染材料清單 */
+function craftRenderRequirements(req) {
+    if (!req || !req.length) return '<span class="text-gray-500">無需材料</span>';
+    return req.map(r => {
+        if (r.id === 'gold') {
+            return `<span class="inline-flex items-center gap-1 bg-yellow-900/30 text-yellow-400 text-xs px-2 py-1 rounded border border-yellow-700/40 mr-1 mb-1">
+                        <i class="fa-solid fa-coins text-yellow-400"></i> ${r.cnt.toLocaleString()} 金幣
+                    </span>`;
+        }
+        const name = craftGetItemName(r.id);
+        const colorCls = craftGetItemColorClass(r.id);
+        return `<span class="inline-flex items-center gap-1 bg-gray-800/60 ${colorCls} text-xs px-2 py-1 rounded border border-gray-700/40 mr-1 mb-1" title="${r.id}">
+                    ${name} <span class="text-gray-500">×${r.cnt}</span>
+                </span>`;
+    }).join('');
+}
+
+/** 渲染成品徽章 */
+function craftRenderResultBadge(resultId, yieldCnt) {
+    const name = craftGetItemName(resultId);
+    const colorCls = craftGetItemColorClass(resultId);
+    const yieldTag = yieldCnt && yieldCnt > 1
+        ? `<span class="ml-1 bg-yellow-500/20 text-yellow-400 text-xs px-1.5 py-0.5 rounded">×${yieldCnt}</span>`
+        : '';
+    return `<span class="${colorCls} font-bold text-sm">${name}</span>${yieldTag}`;
+}
+
+// ==========================================
+// 主渲染函數
+// ==========================================
+
+function renderCraftWiki() {
+    const container = document.getElementById('craft-sections-container');
+    if (!container) return;
+
+    // 若 CRAFT_RECIPES 尚未載入則跳出
+    if (typeof CRAFT_RECIPES === 'undefined') {
+        container.innerHTML = `<div class="text-center text-gray-500 mt-20">
+            <i class="fa-solid fa-circle-exclamation text-4xl mb-3"></i>
+            <p>製作配方資料尚未載入</p>
+        </div>`;
+        return;
+    }
+
+    // 依城鎮分組 NPC
+    const townMap = {}; // location -> [{npcId, npcInfo, recipes}]
+    Object.entries(CRAFT_RECIPES).forEach(([npcId, recipes]) => {
+        const info = CRAFT_NPC_INFO[npcId];
+        if (!info) return; // 未登記的 NPC 略過
+        const loc = info.location;
+        if (!townMap[loc]) townMap[loc] = [];
+        townMap[loc].push({ npcId, info, recipes });
+    });
+
+    // 按城鎮順序渲染
+    let html = '';
+    const orderedTowns = [...TOWN_ORDER.filter(t => townMap[t]), ...Object.keys(townMap).filter(t => !TOWN_ORDER.includes(t))];
+
+    orderedTowns.forEach(town => {
+        const npcs = townMap[town];
+        if (!npcs || !npcs.length) return;
+
+        html += `
+        <div class="craft-town-section mb-8" data-town="${town}">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-gray-700 pb-2">
+                <i class="fa-solid fa-location-dot text-primary-400"></i>
+                <span>${town}</span>
+                <span class="text-xs text-gray-500 font-normal ml-2">${npcs.length} 位製作 NPC</span>
+            </h2>
+            <div class="flex flex-col gap-5">
+        `;
+
+        npcs.forEach(({ npcId, info, recipes }) => {
+            const npcData = (typeof DB !== 'undefined' && DB.towns)
+                ? (() => {
+                    for (const town of Object.values(DB.towns)) {
+                        const npc = (town.npcs || []).find(n => n.id === npcId);
+                        if (npc) return npc;
+                    }
+                    return null;
+                })()
+                : null;
+            const npcDesc = npcData ? npcData.d : '';
+
+            html += `
+            <div class="glass-panel rounded-xl border border-gray-700/50 overflow-hidden craft-npc-card" data-npc-id="${npcId}">
+                <!-- NPC Header -->
+                <div class="flex items-center gap-3 px-5 py-4 bg-gray-800/50 border-b border-gray-700/50">
+                    <div class="w-10 h-10 rounded-full bg-gray-900/70 flex items-center justify-center border border-gray-600 flex-shrink-0">
+                        <i class="fa-solid ${info.icon} ${info.color} text-lg"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="font-bold text-white text-base">${info.name}</span>
+                            <span class="text-xs bg-gray-700/60 text-gray-300 px-2 py-0.5 rounded-full border border-gray-600/50">${info.title}</span>
+                            <span class="text-xs text-gray-500">${recipes.length} 個配方</span>
+                        </div>
+                        ${npcDesc ? `<p class="text-xs text-gray-400 mt-0.5 leading-relaxed truncate" title="${npcDesc}">${npcDesc}</p>` : ''}
+                    </div>
+                </div>
+
+                <!-- 配方列表 -->
+                <div class="divide-y divide-gray-800/50">
+            `;
+
+            recipes.forEach((recipe, idx) => {
+                const resultName = craftGetItemName(recipe.result);
+                const resultColorCls = craftGetItemColorClass(recipe.result);
+                const yieldCnt = recipe.yield || 1;
+                const yieldTag = yieldCnt > 1
+                    ? `<span class="ml-2 bg-yellow-500/20 text-yellow-400 text-xs px-1.5 py-0.5 rounded">×${yieldCnt}</span>`
+                    : '';
+                const reqHtml = craftRenderRequirements(recipe.req);
+
+                html += `
+                <div class="craft-recipe-row flex flex-col sm:flex-row sm:items-start gap-3 px-5 py-4 hover:bg-gray-800/30 transition-colors" data-recipe-idx="${idx}">
+                    <!-- 成品 -->
+                    <div class="flex items-center gap-3 sm:w-56 flex-shrink-0">
+                        <div class="w-10 h-10 bg-gray-900/70 rounded-lg border border-gray-700/50 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-box text-gray-500 text-sm"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center flex-wrap">
+                                <span class="${resultColorCls} font-semibold text-sm">${resultName}</span>${yieldTag}
+                            </div>
+                            <div class="text-xs text-gray-600 mt-0.5">${recipe.result}</div>
+                        </div>
+                    </div>
+
+                    <!-- 箭頭 -->
+                    <div class="hidden sm:flex items-center text-gray-600 mt-3">
+                        <i class="fa-solid fa-arrow-right-long"></i>
+                    </div>
+
+                    <!-- 材料 -->
+                    <div class="flex-1">
+                        <div class="text-xs text-gray-500 mb-1">所需材料</div>
+                        <div class="flex flex-wrap">${reqHtml}</div>
+                    </div>
+                </div>
+                `;
+            });
+
+            html += `
+                </div>
+            </div>
+            `;
+        });
+
+        html += `
+            </div>
+        </div>
+        `;
+    });
+
+    container.innerHTML = html;
+}
+
+// ==========================================
+// 搜尋功能
+// ==========================================
+let craftSearchQuery = '';
+
+function filterCraftRecipes(query) {
+    craftSearchQuery = query.toLowerCase().trim();
+    const cards = document.querySelectorAll('.craft-npc-card');
+    const townSections = document.querySelectorAll('.craft-town-section');
+
+    cards.forEach(card => {
+        const npcId = card.getAttribute('data-npc-id');
+        const info = CRAFT_NPC_INFO[npcId];
+        const npcName = info ? info.name : '';
+        const npcLocation = info ? info.location : '';
+
+        const rows = card.querySelectorAll('.craft-recipe-row');
+        let cardVisible = false;
+
+        if (!craftSearchQuery) {
+            rows.forEach(row => row.classList.remove('hidden'));
+            cardVisible = true;
+        } else {
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(craftSearchQuery) || npcName.toLowerCase().includes(craftSearchQuery) || npcLocation.toLowerCase().includes(craftSearchQuery)) {
+                    row.classList.remove('hidden');
+                    cardVisible = true;
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        }
+
+        card.style.display = cardVisible ? '' : 'none';
+    });
+
+    // 隱藏空城鎮區塊
+    townSections.forEach(section => {
+        const hasVisible = Array.from(section.querySelectorAll('.craft-npc-card')).some(c => c.style.display !== 'none');
+        section.style.display = hasVisible ? '' : 'none';
+    });
+
+    // 更新空狀態提示
+    const emptyState = document.getElementById('craft-empty-state');
+    const container = document.getElementById('craft-sections-container');
+    const anyVisible = Array.from(townSections).some(s => s.style.display !== 'none');
+    if (emptyState) emptyState.classList.toggle('hidden', anyVisible);
+    if (container) container.classList.toggle('hidden', !anyVisible);
+}
+
+// ==========================================
+// 城鎮/NPC 過濾
+// ==========================================
+let craftActiveTownFilter = 'all';
+
+function setCraftTownFilter(town) {
+    craftActiveTownFilter = town;
+    document.querySelectorAll('.craft-town-filter-btn').forEach(btn => {
+        const isActive = btn.getAttribute('data-town') === town;
+        btn.classList.toggle('bg-primary-600', isActive);
+        btn.classList.toggle('text-white', isActive);
+        btn.classList.toggle('bg-gray-800', !isActive);
+        btn.classList.toggle('text-gray-300', !isActive);
+        btn.classList.toggle('border-gray-700', !isActive);
+    });
+
+    document.querySelectorAll('.craft-town-section').forEach(section => {
+        if (town === 'all' || section.getAttribute('data-town') === town) {
+            section.style.display = '';
+        } else {
+            section.style.display = 'none';
+        }
+    });
+}
+
+function buildCraftTownFilters() {
+    const filtersEl = document.getElementById('craft-town-filters');
+    if (!filtersEl) return;
+
+    // 取得存在配方的城鎮
+    const towns = [...new Set(Object.keys(CRAFT_RECIPES).map(npcId => {
+        const info = CRAFT_NPC_INFO[npcId];
+        return info ? info.location : null;
+    }).filter(Boolean))];
+    const orderedTowns = [...TOWN_ORDER.filter(t => towns.includes(t)), ...towns.filter(t => !TOWN_ORDER.includes(t))];
+
+    let html = `<button data-town="all" class="craft-town-filter-btn px-3 py-1.5 rounded-full bg-primary-600 text-white text-xs font-medium transition-colors border border-transparent">全部城鎮</button>`;
+    orderedTowns.forEach(town => {
+        html += `<button data-town="${town}" class="craft-town-filter-btn px-3 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-xs font-medium transition-colors border border-gray-700">${town}</button>`;
+    });
+
+    filtersEl.innerHTML = html;
+
+    filtersEl.querySelectorAll('.craft-town-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => setCraftTownFilter(btn.getAttribute('data-town')));
+    });
+}
+
+// ==========================================
+// 初始化
+// ==========================================
+let _craftWikiInited = false;
+
+function initCraftWiki() {
+    if (_craftWikiInited) return;
+    _craftWikiInited = true;
+
+    renderCraftWiki();
+    buildCraftTownFilters();
+
+    // 搜尋欄監聽
+    const searchInput = document.getElementById('craft-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', e => filterCraftRecipes(e.target.value));
+    }
+
+    // 全域搜尋欄（tab 切換時連動）
+    const globalSearch = document.getElementById('global-search');
+    if (globalSearch) {
+        globalSearch.addEventListener('input', e => {
+            const craftSearchBar = document.getElementById('craft-search');
+            if (craftSearchBar && document.getElementById('tab-craft')?.classList.contains('active')) {
+                craftSearchBar.value = e.target.value;
+                filterCraftRecipes(e.target.value);
+            }
+        });
+    }
+}
+
+// 監聽 tab 切換事件
+document.addEventListener('tabChanged', (e) => {
+    if (e.detail === 'tab-craft') {
+        setTimeout(initCraftWiki, 50);
+    }
+});

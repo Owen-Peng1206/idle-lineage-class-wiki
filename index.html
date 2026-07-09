@@ -133,6 +133,10 @@
                 <i class="fa-solid fa-spaghetti-monster-flying w-6 text-center mr-3"></i>
                 <span>怪物地圖</span>
             </button>
+            <button data-target="tab-craft" class="tab-btn w-full flex items-center px-6 py-3 text-left text-gray-400">
+                <i class="fa-solid fa-hammer w-6 text-center mr-3 text-amber-400"></i>
+                <span class="text-gray-300 font-medium">製作百科</span>
+            </button>
             
             <div class="px-6 py-2 mt-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">進階工具</div>
             <button data-target="tab-drops" class="tab-btn w-full flex items-center px-6 py-3 text-left text-gray-400">
@@ -310,6 +314,41 @@
                 </div>
             </section>
 
+            <!-- Tab: Craft Wiki -->
+            <section id="tab-craft" class="content-section">
+                <!-- 搜尋與城鎮過濾區 -->
+                <div class="glass-panel p-5 rounded-xl border border-gray-800 mb-6 flex flex-col gap-4">
+                    <!-- 搜尋列 -->
+                    <div class="relative">
+                        <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                        <input type="text" id="craft-search" placeholder="搜尋 NPC、成品名稱、材料名稱..."
+                            class="w-full bg-gray-900 border border-gray-700 text-gray-200 text-sm rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 block pl-10 p-3 transition-colors">
+                    </div>
+                    <!-- 城鎮過濾器 -->
+                    <div>
+                        <div class="text-xs text-gray-500 mb-2 font-medium">依城鎮篩選</div>
+                        <div id="craft-town-filters" class="flex flex-wrap gap-2">
+                            <!-- 由 JS 動態生成 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 配方區塊容器 -->
+                <div id="craft-sections-container">
+                    <!-- 由 wiki-craft.js 動態生成 -->
+                    <div class="text-center text-gray-500 mt-16">
+                        <i class="fa-solid fa-spinner fa-spin text-4xl mb-4"></i>
+                        <p>載入中...</p>
+                    </div>
+                </div>
+
+                <!-- 無結果提示 -->
+                <div id="craft-empty-state" class="hidden text-center mt-20 text-gray-500">
+                    <i class="fa-solid fa-ghost text-5xl mb-4 opacity-50"></i>
+                    <p class="text-lg">找不到符合條件的製作配方</p>
+                </div>
+            </section>
+
             <!-- Tab: Drops (Target for Step 4) -->
             <section id="tab-drops" class="content-section">
                 <!-- 雙向查詢過濾區 -->
@@ -415,10 +454,38 @@
     <script src="./idle-lineage-class/js/00-data.js"></script>
     <script src="./idle-lineage-class/js/01-drops-config.js"></script>
 
+    <!-- Wiki 製作百科：注入最小 stub，讓 14-craft-pandora.js 可安全載入（只取 CRAFT_RECIPES 資料） -->
+    <script>
+        // Stubs for game-only globals referenced inside 14-craft-pandora.js functions
+        // These functions are never called in the wiki context; we only need CRAFT_RECIPES constant.
+        if (typeof player === 'undefined') {
+            var player = { inv: [], gold: 0, classicMode: false, pandoraMarket2: null, pandoraAnnounce: null };
+        }
+        function logSys(){}
+        function getIconUrl(){ return ''; }
+        function getItemColor(){ return ''; }
+        function craftReqHtml(){ return ''; }
+        function buildRecipeIndex(){}
+        function materialObtainable(){ return false; }
+        function sherineSetEligible(){ return false; }
+        function invCountId(){ return 0; }
+        function ensureMaterial(){}
+        function consumeMaterialById(){}
+        function rollAffixesNew(){ return { bless: null }; }
+        function loadWarehouse(){ return { items: [] }; }
+        function whCountId(){ return 0; }
+        function renderPandoraBanner(){}
+        function refreshPandoraMarket(){}
+        function msgEl(){ return null; }
+        var RECIPE_BY_RESULT = null;
+    </script>
+    <script src="./idle-lineage-class/js/14-craft-pandora.js"></script>
+
     <!-- 載入 Wiki 應用邏輯 -->
     <script src="./js/wiki-app.js"></script>
     <script src="./js/wiki-classes.js"></script>
     <script src="./js/wiki-magics.js"></script>
     <script src="./js/wiki-maps.js"></script>
+    <script src="./js/wiki-craft.js"></script>
 </body>
 </html>
