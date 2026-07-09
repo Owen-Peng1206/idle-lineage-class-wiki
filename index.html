@@ -243,6 +243,36 @@
                 </div>
             </section>
 
+            <!-- Tab: Monsters -->
+            <section id="tab-monsters" class="content-section">
+                <div class="glass-panel p-6 rounded-xl border border-gray-800 mb-6 flex flex-col md:flex-row gap-4">
+                    <div class="w-full md:w-1/3">
+                        <label class="block text-gray-400 text-sm mb-2 font-medium">選擇地圖</label>
+                        <select id="map-selector" class="w-full bg-gray-900 border border-gray-700 text-gray-200 text-sm rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 block p-3 transition-colors appearance-none outline-none">
+                            <option value="">載入中...</option>
+                        </select>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-gray-400 text-sm mb-2 font-medium">搜尋怪物名稱</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                            <input type="text" id="map-monster-search" placeholder="例如：死亡騎士, 黑長者..." 
+                                class="w-full bg-gray-900 border border-gray-700 text-gray-200 text-sm rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 block pl-10 p-3 transition-colors">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="maps-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- 怪物卡片將由 JS 渲染 -->
+                </div>
+                
+                <!-- 無結果提示 -->
+                <div id="maps-empty-state" class="hidden text-center mt-20 text-gray-500">
+                    <i class="fa-solid fa-ghost text-5xl mb-4 opacity-50"></i>
+                    <p class="text-lg">該地圖找不到符合條件的怪物</p>
+                </div>
+            </section>
+
             <!-- Tab: Items (Target for Step 3) -->
             <section id="tab-items" class="content-section">
                 <!-- 類別過濾器 -->
@@ -373,7 +403,8 @@
     <!-- 載入遊戲原始資料 (DB, MOB_DROPS) -->
     <!-- 為防止報錯，我們先定義一些假的全域變數或 Mock 讓 00-data.js 正常載入 -->
     <script>
-        var player = null; // 防止 00-data.js 內呼叫 player 時報錯
+        // 不再定義 player，因為 01-drops-config.js 會用 let player 宣告，重複宣告會導致 SyntaxError
+        var window = window || {};
     </script>
     <script src="./idle-lineage-class/js/00-data.js"></script>
     <script src="./idle-lineage-class/js/01-drops-config.js"></script>
@@ -382,5 +413,6 @@
     <script src="./js/wiki-app.js"></script>
     <script src="./js/wiki-classes.js"></script>
     <script src="./js/wiki-magics.js"></script>
+    <script src="./js/wiki-maps.js"></script>
 </body>
 </html>
