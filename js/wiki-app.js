@@ -443,6 +443,12 @@ function createItemCard(item) {
 function renderItems() {
     if (!itemsGrid) return;
     
+    // 如果是套裝分類，轉由專屬的 renderSets 處理
+    if (currentFilterType === 'set') {
+        renderSets();
+        return;
+    }
+    
     // 根據 filter 與 search 過濾資料
     const filteredItems = wikiData.items.filter(item => {
         // 分類過濾
@@ -493,6 +499,132 @@ function renderItems() {
         // 大量 DOM 渲染優化，先轉成字串再一次性放入
         itemsGrid.innerHTML = filteredItems.map(createItemCard).join('');
     }
+}
+
+/**
+ * 渲染套裝列表
+ */
+function renderSets() {
+    if (!itemsGrid) return;
+    
+    const keyword = currentSearchQuery.toLowerCase();
+    const allSets = [];
+    
+    // 1. 從 DB.sets 提取 (舊版寫法)
+    if (typeof DB !== 'undefined' && DB.sets) {
+        for (const [setId, setInfo] of Object.entries(DB.sets)) {
+            const setItems = setInfo.items.map(itemId => wikiData.items.find(i => i.id === itemId) || DB.items[itemId]).filter(Boolean);
+            if (setItems.length === 0) continue;
+            
+            let effs = [];
+            if (setInfo.hp) effs.push(`HP+${setInfo.hp}`);
+            if (setInfo.mp) effs.push(`MP+${setInfo.mp}`);
+            if (setInfo.hpR) effs.push(`HP回復+${setInfo.hpR}`);
+            if (setInfo.mpR) effs.push(`MP回復+${setInfo.mpR}`);
+            if (setInfo.ac) effs.push(`AC-${setInfo.ac}`);
+            if (setInfo.mr) effs.push(`MR+${setInfo.mr}`);
+            if (setInfo.str) effs.push(`力量+${setInfo.str}`);
+            if (setInfo.dex) effs.push(`敏捷+${setInfo.dex}`);
+            if (setInfo.con) effs.push(`體質+${setInfo.con}`);
+            if (setInfo.int) effs.push(`智力+${setInfo.int}`);
+            if (setInfo.wis) effs.push(`精神+${setInfo.wis}`);
+            if (setInfo.cha) effs.push(`魅力+${setInfo.cha}`);
+            
+            allSets.push({
+                id: setId,
+                name: setInfo.n,
+                items: setItems,
+                effectDesc: effs.length > 0 ? effs.join('、') : '無特別說明',
+            });
+        }
+    }
+    
+    // 2. 從道具的 set 屬性提取 (新版寫法)
+    const newSetsMap = {};
+    wikiData.items.forEach(item => {
+        if (item.set) {
+            if (!newSetsMap[item.set]) {
+                newSetsMap[item.set] = { id: item.set, items: [], effectDesc: '', name: '' };
+            }
+            newSetsMap[item.set].items.push(item);
+            
+            // 從說明中擷取名稱與效果，例如：【歐林西瑪套裝】...：...</span>
+            if (item.d && item.d.includes('【')) {
+                const match = item.d.match(/【(.*?)】.*?：(.*?)。?(?:<\/span>|$)/);
+                if (match) {
+                    newSetsMap[item.set].name = match[1];
+                    newSetsMap[item.set].effectDesc = match[2];
+                }
+            }
+        }
+    });
+    
+    for (const key in newSetsMap) {
+        const setObj = newSetsMap[key];
+        if (!setObj.name) setObj.name = key + ' 套裝';
+        if (!setObj.effectDesc) setObj.effectDesc = '請見個別裝備說明';
+        
+        // 避免重複加入
+        if (!allSets.find(s => s.name === setObj.name)) {
+            allSets.push(setObj);
+        }
+    }
+    
+    // 搜尋過濾
+    const filteredSets = allSets.filter(set => {
+        if (keyword === '') return true;
+        if (set.name && set.name.toLowerCase().includes(keyword)) return true;
+        if (set.effectDesc && set.effectDesc.toLowerCase().includes(keyword)) return true;
+        if (set.items.some(item => item.n && item.n.toLowerCase().includes(keyword))) return true;
+        return false;
+    });
+    
+    if (filteredSets.length === 0) {
+        itemsGrid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+    }
+    
+    emptyState.classList.add('hidden');
+    
+    // 渲染卡片
+    itemsGrid.innerHTML = filteredSets.map(set => {
+        const itemsHtml = set.items.map(item => `
+            <div class="flex items-center gap-2 p-2 bg-gray-950/50 rounded-lg border border-gray-800">
+                <div class="w-8 h-8 flex-shrink-0 bg-gray-900 border border-gray-700 rounded flex items-center justify-center">
+                    <img src="${getItemIconPath(item)}" alt="${item.n}" class="w-full h-full object-contain" onerror="this.style.display='none'">
+                </div>
+                <span class="text-sm text-gray-300 font-medium">${item.n}</span>
+            </div>
+        `).join('');
+        
+        return `
+            <div class="glass-panel p-5 rounded-xl border border-yellow-700/40 hover:-translate-y-1 hover:shadow-lg hover:border-yellow-600/60 transition-all duration-200 flex flex-col h-full bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-500/10 rounded-bl-full pointer-events-none"></div>
+                <div class="flex justify-between items-center mb-4 border-b border-gray-800 pb-3 relative z-10">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-layer-group text-yellow-500 text-lg drop-shadow-[0_0_5px_rgba(234,179,8,0.5)]"></i>
+                        <h4 class="text-lg font-bold text-yellow-400">${set.name}</h4>
+                    </div>
+                    <span class="text-xs text-yellow-500 bg-yellow-900/30 border border-yellow-700/50 px-2 py-1 rounded">共 ${set.items.length} 件</span>
+                </div>
+                
+                <div class="mb-5 flex-1 relative z-10">
+                    <div class="text-xs text-gray-500 mb-2 font-medium uppercase tracking-wider">包含裝備</div>
+                    <div class="grid grid-cols-2 gap-2">
+                        ${itemsHtml}
+                    </div>
+                </div>
+                
+                <div class="mt-auto pt-3 border-t border-gray-800 bg-gray-900/40 -mx-5 -mb-5 px-5 py-4 rounded-b-xl relative z-10">
+                    <div class="text-xs text-yellow-600/80 mb-1 font-bold uppercase tracking-wider"><i class="fa-solid fa-sparkles mr-1"></i>套裝效果</div>
+                    <p class="text-sm text-yellow-200/90 font-medium leading-relaxed">
+                        ${set.effectDesc}
+                    </p>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 // ==========================================
