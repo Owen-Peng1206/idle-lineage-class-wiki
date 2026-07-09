@@ -283,11 +283,45 @@ function renderMonsters() {
                     </div>
                     
                     <!-- 怪物屬性 -->
-                    <div class="flex flex-wrap gap-1.5 mb-4">
+                    <div class="flex flex-wrap gap-1.5 mb-3">
                         ${mob.beh === '主動' ? `<span class="bg-red-900/40 text-red-300 text-[10px] px-2 py-0.5 rounded border border-red-800">主動攻擊</span>` : `<span class="bg-green-900/40 text-green-300 text-[10px] px-2 py-0.5 rounded border border-green-800">被動</span>`}
                         <span class="bg-gray-800 text-gray-300 text-[10px] px-2 py-0.5 rounded border border-gray-700">AC ${mob.ac}</span>
                         ${mob.weak ? `<span class="bg-blue-900/40 text-blue-300 text-[10px] px-2 py-0.5 rounded border border-blue-800">怕${mob.weak}</span>` : ''}
                         ${mob.race ? `<span class="bg-purple-900/40 text-purple-300 text-[10px] px-2 py-0.5 rounded border border-purple-800">${mob.race}</span>` : ''}
+                        ${(function(){
+                            const eleMap = { 'fire': '火', 'water': '水', 'wind': '風', 'earth': '地' };
+                            const eleText = mob.e && eleMap[mob.e] ? eleMap[mob.e] : null;
+                            if (eleText) {
+                                return '<span class="bg-indigo-900/40 text-indigo-300 text-[10px] px-2 py-0.5 rounded border border-indigo-800">屬性: ' + eleText + '</span>';
+                            }
+                            return '';
+                        })()}
+                    </div>
+                    
+                    <!-- 詳細資訊 (魔法與出沒地圖) -->
+                    <div class="flex flex-col gap-1.5 mb-4">
+                        ${(function(){
+                            let magics = [];
+                            if (mob.mag && mob.mag.skn) magics.push(mob.mag.skn);
+                            if (mob.mag2 && mob.mag2.skn) magics.push(mob.mag2.skn);
+                            if (mob.mag3 && mob.mag3.skn) magics.push(mob.mag3.skn);
+                            if (magics.length > 0) {
+                                return '<div class="text-[11px] text-amber-400 bg-amber-900/20 px-2 py-1 rounded border border-amber-900/50"><i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>魔法: ' + magics.join(', ') + '</div>';
+                            }
+                            return '';
+                        })()}
+                        ${(function(){
+                            const mobMaps = [];
+                            for (const mapId in DB.maps) {
+                                if (DB.maps[mapId].includes(mobId)) {
+                                    mobMaps.push(getMapName(mapId));
+                                }
+                            }
+                            if (mobMaps.length > 0) {
+                                return '<div class="text-[11px] text-emerald-400 bg-emerald-900/20 px-2 py-1 rounded border border-emerald-900/50 leading-relaxed"><i class="fa-solid fa-map-location-dot mr-1.5"></i>出沒: ' + mobMaps.join('、') + '</div>';
+                            }
+                            return '<div class="text-[11px] text-gray-500 bg-gray-900/40 px-2 py-1 rounded border border-gray-800"><i class="fa-solid fa-map-location-dot mr-1.5"></i>出沒: 未知 / 特殊生成</div>';
+                        })()}
                     </div>
                     
                     <!-- 掉落物區塊 -->
