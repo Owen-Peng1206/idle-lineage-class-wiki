@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Idle Lineage Class | 百科全書 Wiki</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                    },
+                    colors: {
+                        gray: {
+                            850: '#1f2937',
+                            900: '#111827',
+                            950: '#030712',
+                        },
+                        primary: {
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar for premium feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563; 
+        }
+
+        /* Micro-animations */
+        .tab-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .tab-btn.active {
+            background-color: rgba(59, 130, 246, 0.15); /* primary-500 with opacity */
+            border-right: 4px solid #3b82f6;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        .tab-btn:hover:not(.active) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Glassmorphism elements */
+        .glass-panel {
+            background: rgba(31, 41, 55, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Content section transition */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-300 h-screen overflow-hidden flex font-sans antialiased selection:bg-primary-500 selection:text-white">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-900 border-r border-gray-800 flex flex-col h-full flex-shrink-0 z-20 shadow-2xl relative">
+        <!-- Logo / Title -->
+        <div class="h-16 flex items-center px-6 border-b border-gray-800 bg-gray-950/50">
+            <i class="fa-solid fa-dragon text-primary-500 text-2xl mr-3"></i>
+            <h1 class="text-xl font-bold text-white tracking-wide">Idle Lineage</h1>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto py-4 flex flex-col gap-1" id="nav-menu">
+            <button data-target="tab-home" class="tab-btn active w-full flex items-center px-6 py-3 text-left text-gray-400">
+                <i class="fa-solid fa-house w-6 text-center mr-3"></i>
+                <span>首頁簡介</span>
+            </button>
+            <div class="px-6 py-2 mt-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">圖鑑百科</div>
+            <button data-target="tab-classes" class="tab-btn w-full flex items-center px-6 py-3 text-left text-gray-400">
+                <i class="fa-solid fa-users w-6 text-center mr-3"></i>
+                <span>職業與任務</span>
+            </button>
+            <button data-target="tab-magics" class="tab-btn w-full flex items-center px-6 py-3 text-left text-gray-400">
+                <i class="fa-solid fa-book-journal-whills w-6 text-center mr-3"></i>
+                <span>魔法圖鑑</span>
+            </button>
+            <button data-target="tab-items" class="tab-btn w-full flex items-center px-6 py-3 text-left text-gray-400">
+                <i class="fa-solid fa-khanda w-6 text-center mr-3"></i>
+                <span>道具裝備</span>
+            </button>
+            <button data-target="tab-monsters" class="tab-btn w-full flex items-center px-6 py-3 text-left text-gray-400">
+                <i class="fa-solid fa-spaghetti-monster-flying w-6 text-center mr-3"></i>
+                <span>怪物地圖</span>
+            </button>
+            
+            <div class="px-6 py-2 mt-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">進階工具</div>
+            <button data-target="tab-drops" class="tab-btn w-full flex items-center px-6 py-3 text-left text-gray-400">
+                <i class="fa-solid fa-magnifying-glass-chart w-6 text-center mr-3 text-gold-400"></i>
+                <span class="text-gray-300 font-medium">掉落雙向查詢</span>
+            </button>
+        </nav>
+
+        <!-- Footer Info -->
+        <div class="p-4 border-t border-gray-800 text-xs text-gray-500 text-center">
+            Wiki Database v1.0<br>
+            Game Version: <span id="game-version-display">v3.1.49</span>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-gradient-to-br from-gray-950 to-gray-900">
+        <!-- Topbar -->
+        <header class="h-16 glass-panel border-b border-gray-800 flex items-center justify-between px-8 z-10">
+            <h2 id="current-page-title" class="text-lg font-semibold text-white">首頁簡介</h2>
+            
+            <!-- Global Search (Optional per tab) -->
+            <div class="relative hidden sm:block w-72" id="global-search-container">
+                <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                <input type="text" id="global-search" placeholder="在此頁面中搜尋..." 
+                    class="w-full bg-gray-800/50 border border-gray-700 text-gray-200 text-sm rounded-full focus:ring-2 focus:ring-primary-500 focus:border-primary-500 block pl-10 p-2 transition-all duration-300 hover:bg-gray-800">
+            </div>
+        </header>
+
+        <!-- Content Container -->
+        <div class="flex-1 overflow-y-auto p-8" id="content-container">
+            
+            <!-- Tab: Home -->
+            <section id="tab-home" class="content-section active max-w-4xl mx-auto">
+                <div class="glass-panel p-8 rounded-2xl shadow-lg border border-gray-800 text-center">
+                    <i class="fa-solid fa-book-open-reader text-6xl text-primary-500 mb-6 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]"></i>
+                    <h3 class="text-3xl font-bold text-white mb-4">歡迎來到 Idle Lineage 百科全書</h3>
+                    <p class="text-gray-400 leading-relaxed mb-6">
+                        這是一個專為開源遊戲 <span class="text-primary-400 font-semibold">Idle Lineage Class</span> 打造的資料查詢網站。<br>
+                        你可以在左側導覽列切換不同的圖鑑，或是使用進階的<span class="text-gold-400 font-semibold">「掉落雙向查詢系統」</span>來尋找你需要的裝備與怪物。
+                    </p>
+                    <div class="flex justify-center gap-4">
+                        <button onclick="switchTab('tab-items')" class="px-6 py-2 bg-primary-600 hover:bg-primary-500 text-white rounded-lg font-medium transition-colors shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+                            瀏覽裝備
+                        </button>
+                        <button onclick="switchTab('tab-drops')" class="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors border border-gray-600">
+                            查詢掉落
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Classes -->
+            <section id="tab-classes" class="content-section max-w-5xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="classes-grid">
+                    <!-- 職業卡片將由 JavaScript 動態生成 -->
+                </div>
+                
+                <!-- 點擊職業後顯示的詳細資訊面板 -->
+                <div id="class-detail-panel" class="hidden mt-8 glass-panel p-8 rounded-2xl border border-gray-800 relative animate-[fadeIn_0.3s_ease-out]">
+                    <button onclick="closeClassDetail()" class="absolute top-6 right-6 text-gray-500 hover:text-red-400 transition-colors">
+                        <i class="fa-solid fa-xmark text-2xl"></i>
+                    </button>
+                    <div id="class-detail-content"></div>
+                </div>
+            </section>
+
+            <!-- Tab: Magics -->
+            <section id="tab-magics" class="content-section">
+                <!-- 魔法搜尋與過濾 -->
+                <div class="glass-panel p-6 rounded-xl border border-gray-800 mb-6 flex flex-col gap-4">
+                    <!-- 搜尋列 -->
+                    <div class="w-full">
+                        <label class="block text-gray-400 text-sm mb-2 font-medium">搜尋魔法名稱</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                            <input type="text" id="magic-search" placeholder="例如：流星雨, 衝擊之暈..." 
+                                class="w-full bg-gray-900 border border-gray-700 text-gray-200 text-sm rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 block pl-10 p-3 transition-colors">
+                        </div>
+                    </div>
+                    
+                    <!-- 職業過濾器 -->
+                    <div class="w-full">
+                        <label class="block text-gray-400 text-sm mb-2 font-medium">依職業過濾 (該職業可學習的魔法)</label>
+                        <div class="flex flex-wrap gap-2" id="magic-filters">
+                            <button data-class="all" class="px-4 py-1.5 rounded-full bg-primary-600 text-white text-sm font-medium transition-colors magic-filter-btn">全部</button>
+                            <button data-class="royal" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 magic-filter-btn">王族</button>
+                            <button data-class="knight" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 magic-filter-btn">騎士</button>
+                            <button data-class="elf" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 magic-filter-btn">妖精</button>
+                            <button data-class="mage" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 magic-filter-btn">法師</button>
+                            <button data-class="dark" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 magic-filter-btn">黑妖</button>
+                            <button data-class="dragon" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 magic-filter-btn">龍騎士</button>
+                            <button data-class="illusion" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 magic-filter-btn">幻術士</button>
+                            <button data-class="warrior" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 magic-filter-btn">戰士</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 魔法卡片網格 -->
+                <div id="magics-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <!-- 卡片將由 JavaScript 動態生成 -->
+                </div>
+
+                <!-- 無結果提示 -->
+                <div id="magics-empty-state" class="hidden text-center mt-20 text-gray-500">
+                    <i class="fa-solid fa-ghost text-5xl mb-4 opacity-50"></i>
+                    <p class="text-lg">找不到符合條件的魔法</p>
+                </div>
+            </section>
+
+            <!-- Tab: Items (Target for Step 3) -->
+            <section id="tab-items" class="content-section">
+                <!-- 類別過濾器 -->
+                <div class="flex flex-wrap gap-2 mb-6" id="item-filters">
+                    <button data-type="all" class="px-4 py-1.5 rounded-full bg-primary-600 text-white text-sm font-medium transition-colors filter-btn">全部</button>
+                    <button data-type="wpn" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 filter-btn">武器</button>
+                    <button data-type="arm" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 filter-btn">防具</button>
+                    <button data-type="acc" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 filter-btn">飾品</button>
+                    <button data-type="etc" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 filter-btn">雜項與材料</button>
+                </div>
+                
+                <!-- 卡片網格 -->
+                <div id="items-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- 卡片將由 JavaScript 動態生成 -->
+                </div>
+                
+                <!-- 無結果提示 -->
+                <div id="items-empty-state" class="hidden text-center mt-20 text-gray-500">
+                    <i class="fa-solid fa-ghost text-5xl mb-4 opacity-50"></i>
+                    <p class="text-lg">找不到符合條件的道具</p>
+                </div>
+            </section>
+
+            <!-- Tab: Monsters (Placeholder) -->
+            <section id="tab-monsters" class="content-section">
+                <div class="text-gray-400 text-center mt-20">
+                    <i class="fa-solid fa-person-digging text-4xl mb-4"></i>
+                    <p>怪物地圖資料建置中...</p>
+                </div>
+            </section>
+
+            <!-- Tab: Drops (Target for Step 4) -->
+            <section id="tab-drops" class="content-section">
+                <!-- 雙向查詢過濾區 -->
+                <div class="glass-panel p-6 rounded-xl border border-gray-800 mb-6 flex flex-col md:flex-row gap-4 items-end">
+                    <div class="flex-1 w-full">
+                        <label class="block text-gray-400 text-sm mb-2 font-medium">搜尋怪物或道具名稱 (支援模糊搜尋)</label>
+                        <div class="relative">
+                            <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                            <input type="text" id="drop-search" placeholder="例如：死神, 傳送控制戒指..." 
+                                class="w-full bg-gray-900 border border-gray-700 text-gray-200 text-sm rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 block pl-10 p-3 transition-colors">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 查詢結果表格 -->
+                <div class="glass-panel rounded-xl border border-gray-800 overflow-hidden relative">
+                    <div class="overflow-x-auto max-h-[600px] overflow-y-auto">
+                        <table class="w-full text-sm text-left text-gray-400">
+                            <thead class="text-xs text-gray-300 uppercase bg-gray-900 border-b border-gray-700 sticky top-0 z-10">
+                                <tr>
+                                    <th scope="col" class="px-6 py-4 cursor-pointer hover:text-gold-400 transition-colors select-none" onclick="sortDropTable('monster')">
+                                        怪物名稱 <i id="sort-icon-monster" class="fa-solid fa-sort ml-1 opacity-50"></i>
+                                    </th>
+                                    <th scope="col" class="px-6 py-4 cursor-pointer hover:text-gold-400 transition-colors select-none" onclick="sortDropTable('item')">
+                                        掉落道具 <i id="sort-icon-item" class="fa-solid fa-sort ml-1 opacity-50"></i>
+                                    </th>
+                                    <th scope="col" class="px-6 py-4 cursor-pointer hover:text-gold-400 transition-colors select-none text-right" onclick="sortDropTable('chance')">
+                                        機率 (%) <i id="sort-icon-chance" class="fa-solid fa-sort ml-1 opacity-50"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="drop-table-body" class="divide-y divide-gray-800">
+                                <!-- 表格內容由 JS 動態生成 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- 無結果提示 -->
+                    <div id="drop-empty-state" class="hidden text-center py-12 text-gray-500">
+                        <i class="fa-solid fa-ghost text-4xl mb-3 opacity-50"></i>
+                        <p>找不到符合的掉落資料</p>
+                    </div>
+                    
+                    <!-- 載入中/分頁提示 -->
+                    <div id="drop-limit-warning" class="hidden bg-yellow-900/30 text-yellow-500 text-xs text-center py-2 border-t border-yellow-900/50">
+                        為維持效能，僅顯示前 150 筆結果。請輸入更精確的關鍵字。
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- UI Logic Script -->
+    <script>
+        // 簡單的頁籤切換邏輯
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const sections = document.querySelectorAll('.content-section');
+        const pageTitle = document.getElementById('current-page-title');
+
+        function switchTab(targetId) {
+            // 更新按鈕狀態
+            tabBtns.forEach(btn => {
+                if (btn.getAttribute('data-target') === targetId) {
+                    btn.classList.add('active');
+                    pageTitle.textContent = btn.innerText.trim();
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // 更新內容狀態
+            sections.forEach(sec => {
+                if (sec.id === targetId) {
+                    sec.classList.add('active');
+                } else {
+                    sec.classList.remove('active');
+                }
+            });
+            
+            // 可以根據不同的 tab 清空或初始化 search bar
+            const searchInput = document.getElementById('global-search');
+            searchInput.value = '';
+            
+            // 觸發自定義事件，讓各模組可以監聽並重新渲染
+            document.dispatchEvent(new CustomEvent('tabChanged', { detail: targetId }));
+        }
+
+        // 綁定點擊事件
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchTab(btn.getAttribute('data-target'));
+            });
+        });
+    </script>
+    
+    <!-- 載入遊戲原始資料 (DB, MOB_DROPS) -->
+    <!-- 為防止報錯，我們先定義一些假的全域變數或 Mock 讓 00-data.js 正常載入 -->
+    <script>
+        var player = null; // 防止 00-data.js 內呼叫 player 時報錯
+    </script>
+    <script src="./idle-lineage-class/js/00-data.js"></script>
+    <script src="./idle-lineage-class/js/01-drops-config.js"></script>
+
+    <!-- 載入 Wiki 應用邏輯 -->
+    <script src="./js/wiki-app.js"></script>
+    <script src="./js/wiki-classes.js"></script>
+    <script src="./js/wiki-magics.js"></script>
+</body>
+</html>
