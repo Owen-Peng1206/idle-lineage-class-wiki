@@ -430,6 +430,7 @@ function getMonsterMapsText(monsterNameStr) {
 
 function getMonsterDropTooltipHtml(d) {
     const mapsText = getMonsterMapsText(d.monster);
+    const chanceText = d.isSpecial ? `<span class="text-xs text-amber-400 font-bold">${d.isSpecial}</span> (${d.chance}%)` : `${d.chance}%`;
     return `
         <div class="relative group cursor-help inline-block">
             <span class="bg-gray-800 text-gray-300 text-[10px] px-1.5 py-0.5 rounded border border-gray-700 hover:bg-gray-700/80 transition-colors inline-flex items-center">
@@ -439,7 +440,7 @@ function getMonsterDropTooltipHtml(d) {
             <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-max max-w-[220px] p-2.5 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-50 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                 <div class="text-xs text-yellow-400 mb-1.5 font-medium border-b border-gray-700/80 pb-1.5 flex items-center justify-between gap-3">
                     <span><i class="fa-solid fa-cube mr-1"></i>掉落機率</span>
-                    <span>${d.chance}%</span>
+                    <span>${chanceText}</span>
                 </div>
                 <div class="text-xs text-gray-300 flex items-start gap-1.5 leading-relaxed">
                     <i class="fa-solid fa-map-location-dot mt-0.5 text-gray-400 shrink-0"></i>
@@ -455,42 +456,100 @@ function getMonsterDropTooltipHtml(d) {
 function getItemDropsHtml(itemId) {
     if (!wikiData.drops) return '';
     const drops = wikiData.drops.filter(d => d.itemId === itemId);
-    if (drops.length === 0) {
-        return `<div class="text-[11px] text-gray-600 mt-3 border-t border-gray-800/50 pt-2"><i class="fa-solid fa-ghost mr-1"></i>無怪物掉落</div>`;
+    
+    let finalHtml = '';
+    
+    // 1. 搜尋商店
+    const shopSources = [];
+    if (typeof SHOP_LISTS !== 'undefined') {
+        for (const [npcId, items] of Object.entries(SHOP_LISTS)) {
+            if (items.includes(itemId)) {
+                let npcName = npcId;
+                let townName = '未知';
+                if (typeof DB !== 'undefined' && DB.towns) {
+                    for (const [tId, tInfo] of Object.entries(DB.towns)) {
+                        if (tInfo.npcs) {
+                            const foundNpc = tInfo.npcs.find(n => n.id === npcId);
+                            if (foundNpc) {
+                                npcName = foundNpc.n;
+                                townName = tInfo.n;
+                                break;
+                            }
+                        }
+                    }
+                }
+                shopSources.push(`${townName} - ${npcName}`);
+            }
+        }
     }
     
-    drops.sort((a, b) => b.chance - a.chance);
-    
-    let html = `<div class="mt-3 border-t border-gray-800/50 pt-2">
-        <div class="text-[11px] text-gray-500 mb-1.5 flex items-center">
-            <i class="fa-solid fa-box-open mr-1.5"></i>掉落怪物:
-        </div>
-        <div class="flex flex-wrap gap-1.5">`;
-        
-    const maxShow = 6;
-    if (drops.length <= maxShow) {
-        drops.forEach(d => {
-            html += getMonsterDropTooltipHtml(d);
-        });
-        html += `</div></div>`;
-    } else {
-        const toShow = drops.slice(0, 5);
-        const toHide = drops.slice(5);
-        
-        toShow.forEach(d => {
-            html += getMonsterDropTooltipHtml(d);
-        });
-        
-        html += `<span class="bg-primary-900/50 text-primary-300 text-[10px] px-2.5 py-0.5 rounded border border-primary-700/50 cursor-pointer hover:bg-primary-800 transition-colors flex items-center justify-center font-medium" onclick="this.nextElementSibling.classList.remove('hidden'); this.nextElementSibling.classList.add('flex', 'flex-wrap', 'gap-1.5', 'w-full', 'mt-1'); this.remove();">More..</span>`;
-        
-        html += `<div class="hidden">`;
-        toHide.forEach(d => {
-            html += getMonsterDropTooltipHtml(d);
-        });
-        html += `</div></div></div>`;
+    // 2. 搜尋製作
+    const craftSources = [];
+    if (typeof CRAFT_RECIPES !== 'undefined' && typeof CRAFT_NPC_INFO !== 'undefined') {
+        for (const [npcId, recipes] of Object.entries(CRAFT_RECIPES)) {
+            if (recipes.some(r => r.result === itemId)) {
+                const npcInfo = CRAFT_NPC_INFO[npcId];
+                if (npcInfo) {
+                    const sourceStr = `${npcInfo.location} - ${npcInfo.name}`;
+                    if (!craftSources.includes(sourceStr)) craftSources.push(sourceStr);
+                }
+            }
+        }
     }
-    
-    return html;
+
+    if (shopSources.length > 0 || craftSources.length > 0) {
+        finalHtml += `<div class="mt-3 border-t border-gray-800/50 pt-2">`;
+        if (shopSources.length > 0) {
+            finalHtml += `<div class="text-[11px] text-gray-400 mb-1 flex flex-wrap items-center">
+                <i class="fa-solid fa-shop mr-1.5 text-blue-400"></i>販售: ${shopSources.join('、')}
+            </div>`;
+        }
+        if (craftSources.length > 0) {
+            finalHtml += `<div class="text-[11px] text-gray-400 flex flex-wrap items-center ${shopSources.length > 0 ? 'mt-1' : ''}">
+                <i class="fa-solid fa-hammer mr-1.5 text-amber-400"></i>製作: ${craftSources.join('、')}
+            </div>`;
+        }
+        finalHtml += `</div>`;
+    }
+
+    if (drops.length > 0) {
+        drops.sort((a, b) => b.chance - a.chance);
+        
+        let dropClass = finalHtml ? "mt-2 pt-2 border-t border-gray-800/50" : "mt-3 border-t border-gray-800/50 pt-2";
+        let html = `<div class="${dropClass}">
+            <div class="text-[11px] text-gray-500 mb-1.5 flex items-center">
+                <i class="fa-solid fa-box-open mr-1.5"></i>掉落怪物:
+            </div>
+            <div class="flex flex-wrap gap-1.5">`;
+            
+        const maxShow = 6;
+        if (drops.length <= maxShow) {
+            drops.forEach(d => {
+                html += getMonsterDropTooltipHtml(d);
+            });
+            html += `</div></div>`;
+        } else {
+            const toShow = drops.slice(0, 5);
+            const toHide = drops.slice(5);
+            
+            toShow.forEach(d => {
+                html += getMonsterDropTooltipHtml(d);
+            });
+            
+            html += `<span class="bg-primary-900/50 text-primary-300 text-[10px] px-2.5 py-0.5 rounded border border-primary-700/50 cursor-pointer hover:bg-primary-800 transition-colors flex items-center justify-center font-medium" onclick="this.nextElementSibling.classList.remove('hidden'); this.nextElementSibling.classList.add('flex', 'flex-wrap', 'gap-1.5', 'w-full', 'mt-1'); this.remove();">More..</span>`;
+            
+            html += `<div class="hidden">`;
+            toHide.forEach(d => {
+                html += getMonsterDropTooltipHtml(d);
+            });
+            html += `</div></div></div>`;
+        }
+        finalHtml += html;
+    } else if (!finalHtml) {
+        finalHtml = `<div class="text-[11px] text-gray-600 mt-3 border-t border-gray-800/50 pt-2"><i class="fa-solid fa-ghost mr-1"></i>無怪物掉落</div>`;
+    }
+
+    return finalHtml;
 }
 
 /**
@@ -878,6 +937,50 @@ function buildDropData() {
             });
         }
     }
+
+    // 注入特殊事件掉落 (來自 05-kill-progression.js)
+    const specialDrops = [
+        // 幼龍蛋
+        { itemId: 'item_dragon_egg', monster: '安塔瑞斯', chance: 100, isSpecial: '首次擊殺必定獲得' },
+        { itemId: 'item_dragon_egg', monster: '法利昂', chance: 100, isSpecial: '首次擊殺必定獲得' },
+        { itemId: 'item_dragon_egg', monster: '巴拉卡斯', chance: 100, isSpecial: '首次擊殺必定獲得' },
+        // 試煉與任務特殊掉落
+        { itemId: 'item_dantes_letter', monster: '黑暗妖精將軍', chance: 1, isSpecial: '騎士 50 級試煉' },
+        { itemId: 'item_ancient_book', monster: '巨大兵蟻', chance: 1, isSpecial: '妖精 50 級試煉' },
+        { itemId: 'item_chaos_key', monster: '黑暗棲林者', chance: 1, isSpecial: '黑妖 50 級試煉' },
+        { itemId: 'item_royal_order', monster: '小惡魔', chance: 1, isSpecial: '王族 50 級試煉' },
+        { itemId: 'new_item_241', monster: '黑騎士搜索隊', chance: 1, isSpecial: '王族限定' },
+        { itemId: 'new_item_241', monster: '血盟敵人', chance: 100, isSpecial: '擊敗血盟敵人必得' },
+        { itemId: 'item_elf_whisper', monster: '精靈墓穴', chance: 1, isSpecial: '騎士 50 級試煉 (限10個)' },
+        { itemId: 'item_sealed_intel', monster: '魔族暗殺團', chance: 100, isSpecial: '妖精 50 級試煉 (首次)' },
+        { itemId: 'item_spy_report', monster: '魔族暗殺團', chance: 100, isSpecial: '法師 50 級試煉 (首次)' },
+        // 祝福卷軸
+        { itemId: 'new_item_bless_wpn', monster: '血盟敵人', chance: 0.1, isSpecial: '血盟敵人額外掉寶' },
+        { itemId: 'new_item_bless_arm', monster: '血盟敵人', chance: 0.1, isSpecial: '血盟敵人額外掉寶' },
+        { itemId: 'new_item_bless_acc', monster: '血盟敵人', chance: 0.01, isSpecial: '血盟敵人額外掉寶' },
+        // 精通之證
+        { itemId: 'item_mastery_proof', monster: '精通任務頭目', chance: 100, isSpecial: '接取精通任務後必得' }
+    ];
+
+    specialDrops.forEach(sp => {
+        const itemData = DB?.items?.[sp.itemId];
+        const itemName = itemData ? itemData.n : sp.itemId;
+        let mobData = null;
+        if (typeof DB !== 'undefined' && DB.mobs) {
+            mobData = Object.values(DB.mobs).find(m => m.n === sp.monster);
+        }
+        drops.push({
+            monster: sp.monster,
+            itemId: sp.itemId,
+            itemName: itemName,
+            chance: sp.chance,
+            isLegend: itemData?.legend ? true : false,
+            itemData: itemData,
+            mobData: mobData,
+            isSpecial: sp.isSpecial
+        });
+    });
+
     return drops;
 }
 
