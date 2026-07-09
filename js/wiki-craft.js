@@ -100,6 +100,162 @@ function craftGetItemIconPath(id) {
     return `idle-lineage-class/assets/icons/items/${encodeURIComponent(id)}.png`;
 }
 
+// ──────────────────────────────────────────────────────────────────────────────
+// 懶載入的查詢索引（初次呼叫時建立，之後快取）
+// ──────────────────────────────────────────────────────────────────────────────
+let _craftDropIndex = null;   // itemId → [{mobName, chance, maps[]}]
+let _craftNpcIndex  = null;   // itemId → [{npcName, npcLocation}]
+
+/** 建立掉落查詢索引（只在 DB & MOB_DROPS 均已載入後執行一次） */
+function _buildCraftDropIndex() {
+    if (_craftDropIndex) return;   // 已建立則跳過
+
+    if (typeof MOB_DROPS === 'undefined' || typeof DB === 'undefined' || !DB.mobs || !DB.maps) return;
+
+    // 1. 建立「怪物名稱 → 怪物 ID 列表」反查表（DB.mobs key 是 ID，value.n 是名稱）
+    const nameToIds = {};
+    for (const [mobId, mob] of Object.entries(DB.mobs)) {
+        const n = mob.n;
+        if (!nameToIds[n]) nameToIds[n] = [];
+        nameToIds[n].push(mobId);
+    }
+
+    // 2. 建立「怪物 ID → 地圖名稱列表」正查表
+    const mobIdToMapNames = {};
+    for (const [mapKey, mobList] of Object.entries(DB.maps)) {
+        const mapName = (typeof mapNameTranslations !== 'undefined' && mapNameTranslations[mapKey])
+            ? mapNameTranslations[mapKey]
+            : (typeof wikiMapNames !== 'undefined' && wikiMapNames[mapKey])
+                ? wikiMapNames[mapKey]
+                : (DB.towns && DB.towns[mapKey] ? DB.towns[mapKey].n : mapKey);
+        for (const mobId of mobList) {
+            if (!mobIdToMapNames[mobId]) mobIdToMapNames[mobId] = [];
+            if (!mobIdToMapNames[mobId].includes(mapName)) mobIdToMapNames[mobId].push(mapName);
+        }
+    }
+
+    // 3. 遍歷 MOB_DROPS（key = 怪物名稱）建立 itemId → sources 索引
+    const idx = {};
+    for (const [mobName, drops] of Object.entries(MOB_DROPS)) {
+        // 找到對應的怪物 ID 列表
+        const mobIds = nameToIds[mobName] || [];
+
+        // 收集該怪物出現的所有地圖（合併多個同名怪物的地圖）
+        const maps = [];
+        for (const mid of mobIds) {
+            for (const mn of (mobIdToMapNames[mid] || [])) {
+                if (!maps.includes(mn)) maps.push(mn);
+            }
+        }
+
+        for (const [dropItemId, chance] of drops) {
+            if (!idx[dropItemId]) idx[dropItemId] = [];
+            idx[dropItemId].push({ mobName, chance, maps });
+        }
+    }
+
+    // 4. 各物品的來源按機率由高到低排序
+    for (const key of Object.keys(idx)) {
+        idx[key].sort((a, b) => b.chance - a.chance);
+    }
+
+    _craftDropIndex = idx;
+}
+
+/** 建立「物品 → NPC 製作來源」索引（只建立一次） */
+function _buildCraftNpcIndex() {
+    if (_craftNpcIndex) return;
+    if (typeof CRAFT_RECIPES === 'undefined') return;
+
+    const idx = {};
+    for (const [npcId, recipes] of Object.entries(CRAFT_RECIPES)) {
+        const info = (typeof CRAFT_NPC_INFO !== 'undefined') ? CRAFT_NPC_INFO[npcId] : null;
+        const npcName     = info ? info.name     : npcId;
+        const npcLocation = info ? info.location : '';
+        for (const recipe of recipes) {
+            const rid = recipe.result;
+            if (!idx[rid]) idx[rid] = [];
+            // 同一 NPC 只記一次
+            if (!idx[rid].find(e => e.npcId === npcId)) {
+                idx[rid].push({ npcId, npcName, npcLocation });
+            }
+        }
+    }
+    _craftNpcIndex = idx;
+}
+
+/** 取得材料取得來源的 Tooltip HTML（掉落 + 製作） */
+function craftGetMaterialTooltipHtml(itemId) {
+    if (typeof DB === 'undefined') return '';
+
+    // 確保索引已建立
+    _buildCraftDropIndex();
+    _buildCraftNpcIndex();
+
+    // ── 掉落來源 ──────────────────────────────────────────────────────────────
+    const dropSources = (_craftDropIndex && _craftDropIndex[itemId]) ? _craftDropIndex[itemId] : [];
+    const topDrops    = dropSources.slice(0, 8);
+
+    // ── NPC 製作來源 ───────────────────────────────────────────────────────────
+    const npcSources = (_craftNpcIndex && _craftNpcIndex[itemId]) ? _craftNpcIndex[itemId] : [];
+
+    // 若兩者皆無，不顯示 tooltip
+    if (dropSources.length === 0 && npcSources.length === 0) return '';
+
+    let html = '<div class="font-bold text-white mb-2 border-b border-gray-700 pb-1 text-sm flex items-center gap-2">'
+             + '<i class="fa-solid fa-magnifying-glass-location text-primary-400"></i>取得來源</div>';
+
+    // ── 渲染掉落清單 ──────────────────────────────────────────────────────────
+    if (topDrops.length > 0) {
+        html += '<ul class="space-y-1.5">';
+        topDrops.forEach(s => {
+            // 遊戲內機率值：有的是 0~100 範圍，有的是 0~1 範圍；依數值大小自動判斷
+            const rawChance   = s.chance;
+            const pct         = rawChance > 1 ? rawChance : rawChance * 100;
+            const decimals    = pct < 0.1 ? 3 : pct < 1 ? 2 : pct < 10 ? 1 : 0;
+            const chancePct   = pct.toFixed(decimals) + '%';
+            const mapsStr     = s.maps.length > 0 ? s.maps.slice(0, 3).join('、') : '未知地圖';
+            const moreMapsTip = s.maps.length > 3 ? ` 等 ${s.maps.length} 個地圖` : '';
+            html += `
+                <li class="flex flex-col gap-0.5">
+                    <div class="flex justify-between items-center text-[12px]">
+                        <span class="text-gray-200 font-medium truncate max-w-[11rem]">${s.mobName}</span>
+                        <span class="text-green-400 font-mono shrink-0 ml-2">${chancePct}</span>
+                    </div>
+                    <div class="text-[11px] text-gray-400 leading-tight truncate">
+                        <i class="fa-solid fa-location-dot mr-1 opacity-60"></i>${mapsStr}${moreMapsTip}
+                    </div>
+                </li>`;
+        });
+        html += '</ul>';
+
+        if (dropSources.length > 8) {
+            html += `<div class="text-[11px] text-gray-500 text-center mt-2 pt-1.5 border-t border-gray-700/50">`
+                  + `還有 ${dropSources.length - 8} 個怪物來源未顯示</div>`;
+        }
+    }
+
+    // ── 渲染 NPC 製作清單 ────────────────────────────────────────────────────
+    if (npcSources.length > 0) {
+        if (topDrops.length > 0) {
+            html += '<div class="border-t border-gray-700/60 my-2"></div>';
+        }
+        html += '<div class="text-[11px] text-amber-400 font-semibold mb-1 flex items-center gap-1">'
+              + '<i class="fa-solid fa-hammer opacity-80"></i> NPC 製作</div>';
+        html += '<ul class="space-y-0.5">';
+        npcSources.forEach(n => {
+            html += `<li class="text-[12px] text-gray-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-location-dot text-[10px] text-primary-400 opacity-70"></i>
+                        <span class="font-medium text-amber-300">${n.npcName}</span>
+                        ${n.npcLocation ? `<span class="text-gray-500">・${n.npcLocation}</span>` : ''}
+                     </li>`;
+        });
+        html += '</ul>';
+    }
+
+    return html;
+}
+
 /** 渲染材料清單 */
 function craftRenderRequirements(req) {
     if (!req || !req.length) return '<span class="text-gray-500">無需材料</span>';
@@ -113,9 +269,27 @@ function craftRenderRequirements(req) {
         const colorCls = craftGetItemColorClass(r.id);
         const iconPath = craftGetItemIconPath(r.id);
         const iconHtml = iconPath ? `<img src="./${iconPath}" class="w-4 h-4 object-contain inline-block" onerror="this.style.display='none'">` : '';
-        return `<span class="inline-flex items-center gap-1 bg-gray-800/60 ${colorCls} text-xs px-2 py-1 rounded border border-gray-700/40 mr-1 mb-1" title="${r.id}">
-                    ${iconHtml}${name} <span class="text-gray-500">×${r.cnt}</span>
-                </span>`;
+        
+        const tooltipHtml = craftGetMaterialTooltipHtml(r.id);
+        
+        if (tooltipHtml) {
+            return `<div class="relative group cursor-help inline-block mr-1 mb-1">
+                        <span class="inline-flex items-center gap-1 bg-gray-800/60 ${colorCls} text-xs px-2 py-1 rounded border border-gray-700/40 w-full hover:bg-gray-700/80 transition-colors">
+                            ${iconHtml}${name} <span class="text-gray-500">×${r.cnt}</span>
+                        </span>
+                        <!-- 漂浮視窗 Tooltip -->
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-64 p-3 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-50 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200" style="min-width: 16rem;">
+                            ${tooltipHtml}
+                            <!-- 下方箭頭 -->
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-600"></div>
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-[3px] border-transparent border-t-gray-900/95 mt-[-1px]"></div>
+                        </div>
+                    </div>`;
+        } else {
+            return `<span class="inline-flex items-center gap-1 bg-gray-800/60 ${colorCls} text-xs px-2 py-1 rounded border border-gray-700/40 mr-1 mb-1" title="${r.id}">
+                        ${iconHtml}${name} <span class="text-gray-500">×${r.cnt}</span>
+                    </span>`;
+        }
     }).join('');
 }
 
@@ -187,9 +361,9 @@ function renderCraftWiki() {
             const npcDesc = npcData ? npcData.d : '';
 
             html += `
-            <div class="glass-panel rounded-xl border border-gray-700/50 overflow-hidden craft-npc-card" data-npc-id="${npcId}">
+            <div class="glass-panel rounded-xl border border-gray-700/50 craft-npc-card" data-npc-id="${npcId}">
                 <!-- NPC Header -->
-                <div class="flex items-center gap-3 px-5 py-4 bg-gray-800/50 border-b border-gray-700/50">
+                <div class="flex items-center gap-3 px-5 py-4 bg-gray-800/50 border-b border-gray-700/50 rounded-t-xl">
                     <div class="w-10 h-10 rounded-full bg-gray-900/70 flex items-center justify-center border border-gray-600 flex-shrink-0">
                         <i class="fa-solid ${info.icon} ${info.color} text-lg"></i>
                     </div>
@@ -221,7 +395,7 @@ function renderCraftWiki() {
                     : `<i class="fa-solid fa-box text-gray-500 text-sm"></i>`;
 
                 html += `
-                <div class="craft-recipe-row flex flex-col sm:flex-row sm:items-start gap-3 px-5 py-4 hover:bg-gray-800/30 transition-colors" data-recipe-idx="${idx}">
+                <div class="craft-recipe-row flex flex-col sm:flex-row sm:items-start gap-3 px-5 py-4 hover:bg-gray-800/30 transition-colors last:rounded-b-xl" data-recipe-idx="${idx}">
                     <!-- 成品 -->
                     <div class="flex items-center gap-3 sm:w-56 flex-shrink-0">
                         <div class="w-10 h-10 bg-gray-900/70 rounded-lg border border-gray-700/50 flex items-center justify-center flex-shrink-0">
