@@ -82,6 +82,58 @@ function generateTypeBadge(type) {
     return `<span class="${color} text-xs font-semibold"><i class="fa-solid ${icon} mr-1"></i>${label}</span>`;
 }
 
+function getMagicSourcesHtml(skillId) {
+    if (typeof wikiData === 'undefined' || !wikiData.items) return '';
+    
+    // 找出教導這個技能的道具 (通常是魔法書、技術書等)
+    const bookItems = wikiData.items.filter(item => item.sk === skillId);
+    if (bookItems.length === 0) return '';
+    
+    let html = '';
+    
+    bookItems.forEach(book => {
+        // 1. 尋找商店販售資訊
+        const shops = [];
+        if (typeof DB !== 'undefined' && DB.towns) {
+            for (const [townId, townInfo] of Object.entries(DB.towns)) {
+                if (townInfo.shop && townInfo.shop.includes(book.id)) {
+                    shops.push(townInfo.n);
+                }
+            }
+        }
+        
+        let shopHtml = '';
+        if (shops.length > 0) {
+            shopHtml = `<div class="mb-2 text-xs text-gray-300 flex items-center flex-wrap">
+                <i class="fa-solid fa-shop text-blue-400 mr-1.5"></i>商販: ${shops.join('、')} 
+                <span class="text-yellow-500 ml-2 bg-yellow-900/30 px-1.5 py-0.5 rounded border border-yellow-700/50"><i class="fa-solid fa-coins mr-1"></i>${book.p ? book.p.toLocaleString() : '未知'}</span>
+            </div>`;
+        }
+        
+        // 2. 尋找掉落資訊
+        let dropHtml = '';
+        if (typeof getItemDropsHtml === 'function') {
+            const dropsResult = getItemDropsHtml(book.id);
+            if (dropsResult && !dropsResult.includes('無怪物掉落')) {
+                // 修改 class 以符合版面，且不破壞原本的 DOM 結構
+                dropHtml = dropsResult.replace('掉落怪物:', `掉落: ${book.n}`)
+                                      .replace('mt-3 border-t border-gray-800/50 pt-2', 'mt-2 pt-2 border-t border-gray-800/40');
+            } else if (dropsResult && dropsResult.includes('無怪物掉落')) {
+                 dropHtml = `<div class="text-[11px] text-gray-600 mt-2 pt-2 border-t border-gray-800/40"><i class="fa-solid fa-ghost mr-1"></i>${book.n} 無怪物掉落</div>`;
+            }
+        }
+
+        if (shopHtml || dropHtml) {
+            html += `<div class="mt-3 pt-3 border-t border-gray-800/60">
+                ${shopHtml}
+                ${dropHtml}
+            </div>`;
+        }
+    });
+    
+    return html;
+}
+
 function renderMagics() {
     if (!magicsGrid) return;
     
@@ -138,6 +190,7 @@ function renderMagics() {
                     <p class="text-sm text-gray-400">
                         ${m.desc}
                     </p>
+                    ${getMagicSourcesHtml(m.id)}
                 </div>
             </div>
         `).join('');
