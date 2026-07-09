@@ -497,7 +497,7 @@ function getItemDropsHtml(itemId) {
         }
     }
 
-    // 3. 搜尋任務
+    // 3. 搜尋任務與兌換
     const questSources = [];
     if (typeof TRIAL_Q !== 'undefined') {
         const clsNames = {
@@ -510,12 +510,48 @@ function getItemDropsHtml(itemId) {
             'dragon': '龍騎士',
             'royal': '王族'
         };
+        
+        // 一般試煉任務 (TRIAL_Q)
         for (const [qKey, qData] of Object.entries(TRIAL_Q)) {
             if (qData.rewards && qData.rewards.includes(itemId)) {
                 const clsStr = clsNames[qData.cls] || qData.cls;
                 const sourceStr = `${clsStr} ${qData.lv}級試煉 - ${qData.npc}`;
                 if (!questSources.includes(sourceStr)) questSources.push(sourceStr);
             }
+        }
+        
+        // 50級試煉最終兌換 (TRIAL_50_CFG)
+        if (typeof TRIAL_50_CFG !== 'undefined') {
+            for (const [clsId, cfg] of Object.entries(TRIAL_50_CFG)) {
+                if (cfg.rewards && cfg.rewards.some(r => r.id === itemId)) {
+                    const clsStr = clsNames[clsId] || clsId;
+                    const sourceStr = `${clsStr} 50級試煉兌換 - ${cfg.npc}`;
+                    if (!questSources.includes(sourceStr)) questSources.push(sourceStr);
+                }
+            }
+        }
+
+        // 尤麗婭兌換
+        if (typeof YURIA_REWARDS !== 'undefined' && YURIA_REWARDS.some(r => r.id === itemId)) {
+            questSources.push('歐林的日記本兌換 - 尤麗婭');
+        }
+        if (typeof YURIA_HATIN_REWARDS !== 'undefined' && YURIA_HATIN_REWARDS.some(r => r.id === itemId)) {
+            questSources.push('黑暗哈汀的日記本兌換 - 尤麗婭');
+        }
+
+        // 希米哲兌換
+        if (typeof SHIMIZHE_REWARDS !== 'undefined' && SHIMIZHE_REWARDS.includes(itemId)) {
+            questSources.push('藍海賊遺物兌換 - 希米哲');
+        }
+
+        // 雷德的復仇
+        if (itemId === 'acc_summon_ctrl') {
+            questSources.push('雷德的復仇任務 - 雷德');
+        }
+        
+        // 入盟禮
+        if (typeof PLEDGE_GIFT !== 'undefined' && PLEDGE_GIFT.some(g => g.id === itemId)) {
+            questSources.push('加入血盟自動發放 - 入盟禮');
         }
     }
 
