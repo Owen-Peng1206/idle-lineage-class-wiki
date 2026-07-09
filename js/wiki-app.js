@@ -432,12 +432,12 @@ function getMonsterDropTooltipHtml(d) {
     const mapsText = getMonsterMapsText(d.monster);
     const chanceText = d.isSpecial ? `<span class="text-xs text-amber-400 font-bold">${d.isSpecial}</span> (${d.chance}%)` : `${d.chance}%`;
     return `
-        <div class="relative group cursor-help inline-block">
+        <div class="relative group/monster cursor-help inline-block">
             <span class="bg-gray-800 text-gray-300 text-[10px] px-1.5 py-0.5 rounded border border-gray-700 hover:bg-gray-700/80 transition-colors inline-flex items-center">
                 ${d.monster}
             </span>
             <!-- 漂浮視窗 Tooltip -->
-            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-max max-w-[220px] p-2.5 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-50 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/monster:block w-max max-w-[220px] p-2.5 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-50 pointer-events-none opacity-0 group-hover/monster:opacity-100 transition-opacity duration-200">
                 <div class="text-xs text-yellow-400 mb-1.5 font-medium border-b border-gray-700/80 pb-1.5 flex items-center justify-between gap-3">
                     <span><i class="fa-solid fa-cube mr-1"></i>掉落機率</span>
                     <span>${chanceText}</span>
