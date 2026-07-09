@@ -1,0 +1,41 @@
+# Idle Lineage Class Wiki (百科全書)
+
+這是一個專為開源網頁遊戲 **Idle Lineage Class** 打造的圖鑑與資料查詢網站。
+
+## 🌟 功能特色 (Features)
+
+*   **職業與任務 (Classes)**: 瀏覽各職業的詳細能力與相關資訊。
+*   **魔法圖鑑 (Magics)**: 查詢各職業可學習的魔法與技能效果，支援名稱搜尋與職業過濾。
+*   **道具裝備 (Items)**: 瀏覽遊戲內的武器、防具、飾品與雜項道具。
+*   **怪物地圖 (Monsters)**: 查詢各個地圖的出沒怪物資訊。
+*   **掉落雙向查詢 (Drop Search)**: 強大的雙向查詢系統，可輸入「怪物名稱」查詢會掉落什麼道具，或輸入「道具名稱」查詢哪些怪物會掉落，並支援機率排序。
+
+## 🛠️ 技術棧 (Tech Stack)
+
+*   **核心**: HTML5 / JavaScript (Vanilla)
+*   **樣式**: [Tailwind CSS](https://tailwindcss.com/)
+*   **圖示與字型**: [FontAwesome](https://fontawesome.com/), Google Fonts (Inter, Noto Sans TC)
+
+## 🚀 如何運行 (How to Run)
+
+本專案為純靜態網頁，無需複雜的編譯或後端環境。
+
+1. 將本專案 Clone 到本地：
+   ```bash
+   git clone https://github.com/Owen-Peng1206/idle-lineage-class-wiki.git
+   ```
+2. 進入專案目錄。
+3. 直接使用瀏覽器開啟 `index.html` 即可瀏覽，或者使用 VS Code 的 [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) 擴充套件啟動本地伺服器以獲得最佳體驗。
+
+## 📂 專案結構 (Project Structure)
+
+*   `index.html`: 網站主進入點與 UI 介面。
+*   `js/`: 存放 Wiki 專屬的應用邏輯。
+    *   `wiki-app.js`: 共用邏輯與主程式。
+    *   `wiki-classes.js`, `wiki-magics.js`, `wiki-maps.js`: 各模組的處理邏輯。
+*   `idle-lineage-class/`: 存放遊戲原始資料 (作為資料庫來源)。
+    *   `js/00-data.js`, `js/01-drops-config.js`: 遊戲的原始資料庫。
+
+## 📝 備註 (Notes)
+
+* 遊戲資料版本: v3.1.49 (根據當前資料庫)
