@@ -276,12 +276,18 @@
             <!-- Tab: Items (Target for Step 3) -->
             <section id="tab-items" class="content-section">
                 <!-- 類別過濾器 -->
-                <div class="flex flex-wrap gap-2 mb-6" id="item-filters">
+                <div class="flex flex-wrap gap-2 mb-2" id="item-filters">
                     <button data-type="all" class="px-4 py-1.5 rounded-full bg-primary-600 text-white text-sm font-medium transition-colors filter-btn">全部</button>
                     <button data-type="wpn" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 filter-btn">武器</button>
                     <button data-type="arm" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 filter-btn">防具</button>
                     <button data-type="acc" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 filter-btn">飾品</button>
                     <button data-type="etc" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 filter-btn">雜項與材料</button>
+                    <button data-type="relic" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 filter-btn border-gold-500/50 text-gold-400">遺物</button>
+                </div>
+                
+                <!-- 子類別過濾器 -->
+                <div class="flex flex-wrap gap-2 mb-6 hidden" id="item-sub-filters">
+                    <!-- 由 JS 動態生成 -->
                 </div>
                 
                 <!-- 卡片網格 -->

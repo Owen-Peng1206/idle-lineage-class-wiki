@@ -27,8 +27,41 @@ const wikiData = {
 
 const itemsGrid = document.getElementById('items-grid');
 const emptyState = document.getElementById('items-empty-state');
-let currentFilterType = 'all'; // all, wpn, arm, acc, etc
+let currentFilterType = 'all'; // all, wpn, arm, acc, etc, relic
+let currentFilterSubType = 'all';
 let currentSearchQuery = '';
+
+// 子分類設定
+const subFilterOptions = {
+    wpn: [
+        { id: 'all', name: '全部武器' },
+        { id: '1h', name: '單手武器' },
+        { id: '2h', name: '雙手武器' },
+        { id: 'bow', name: '遠程武器' }
+    ],
+    arm: [
+        { id: 'all', name: '全部防具' },
+        { id: 'helm', name: '頭盔' },
+        { id: 'armor', name: '盔甲' },
+        { id: 'cloak', name: '斗篷' },
+        { id: 'shield', name: '盾牌/臂甲' },
+        { id: 'gloves', name: '手套' },
+        { id: 'boots', name: '長靴' },
+        { id: 'tshirt', name: '內衣' }
+    ],
+    acc: [
+        { id: 'all', name: '全部飾品' },
+        { id: 'amulet', name: '項鍊' },
+        { id: 'ring', name: '戒指' },
+        { id: 'belt', name: '腰帶' },
+        { id: 'ear', name: '耳環' }
+    ],
+    etc: [
+        { id: 'all', name: '全部雜項' },
+        { id: 'mat', name: '製作材料' },
+        { id: 'other', name: '其他' }
+    ]
+};
 
 /**
  * 根據 item 屬性產生顯示的數值與標籤 HTML
@@ -69,6 +102,41 @@ function generateItemBadges(item) {
     return badges;
 }
 
+const classIconsMap = {
+    'royal': { n: '王族', i: 'fa-chess-king', c: 'text-yellow-400' },
+    'knight': { n: '騎士', i: 'fa-shield-halved', c: 'text-blue-400' },
+    'elf': { n: '妖精', i: 'fa-leaf', c: 'text-green-400' },
+    'mage': { n: '法師', i: 'fa-hat-wizard', c: 'text-purple-400' },
+    'dark': { n: '黑妖', i: 'fa-moon', c: 'text-gray-400' },
+    'dragon': { n: '龍騎士', i: 'fa-dragon', c: 'text-red-400' },
+    'illusion': { n: '幻術士', i: 'fa-eye', c: 'text-pink-400' },
+    'warrior': { n: '戰士', i: 'fa-gavel', c: 'text-orange-400' }
+};
+
+function generateClassIcons(reqStr) {
+    if (!reqStr) return '';
+    if (reqStr === 'all') {
+        return `<div class="mt-2 flex flex-wrap gap-1">
+            <span class="bg-gray-800/80 text-gray-300 text-[11px] px-2 py-1 rounded border border-gray-700 flex items-center" title="全職業可裝備">
+                <i class="fa-solid fa-users mr-1 text-gray-400"></i>全職業
+            </span>
+        </div>`;
+    }
+
+    const reqs = reqStr.split(',');
+    let html = `<div class="mt-2 flex flex-wrap gap-1">`;
+    reqs.forEach(r => {
+        const cls = classIconsMap[r];
+        if (cls) {
+            html += `<span class="bg-gray-800/80 text-gray-300 text-[11px] px-2 py-1 rounded border border-gray-700 flex items-center" title="${cls.n}">
+                <i class="fa-solid ${cls.i} ${cls.c} mr-1"></i>${cls.n}
+            </span>`;
+        }
+    });
+    html += `</div>`;
+    return html;
+}
+
 /**
  * 渲染單個道具卡片 HTML
  */
@@ -92,6 +160,7 @@ function createItemCard(item) {
             
             <div class="mb-3">
                 ${generateItemBadges(item)}
+                ${generateClassIcons(item.req)}
             </div>
             
             <div class="mt-auto pt-3 border-t border-gray-800">
@@ -115,7 +184,34 @@ function renderItems() {
     // 根據 filter 與 search 過濾資料
     const filteredItems = wikiData.items.filter(item => {
         // 分類過濾
-        const matchType = currentFilterType === 'all' || item.type === currentFilterType;
+        let matchType = false;
+        
+        if (currentFilterType === 'all') {
+            matchType = true;
+        } else if (currentFilterType === 'relic') {
+            matchType = !!item.relic;
+        } else {
+            // 一般分類 (可以選擇排除或包含遺物，這裡我們如果是一般分類且不是 all，就預設排除 relic 以保持分類乾淨)
+            const isTargetType = item.type === currentFilterType || (currentFilterType === 'etc' && item.type === 'misc');
+            if (isTargetType && !item.relic) {
+                matchType = true;
+                
+                // 子分類過濾
+                if (currentFilterSubType !== 'all') {
+                    if (currentFilterType === 'wpn') {
+                        if (currentFilterSubType === '1h') matchType = !item.w2h && !item.isBow && !item.isArrow;
+                        else if (currentFilterSubType === '2h') matchType = !!item.w2h && !item.isBow && !item.isArrow;
+                        else if (currentFilterSubType === 'bow') matchType = !!item.isBow || !!item.isArrow;
+                    } else if (currentFilterType === 'arm' || currentFilterType === 'acc') {
+                        matchType = item.slot === currentFilterSubType;
+                    } else if (currentFilterType === 'etc') {
+                        const isMat = item.id.startsWith('mat_') || (item.d && item.d.includes('製作材料'));
+                        if (currentFilterSubType === 'mat') matchType = isMat;
+                        else if (currentFilterSubType === 'other') matchType = !isMat;
+                    }
+                }
+            }
+        }
         
         // 關鍵字過濾 (名稱 or 描述 or ID)
         const keyword = currentSearchQuery.toLowerCase();
@@ -141,11 +237,49 @@ function renderItems() {
 // 3. 事件綁定 (Event Listeners)
 // ==========================================
 
-// 分類按鈕事件
+// 渲染子分類按鈕
+const subFiltersContainer = document.getElementById('item-sub-filters');
+
+function renderSubFilters() {
+    if (!subFiltersContainer) return;
+    
+    const options = subFilterOptions[currentFilterType];
+    
+    // 只有當前分類有子分類，且不是 'all' 或 'relic' 時才顯示
+    if (!options || currentFilterType === 'all' || currentFilterType === 'relic') {
+        subFiltersContainer.classList.add('hidden');
+        subFiltersContainer.innerHTML = '';
+        currentFilterSubType = 'all';
+        return;
+    }
+    
+    subFiltersContainer.classList.remove('hidden');
+    subFiltersContainer.innerHTML = options.map(opt => `
+        <button data-subtype="${opt.id}" class="px-3 py-1 rounded-md text-xs font-medium transition-colors border ${
+            currentFilterSubType === opt.id 
+            ? 'bg-primary-600 text-white border-primary-500 shadow-sm' 
+            : 'bg-gray-800 text-gray-400 hover:bg-gray-700 border-gray-700'
+        } sub-filter-btn">
+            ${opt.name}
+        </button>
+    `).join('');
+    
+    // 綁定子分類按鈕事件
+    const subFilterBtns = subFiltersContainer.querySelectorAll('.sub-filter-btn');
+    subFilterBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            currentFilterSubType = e.target.getAttribute('data-subtype');
+            renderSubFilters(); // 重新渲染以更新 active 樣式
+            renderItems();
+        });
+    });
+}
+
+// 主分類按鈕事件
 const filterBtns = document.querySelectorAll('.filter-btn');
 filterBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
-        // 更新按鈕樣式
+        // 更新主按鈕樣式
         filterBtns.forEach(b => {
             b.classList.remove('bg-primary-600', 'text-white');
             b.classList.add('bg-gray-800', 'text-gray-300');
@@ -155,6 +289,8 @@ filterBtns.forEach(btn => {
         
         // 更新過濾狀態並渲染
         currentFilterType = e.target.getAttribute('data-type');
+        currentFilterSubType = 'all'; // 切換主分類時，重設子分類
+        renderSubFilters();
         renderItems();
     });
 });
