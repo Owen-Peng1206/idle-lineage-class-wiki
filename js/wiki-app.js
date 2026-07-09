@@ -973,11 +973,21 @@ document.addEventListener('tabChanged', (e) => {
 // 4. 掉落物雙向查詢系統 (Drop Lookup)
 // ==========================================
 
-// 將 MOB_DROPS 轉換為扁平化的陣列
+// 將各大掉落表轉換為扁平化的陣列
 function buildDropData() {
     const drops = [];
-    if (typeof MOB_DROPS !== 'undefined') {
-        for (const [monsterName, itemDrops] of Object.entries(MOB_DROPS)) {
+    
+    // 收集所有掉落表
+    const dropTables = [];
+    if (typeof MOB_DROPS !== 'undefined') dropTables.push(MOB_DROPS);
+    if (typeof DARK_WEAPON_DROPS !== 'undefined') dropTables.push(DARK_WEAPON_DROPS);
+    if (typeof DRAGON_DROPS !== 'undefined') dropTables.push(DRAGON_DROPS);
+    if (typeof WARRIOR_DROPS !== 'undefined') dropTables.push(WARRIOR_DROPS);
+    if (typeof MEM_DROPS !== 'undefined') dropTables.push(MEM_DROPS);
+    if (typeof DARK_CRYSTAL_DROPS !== 'undefined') dropTables.push(DARK_CRYSTAL_DROPS);
+
+    dropTables.forEach(table => {
+        for (const [monsterName, itemDrops] of Object.entries(table)) {
             itemDrops.forEach(drop => {
                 const itemId = drop[0];
                 const chance = drop[1];
@@ -991,18 +1001,24 @@ function buildDropData() {
                     mobData = Object.values(DB.mobs).find(m => m.n === monsterName);
                 }
                 
-                drops.push({
-                    monster: monsterName,
-                    itemId: itemId,
-                    itemName: itemName,
-                    chance: chance,
-                    isLegend: itemData?.legend ? true : false,
-                    itemData: itemData,
-                    mobData: mobData
-                });
+                // 避免重複加入
+                const existing = drops.find(d => d.monster === monsterName && d.itemId === itemId);
+                if (existing) {
+                    if (chance > existing.chance) existing.chance = chance;
+                } else {
+                    drops.push({
+                        monster: monsterName,
+                        itemId: itemId,
+                        itemName: itemName,
+                        chance: chance,
+                        isLegend: itemData?.legend ? true : false,
+                        itemData: itemData,
+                        mobData: mobData
+                    });
+                }
             });
         }
-    }
+    });
 
     // 注入特殊事件掉落 (來自 05-kill-progression.js)
     const specialDrops = [
