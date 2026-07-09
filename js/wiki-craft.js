@@ -320,6 +320,59 @@ function renderCraftWiki() {
         return;
     }
 
+    // 注入特殊任務兌換到 CRAFT_RECIPES 中
+    if (typeof CRAFT_RECIPES !== 'undefined' && typeof CRAFT_NPC_INFO !== 'undefined') {
+        const injectRecipes = (npcId, npcData, recipes) => {
+            if (!CRAFT_NPC_INFO[npcId]) CRAFT_NPC_INFO[npcId] = npcData;
+            if (!CRAFT_RECIPES[npcId]) CRAFT_RECIPES[npcId] = [];
+            recipes.forEach(r => {
+                if (!CRAFT_RECIPES[npcId].some(cr => cr.result === r.result)) {
+                    CRAFT_RECIPES[npcId].push(r);
+                }
+            });
+        };
+
+        // 1. 尤麗婭 (歐林的日記本 / 黑暗哈汀的日記本)
+        const yuriaRecipes = [];
+        if (typeof YURIA_REWARDS !== 'undefined') {
+            YURIA_REWARDS.forEach(r => yuriaRecipes.push({ result: r.id, req: [{ id: 'item_olin_diary', cnt: 1 }] }));
+        }
+        if (typeof YURIA_HATIN_REWARDS !== 'undefined') {
+            YURIA_HATIN_REWARDS.forEach(r => yuriaRecipes.push({ result: r.id, req: [{ id: 'item_hatin_diary', cnt: 1 }] }));
+        }
+        if (yuriaRecipes.length > 0) injectRecipes('npc_yuria', { name: '尤麗婭', location: '說話之島', title: '任務兌換', icon: 'fa-book-skull', color: 'text-purple-400' }, yuriaRecipes);
+
+        // 2. 希米哲 (藍海賊遺物)
+        if (typeof SHIMIZHE_REWARDS !== 'undefined' && typeof SHIMIZHE_COST !== 'undefined') {
+            const shimizheRecipes = SHIMIZHE_REWARDS.map(rId => ({ result: rId, req: SHIMIZHE_COST.map(c => ({ id: c[0], cnt: c[1] })) }));
+            injectRecipes('npc_shimizhe', { name: '希米哲', location: '海賊島村莊', title: '任務兌換', icon: 'fa-skull-crossbones', color: 'text-blue-400' }, shimizheRecipes);
+        }
+
+        // 3. 雷德 (召喚控制戒指)
+        if (typeof RED_QUEST_REQS !== 'undefined') {
+            injectRecipes('npc_red', { name: '雷德', location: '特殊任務', title: '雷德的復仇', icon: 'fa-ring', color: 'text-red-400' }, [{ result: 'acc_summon_ctrl', req: RED_QUEST_REQS.map(c => ({ id: c[0], cnt: c[1] })) }]);
+        }
+
+        // 4. 50級試煉兌換
+        if (typeof TRIAL_50_CFG !== 'undefined') {
+            Object.values(TRIAL_50_CFG).forEach(cfg => {
+                const npcId = 'npc_trial50_' + cfg.npc;
+                const recipes = cfg.rewards.map(r => ({ result: r.id, req: [{ id: cfg.exMat, cnt: cfg.exMatCnt || 1 }] }));
+                injectRecipes(npcId, { name: cfg.npc, location: '50級試煉', title: '試煉兌換', icon: 'fa-scroll', color: 'text-amber-400' }, recipes);
+            });
+        }
+
+        // 5. 一般試煉任務 (TRIAL_Q)
+        if (typeof TRIAL_Q !== 'undefined') {
+            Object.values(TRIAL_Q).forEach(qData => {
+                const npcId = 'npc_trial_' + qData.npc;
+                const reqs = qData.reqs.map(c => ({ id: c[0], cnt: c[1] }));
+                const recipes = qData.rewards.map(rId => ({ result: rId, req: reqs }));
+                injectRecipes(npcId, { name: qData.npc, location: '各級別試煉', title: `試煉任務`, icon: 'fa-scroll', color: 'text-emerald-400' }, recipes);
+            });
+        }
+    }
+
     // 依城鎮分組 NPC
     const townMap = {}; // location -> [{npcId, npcInfo, recipes}]
     Object.entries(CRAFT_RECIPES).forEach(([npcId, recipes]) => {
