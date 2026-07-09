@@ -75,12 +75,12 @@ function generateItemBadges(item) {
             badges += `<span class="bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded border border-gray-700 mr-2 mb-2 inline-block">傷害 ${item.dmgS||0} / ${item.dmgL||0}</span>`;
         }
         if (item.hit) {
-            badges += `<span class="bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded border border-gray-700 mr-2 mb-2 inline-block">命中 +${item.hit}</span>`;
+            badges += `<span class="bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded border border-gray-700 mr-2 mb-2 inline-block">命中 ${item.hit > 0 ? '+' : ''}${item.hit}</span>`;
         }
     } else if (item.type === 'arm') {
         badges += `<span class="bg-blue-900/50 text-blue-300 text-xs px-2 py-1 rounded border border-blue-700/50 mr-2 mb-2 inline-block"><i class="fa-solid fa-shield-halved mr-1"></i>防具</span>`;
         if (item.ac) {
-            badges += `<span class="bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded border border-gray-700 mr-2 mb-2 inline-block">防禦(AC) -${item.ac}</span>`;
+            badges += `<span class="bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded border border-gray-700 mr-2 mb-2 inline-block">防禦(AC) ${item.ac < 0 ? '+' : '-'}${Math.abs(item.ac)}</span>`;
         }
     } else if (item.type === 'acc') {
         badges += `<span class="bg-purple-900/50 text-purple-300 text-xs px-2 py-1 rounded border border-purple-700/50 mr-2 mb-2 inline-block"><i class="fa-solid fa-ring mr-1"></i>飾品</span>`;
@@ -92,12 +92,50 @@ function generateItemBadges(item) {
         badges += `<span class="bg-gray-800 text-gray-300 text-xs px-2 py-1 rounded border border-gray-700 mr-2 mb-2 inline-block">安定值 ${item.safe}</span>`;
     }
     
-    // 屬性加成
-    if (item.str) badges += `<span class="text-xs px-2 py-1 rounded bg-orange-900/40 text-orange-300 mr-2 mb-2 inline-block border border-orange-700/50">力+${item.str}</span>`;
-    if (item.dex) badges += `<span class="text-xs px-2 py-1 rounded bg-green-900/40 text-green-300 mr-2 mb-2 inline-block border border-green-700/50">敏+${item.dex}</span>`;
-    if (item.con) badges += `<span class="text-xs px-2 py-1 rounded bg-yellow-900/40 text-yellow-300 mr-2 mb-2 inline-block border border-yellow-700/50">體+${item.con}</span>`;
-    if (item.int) badges += `<span class="text-xs px-2 py-1 rounded bg-blue-900/40 text-blue-300 mr-2 mb-2 inline-block border border-blue-700/50">智+${item.int}</span>`;
-    if (item.wis) badges += `<span class="text-xs px-2 py-1 rounded bg-purple-900/40 text-purple-300 mr-2 mb-2 inline-block border border-purple-700/50">精+${item.wis}</span>`;
+    // 基本屬性
+    if (item.str) badges += `<span class="text-xs px-2 py-1 rounded bg-orange-900/40 text-orange-300 mr-2 mb-2 inline-block border border-orange-700/50">力 ${item.str > 0 ? '+' : ''}${item.str}</span>`;
+    if (item.dex) badges += `<span class="text-xs px-2 py-1 rounded bg-green-900/40 text-green-300 mr-2 mb-2 inline-block border border-green-700/50">敏 ${item.dex > 0 ? '+' : ''}${item.dex}</span>`;
+    if (item.con) badges += `<span class="text-xs px-2 py-1 rounded bg-yellow-900/40 text-yellow-300 mr-2 mb-2 inline-block border border-yellow-700/50">體 ${item.con > 0 ? '+' : ''}${item.con}</span>`;
+    if (item.int) badges += `<span class="text-xs px-2 py-1 rounded bg-blue-900/40 text-blue-300 mr-2 mb-2 inline-block border border-blue-700/50">智 ${item.int > 0 ? '+' : ''}${item.int}</span>`;
+    if (item.wis) badges += `<span class="text-xs px-2 py-1 rounded bg-purple-900/40 text-purple-300 mr-2 mb-2 inline-block border border-purple-700/50">精 ${item.wis > 0 ? '+' : ''}${item.wis}</span>`;
+    if (item.cha) badges += `<span class="text-xs px-2 py-1 rounded bg-pink-900/40 text-pink-300 mr-2 mb-2 inline-block border border-pink-700/50">魅 ${item.cha > 0 ? '+' : ''}${item.cha}</span>`;
+
+    // 戰鬥與生存屬性
+    if (item.mhp) badges += `<span class="text-xs px-2 py-1 rounded bg-red-900/40 text-red-300 mr-2 mb-2 inline-block border border-red-700/50">HP ${item.mhp > 0 ? '+' : ''}${item.mhp}</span>`;
+    if (item.mmp) badges += `<span class="text-xs px-2 py-1 rounded bg-blue-900/40 text-blue-300 mr-2 mb-2 inline-block border border-blue-700/50">MP ${item.mmp > 0 ? '+' : ''}${item.mmp}</span>`;
+    if (item.hpR) badges += `<span class="text-xs px-2 py-1 rounded bg-red-900/40 text-red-300 mr-2 mb-2 inline-block border border-red-700/50">HP回 ${item.hpR > 0 ? '+' : ''}${item.hpR}</span>`;
+    if (item.mpR) badges += `<span class="text-xs px-2 py-1 rounded bg-blue-900/40 text-blue-300 mr-2 mb-2 inline-block border border-blue-700/50">MP回 ${item.mpR > 0 ? '+' : ''}${item.mpR}</span>`;
+    if (item.mr) badges += `<span class="text-xs px-2 py-1 rounded bg-purple-900/40 text-purple-300 mr-2 mb-2 inline-block border border-purple-700/50">魔防 ${item.mr > 0 ? '+' : ''}${item.mr}</span>`;
+    if (item.dr) badges += `<span class="text-xs px-2 py-1 rounded bg-gray-800 text-gray-300 mr-2 mb-2 inline-block border border-gray-700">減傷 ${item.dr > 0 ? '+' : ''}${item.dr}</span>`;
+    if (item.er) badges += `<span class="text-xs px-2 py-1 rounded bg-gray-800 text-gray-300 mr-2 mb-2 inline-block border border-gray-700">ER ${item.er > 0 ? '+' : ''}${item.er}</span>`;
+
+    // 攻擊額外屬性
+    if (item.meleeDmg) badges += `<span class="text-xs px-2 py-1 rounded bg-red-900/40 text-red-300 mr-2 mb-2 inline-block border border-red-700/50">近傷 ${item.meleeDmg > 0 ? '+' : ''}${item.meleeDmg}</span>`;
+    if (item.meleeHit) badges += `<span class="text-xs px-2 py-1 rounded bg-red-900/40 text-red-300 mr-2 mb-2 inline-block border border-red-700/50">近命 ${item.meleeHit > 0 ? '+' : ''}${item.meleeHit}</span>`;
+    if (item.rangedDmg) badges += `<span class="text-xs px-2 py-1 rounded bg-green-900/40 text-green-300 mr-2 mb-2 inline-block border border-green-700/50">遠傷 ${item.rangedDmg > 0 ? '+' : ''}${item.rangedDmg}</span>`;
+    if (item.rangedHit) badges += `<span class="text-xs px-2 py-1 rounded bg-green-900/40 text-green-300 mr-2 mb-2 inline-block border border-green-700/50">遠命 ${item.rangedHit > 0 ? '+' : ''}${item.rangedHit}</span>`;
+    if (item.mdmg) badges += `<span class="text-xs px-2 py-1 rounded bg-purple-900/40 text-purple-300 mr-2 mb-2 inline-block border border-purple-700/50">魔傷 ${item.mdmg > 0 ? '+' : ''}${item.mdmg}</span>`;
+    if (item.extraMp) badges += `<span class="text-xs px-2 py-1 rounded bg-cyan-900/40 text-cyan-300 mr-2 mb-2 inline-block border border-cyan-700/50">額外MP ${item.extraMp > 0 ? '+' : ''}${item.extraMp}</span>`;
+    if (item.weightCap) badges += `<span class="text-xs px-2 py-1 rounded bg-gray-800 text-gray-300 mr-2 mb-2 inline-block border border-gray-700">負重 ${item.weightCap > 0 ? '+' : ''}${item.weightCap}</span>`;
+
+    // 屬性抗性
+    if (item.resFire) badges += `<span class="text-xs px-2 py-1 rounded bg-red-900/40 text-red-400 mr-2 mb-2 inline-block border border-red-700/50">火抗 ${item.resFire > 0 ? '+' : ''}${item.resFire}</span>`;
+    if (item.resWater) badges += `<span class="text-xs px-2 py-1 rounded bg-blue-900/40 text-blue-400 mr-2 mb-2 inline-block border border-blue-700/50">水抗 ${item.resWater > 0 ? '+' : ''}${item.resWater}</span>`;
+    if (item.resEarth) badges += `<span class="text-xs px-2 py-1 rounded bg-yellow-900/40 text-yellow-400 mr-2 mb-2 inline-block border border-yellow-700/50">地抗 ${item.resEarth > 0 ? '+' : ''}${item.resEarth}</span>`;
+    if (item.resWind) badges += `<span class="text-xs px-2 py-1 rounded bg-green-900/40 text-green-400 mr-2 mb-2 inline-block border border-green-700/50">風抗 ${item.resWind > 0 ? '+' : ''}${item.resWind}</span>`;
+
+    // 異常抗性與免疫
+    if (item.stunResist) badges += `<span class="text-xs px-2 py-1 rounded bg-orange-900/40 text-orange-300 mr-2 mb-2 inline-block border border-orange-700/50">抗暈 ${item.stunResist > 0 ? '+' : ''}${item.stunResist}</span>`;
+    if (item.freezeResist) badges += `<span class="text-xs px-2 py-1 rounded bg-indigo-900/40 text-indigo-300 mr-2 mb-2 inline-block border border-indigo-700/50">抗冰 ${item.freezeResist > 0 ? '+' : ''}${item.freezeResist}</span>`;
+    
+    if (item.immFreeze) badges += `<span class="text-xs px-2 py-1 rounded bg-indigo-900/40 text-indigo-300 mr-2 mb-2 inline-block border border-indigo-700/50">免疫冰凍</span>`;
+    if (item.immPoison) badges += `<span class="text-xs px-2 py-1 rounded bg-emerald-900/40 text-emerald-300 mr-2 mb-2 inline-block border border-emerald-700/50">免疫中毒</span>`;
+    if (item.immParalyze) badges += `<span class="text-xs px-2 py-1 rounded bg-gray-700/40 text-gray-300 mr-2 mb-2 inline-block border border-gray-600">免疫麻痺</span>`;
+    if (item.immStone) badges += `<span class="text-xs px-2 py-1 rounded bg-stone-700/80 text-stone-300 mr-2 mb-2 inline-block border border-stone-600">免疫石化</span>`;
+    if (item.immSlow) badges += `<span class="text-xs px-2 py-1 rounded bg-blue-900/40 text-blue-300 mr-2 mb-2 inline-block border border-blue-700/50">免疫緩速</span>`;
+    if (item.immHold) badges += `<span class="text-xs px-2 py-1 rounded bg-yellow-900/40 text-yellow-300 mr-2 mb-2 inline-block border border-yellow-700/50">免疫木乃伊</span>`;
+
+    if (item.thorns) badges += `<span class="text-xs px-2 py-1 rounded bg-red-900/40 text-red-300 mr-2 mb-2 inline-block border border-red-700/50">反擊 ${item.thorns}</span>`;
 
     return badges;
 }
