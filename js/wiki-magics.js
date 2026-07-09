@@ -113,8 +113,13 @@ function renderMagics() {
                 
                 <div class="relative z-10 flex justify-between items-start mb-4">
                     <div>
-                        <h4 class="text-lg text-white font-bold mb-1">${m.name}</h4>
-                        ${generateTypeBadge(m.type)}
+                    <div class="flex items-center gap-2.5 mb-1">
+                        <img src="idle-lineage-class/assets/icons/skills/${encodeURIComponent(m.name)}.png"
+                            alt="${m.name}" class="w-8 h-8 object-contain flex-shrink-0"
+                            onerror="this.style.display='none'">
+                        <h4 class="text-lg text-white font-bold">${m.name}</h4>
+                    </div>
+                    ${generateTypeBadge(m.type)}
                     </div>
                     <div class="flex flex-col items-end gap-1">
                         ${m.mp > 0 ? `<span class="text-xs bg-blue-900/30 text-blue-400 px-2 py-0.5 rounded-full border border-blue-800"><i class="fa-solid fa-droplet mr-1"></i>MP ${m.mp}</span>` : ''}

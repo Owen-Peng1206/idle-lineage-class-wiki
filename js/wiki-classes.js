@@ -363,14 +363,34 @@ const classesGrid = document.getElementById('classes-grid');
 const classDetailPanel = document.getElementById('class-detail-panel');
 const classDetailContent = document.getElementById('class-detail-content');
 
+// 職業 id → logo 檔名（中文前綴）對應表
+const classLogoMap = {
+    'royal':    '王族',
+    'knight':   '騎士',
+    'elf':      '妖精',
+    'mage':     '法師',
+    'dark':     '黑暗妖精',
+    'dragon':   '龍騎士',
+    'illusion': '幻術士',
+    'warrior':  '戰士'
+};
+
+function getClassLogoImg(classId, classIcon, classColor, sizeClass) {
+    const prefix = classLogoMap[classId];
+    if (!prefix) return `<i class="fa-solid ${classIcon} ${sizeClass} ${classColor}"></i>`;
+    const path = `idle-lineage-class/assets/logo/${encodeURIComponent(prefix)}logo.png`;
+    return `<img src="${path}" alt="${prefix}" class="w-full h-full object-contain"
+        onerror="this.outerHTML='<i class=\\'fa-solid ${classIcon} ${sizeClass} ${classColor}\\'></i>'">`;
+}
+
 function renderClasses() {
     if (!classesGrid) return;
     
     classesGrid.innerHTML = classesData.map(c => `
         <div onclick="openClassDetail('${c.id}')" class="glass-panel p-6 rounded-xl border ${c.bg} hover:-translate-y-2 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-300 cursor-pointer group">
             <div class="flex items-center gap-4 mb-4">
-                <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gray-900 border border-gray-700 group-hover:scale-110 transition-transform">
-                    <i class="fa-solid ${c.icon} text-2xl ${c.color}"></i>
+                <div class="w-12 h-12 rounded-full flex items-center justify-center bg-gray-900 border border-gray-700 group-hover:scale-110 transition-transform overflow-hidden p-1">
+                    ${getClassLogoImg(c.id, c.icon, c.color, 'text-2xl')}
                 </div>
                 <h3 class="text-xl font-bold text-white tracking-wide">${c.name}</h3>
             </div>
@@ -388,8 +408,8 @@ window.openClassDetail = function(classId) {
 
     classDetailContent.innerHTML = `
         <div class="flex items-center gap-4 mb-6 pb-4 border-b border-gray-800">
-            <div class="w-16 h-16 rounded-full flex items-center justify-center bg-gray-900 border border-gray-700">
-                <i class="fa-solid ${cls.icon} text-3xl ${cls.color}"></i>
+            <div class="w-16 h-16 rounded-full flex items-center justify-center bg-gray-900 border border-gray-700 overflow-hidden p-1">
+                ${getClassLogoImg(cls.id, cls.icon, cls.color, 'text-3xl')}
             </div>
             <div>
                 <h2 class="text-3xl font-bold text-white mb-1">${cls.name}</h2>
