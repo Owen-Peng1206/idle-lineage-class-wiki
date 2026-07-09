@@ -6,8 +6,9 @@
 
 *   **職業與任務 (Classes)**: 瀏覽各職業的詳細能力與相關資訊。
 *   **魔法圖鑑 (Magics)**: 查詢各職業可學習的魔法與技能效果，支援名稱搜尋與職業過濾。
-*   **道具裝備 (Items)**: 瀏覽遊戲內的武器、防具、飾品與雜項道具。
+*   **道具裝備 (Items)**: 瀏覽遊戲內的武器、防具、飾品與雜項道具，並支援套裝組合篩選。
 *   **怪物地圖 (Monsters)**: 查詢各個地圖的出沒怪物資訊。
+*   **製作百科 (Crafting)**: 查詢裝備、道具合成材料與 NPC 資訊，支援名稱與城鎮篩選。
 *   **掉落雙向查詢 (Drop Search)**: 強大的雙向查詢系統，可輸入「怪物名稱」查詢會掉落什麼道具，或輸入「道具名稱」查詢哪些怪物會掉落，並支援機率排序。
 
 ## 🛠️ 技術棧 (Tech Stack)
@@ -32,9 +33,10 @@
 *   `index.html`: 網站主進入點與 UI 介面。
 *   `js/`: 存放 Wiki 專屬的應用邏輯。
     *   `wiki-app.js`: 共用邏輯與主程式。
-    *   `wiki-classes.js`, `wiki-magics.js`, `wiki-maps.js`: 各模組的處理邏輯。
+    *   `wiki-classes.js`, `wiki-magics.js`, `wiki-maps.js`, `wiki-craft.js`: 各模組的處理邏輯。
 *   `idle-lineage-class/`: 存放遊戲原始資料 (作為資料庫來源)。
-    *   `js/00-data.js`, `js/01-drops-config.js`: 遊戲的原始資料庫。
+    *   `js/00-data.js`, `js/01-drops-config.js`: 遊戲的核心資料庫。
+    *   `js/12-npc-quests.js`, `js/13-shop-save.js`, `js/14-craft-pandora.js`: NPC 與製作系統相關資料。
 
 ## 📝 備註 (Notes)
 
