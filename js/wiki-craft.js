@@ -88,6 +88,18 @@ function craftGetItemColorClass(id) {
     return 'text-gray-300';
 }
 
+/** 取得物品圖示路徑 */
+function craftGetItemIconPath(id) {
+    if (!id || id === 'gold') return '';
+    if (typeof DB !== 'undefined' && DB.items && DB.items[id]) {
+        const item = DB.items[id];
+        if (typeof getItemIconPath === 'function') {
+            return getItemIconPath(item);
+        }
+    }
+    return `idle-lineage-class/assets/icons/items/${encodeURIComponent(id)}.png`;
+}
+
 /** 渲染材料清單 */
 function craftRenderRequirements(req) {
     if (!req || !req.length) return '<span class="text-gray-500">無需材料</span>';
@@ -99,8 +111,10 @@ function craftRenderRequirements(req) {
         }
         const name = craftGetItemName(r.id);
         const colorCls = craftGetItemColorClass(r.id);
+        const iconPath = craftGetItemIconPath(r.id);
+        const iconHtml = iconPath ? `<img src="./${iconPath}" class="w-4 h-4 object-contain inline-block" onerror="this.style.display='none'">` : '';
         return `<span class="inline-flex items-center gap-1 bg-gray-800/60 ${colorCls} text-xs px-2 py-1 rounded border border-gray-700/40 mr-1 mb-1" title="${r.id}">
-                    ${name} <span class="text-gray-500">×${r.cnt}</span>
+                    ${iconHtml}${name} <span class="text-gray-500">×${r.cnt}</span>
                 </span>`;
     }).join('');
 }
@@ -201,13 +215,17 @@ function renderCraftWiki() {
                     ? `<span class="ml-2 bg-yellow-500/20 text-yellow-400 text-xs px-1.5 py-0.5 rounded">×${yieldCnt}</span>`
                     : '';
                 const reqHtml = craftRenderRequirements(recipe.req);
+                const resultIconPath = craftGetItemIconPath(recipe.result);
+                const resultIconHtml = resultIconPath 
+                    ? `<img src="./${resultIconPath}" class="w-8 h-8 object-contain" onerror="this.outerHTML='<i class=\\\'fa-solid fa-box text-gray-500 text-sm\\\'></i>'">`
+                    : `<i class="fa-solid fa-box text-gray-500 text-sm"></i>`;
 
                 html += `
                 <div class="craft-recipe-row flex flex-col sm:flex-row sm:items-start gap-3 px-5 py-4 hover:bg-gray-800/30 transition-colors" data-recipe-idx="${idx}">
                     <!-- 成品 -->
                     <div class="flex items-center gap-3 sm:w-56 flex-shrink-0">
                         <div class="w-10 h-10 bg-gray-900/70 rounded-lg border border-gray-700/50 flex items-center justify-center flex-shrink-0">
-                            <i class="fa-solid fa-box text-gray-500 text-sm"></i>
+                            ${resultIconHtml}
                         </div>
                         <div>
                             <div class="flex items-center flex-wrap">
