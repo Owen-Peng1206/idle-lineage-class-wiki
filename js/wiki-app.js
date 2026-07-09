@@ -741,12 +741,19 @@ function buildDropData() {
                 const itemData = DB?.items?.[itemId];
                 const itemName = itemData ? itemData.n : itemId;
                 
+                let mobData = null;
+                if (typeof DB !== 'undefined' && DB.mobs) {
+                    mobData = Object.values(DB.mobs).find(m => m.n === monsterName);
+                }
+                
                 drops.push({
                     monster: monsterName,
                     itemId: itemId,
                     itemName: itemName,
                     chance: chance,
-                    isLegend: itemData?.legend ? true : false
+                    isLegend: itemData?.legend ? true : false,
+                    itemData: itemData,
+                    mobData: mobData
                 });
             });
         }
@@ -826,12 +833,37 @@ function renderDrops() {
         dropTableBody.innerHTML = filteredDrops.map(d => {
             const itemClass = d.isLegend ? 'text-gold-400 font-bold' : 'text-primary-400 font-medium';
             const crown = d.isLegend ? '<i class="fa-solid fa-crown text-gold-500 text-xs mr-1"></i> ' : '';
+            
+            // 物品圖示
+            const itemIconPath = d.itemData ? getItemIconPath(d.itemData) : `idle-lineage-class/assets/icons/items/${encodeURIComponent(d.itemId)}.png`;
+            const itemIconHtml = `<img src="./${itemIconPath}" class="w-6 h-6 object-contain inline-block mr-3 flex-shrink-0" onerror="this.outerHTML='<i class=\\\'fa-solid fa-box text-gray-500 text-sm mr-3\\\'></i>'">`;
+
+            // 怪物圖示
+            const mobImgFallback = d.mobData && d.mobData.img ? d.mobData.img : '';
+            const mobIconPath = `idle-lineage-class/assets/anim/${encodeURIComponent(d.monster)}/idle_0.png`;
+            const mobIconHtml = `
+                <div class="w-10 h-10 rounded-lg bg-gray-950 border border-gray-800 flex items-center justify-center overflow-hidden flex-shrink-0 mr-3">
+                    <img src="./${mobIconPath}" alt="${d.monster}" class="w-full h-full object-contain"
+                        onerror="this.onerror=null; ${mobImgFallback ? `this.src='${mobImgFallback}'; this.onerror=function(){this.outerHTML='<i class=\\\'fa-solid fa-ghost text-gray-500 text-sm\\\'></i>'};` : `this.outerHTML='<i class=\\\'fa-solid fa-ghost text-gray-500 text-sm\\\'></i>';`}">
+                </div>
+            `;
+
             return `
                 <tr class="hover:bg-gray-800/50 transition-colors">
-                    <td class="px-6 py-4 font-medium text-gray-200 whitespace-nowrap">${d.monster}</td>
+                    <td class="px-6 py-4 font-medium text-gray-200 whitespace-nowrap">
+                        <div class="flex items-center">
+                            ${mobIconHtml}
+                            <span>${d.monster}</span>
+                        </div>
+                    </td>
                     <td class="px-6 py-4 ${itemClass}">
-                        ${crown}${d.itemName}
-                        <div class="text-[10px] text-gray-500 font-mono mt-0.5">${d.itemId}</div>
+                        <div class="flex items-center">
+                            ${itemIconHtml}
+                            <div>
+                                ${crown}${d.itemName}
+                                <div class="text-[10px] text-gray-500 font-mono mt-0.5">${d.itemId}</div>
+                            </div>
+                        </div>
                     </td>
                     <td class="px-6 py-4 text-right">
                         <span class="inline-block bg-gray-800 text-gray-300 px-2 py-1 rounded text-xs border border-gray-700">
