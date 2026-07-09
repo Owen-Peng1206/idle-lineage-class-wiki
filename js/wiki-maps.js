@@ -263,7 +263,8 @@ function renderMonsters() {
                     <div class="flex justify-between items-start mb-3 border-b border-gray-800/80 pb-3">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 rounded-lg bg-gray-950 border border-gray-800 flex items-center justify-center overflow-hidden">
-                                ${mob.img ? `<img src="${mob.img}" alt="${mob.n}" class="w-full h-full object-cover" onerror="this.src=''; this.outerHTML='<i class=\\'fa-solid fa-ghost text-gray-500 text-xl\\'></i>'">` : `<i class="fa-solid fa-ghost text-gray-500 text-xl"></i>`}
+                                <img src="idle-lineage-class/assets/anim/${encodeURIComponent(mob.n)}/idle_0.png" alt="${mob.n}" class="w-full h-full object-contain"
+                                    onerror="this.onerror=null; ${mob.img ? `this.src='${mob.img}'; this.onerror=function(){this.outerHTML='<i class=\\'fa-solid fa-ghost text-gray-500 text-xl\\'></i>'};` : `this.outerHTML='<i class=\\'fa-solid fa-ghost text-gray-500 text-xl\\'></i>';`}">
                             </div>
                             <div>
                                 <h4 class="text-lg ${titleClass}">

@@ -374,6 +374,24 @@ function getItemDropsHtml(itemId) {
 }
 
 /**
+ * 依 item.type 取得對應的圖示路徑
+ */
+function getItemIconPath(item) {
+    const folderMap = {
+        'wpn': 'weapons',
+        'arm': 'armors',
+        'acc': 'accessories',
+        'etc': 'items',
+        'misc': 'items',
+        'pot': 'items',
+        'scroll': 'items',
+        'mat': 'items'
+    };
+    const folder = folderMap[item.type] || 'items';
+    return `idle-lineage-class/assets/icons/${folder}/${encodeURIComponent(item.n)}.png`;
+}
+
+/**
  * 渲染單個道具卡片 HTML
  */
 function createItemCard(item) {
@@ -387,11 +405,17 @@ function createItemCard(item) {
     return `
         <div class="glass-panel p-5 rounded-xl border ${borderClass} hover:-translate-y-1 hover:shadow-lg transition-all duration-200 flex flex-col h-full">
             <div class="flex justify-between items-start mb-3">
-                <h4 class="text-lg ${titleClass} flex items-center gap-2">
-                    ${isLegend ? '<i class="fa-solid fa-crown text-gold-500 text-sm"></i>' : ''}
-                    ${item.n}
-                </h4>
-                ${item.p ? `<span class="text-xs text-yellow-500 font-mono"><i class="fa-solid fa-coins mr-1"></i>${item.p.toLocaleString()}</span>` : ''}
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 flex-shrink-0 rounded-lg bg-gray-950 border border-gray-800 flex items-center justify-center overflow-hidden">
+                        <img src="${getItemIconPath(item)}" alt="${item.n}" class="w-full h-full object-contain"
+                            onerror="this.parentElement.style.display='none'">
+                    </div>
+                    <h4 class="text-lg ${titleClass} flex items-center gap-2">
+                        ${isLegend ? '<i class="fa-solid fa-crown text-gold-500 text-sm"></i>' : ''}
+                        ${item.n}
+                    </h4>
+                </div>
+                ${item.p ? `<span class="text-xs text-yellow-500 font-mono flex-shrink-0"><i class="fa-solid fa-coins mr-1"></i>${item.p.toLocaleString()}</span>` : ''}
             </div>
             
             <div class="mb-3">
