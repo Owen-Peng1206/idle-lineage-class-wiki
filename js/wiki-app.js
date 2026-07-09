@@ -497,7 +497,29 @@ function getItemDropsHtml(itemId) {
         }
     }
 
-    if (shopSources.length > 0 || craftSources.length > 0) {
+    // 3. 搜尋任務
+    const questSources = [];
+    if (typeof TRIAL_Q !== 'undefined') {
+        const clsNames = {
+            'knight': '騎士',
+            'mage': '法師',
+            'elf': '妖精',
+            'dark': '黑妖',
+            'illusion': '幻術士',
+            'warrior': '戰士',
+            'dragon': '龍騎士',
+            'royal': '王族'
+        };
+        for (const [qKey, qData] of Object.entries(TRIAL_Q)) {
+            if (qData.rewards && qData.rewards.includes(itemId)) {
+                const clsStr = clsNames[qData.cls] || qData.cls;
+                const sourceStr = `${clsStr} ${qData.lv}級試煉 - ${qData.npc}`;
+                if (!questSources.includes(sourceStr)) questSources.push(sourceStr);
+            }
+        }
+    }
+
+    if (shopSources.length > 0 || craftSources.length > 0 || questSources.length > 0) {
         finalHtml += `<div class="mt-3 border-t border-gray-800/50 pt-2">`;
         if (shopSources.length > 0) {
             finalHtml += `<div class="text-[11px] text-gray-400 mb-1 flex flex-wrap items-center">
@@ -507,6 +529,11 @@ function getItemDropsHtml(itemId) {
         if (craftSources.length > 0) {
             finalHtml += `<div class="text-[11px] text-gray-400 flex flex-wrap items-center ${shopSources.length > 0 ? 'mt-1' : ''}">
                 <i class="fa-solid fa-hammer mr-1.5 text-amber-400"></i>製作: ${craftSources.join('、')}
+            </div>`;
+        }
+        if (questSources.length > 0) {
+            finalHtml += `<div class="text-[11px] text-gray-400 flex flex-wrap items-center ${(shopSources.length > 0 || craftSources.length > 0) ? 'mt-1' : ''}">
+                <i class="fa-solid fa-scroll mr-1.5 text-emerald-400"></i>任務: ${questSources.join('、')}
             </div>`;
         }
         finalHtml += `</div>`;
