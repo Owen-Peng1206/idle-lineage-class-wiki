@@ -428,6 +428,30 @@ function getMonsterMapsText(monsterNameStr) {
     return result;
 }
 
+function getMonsterDropTooltipHtml(d) {
+    const mapsText = getMonsterMapsText(d.monster);
+    return `
+        <div class="relative group cursor-help inline-block">
+            <span class="bg-gray-800 text-gray-300 text-[10px] px-1.5 py-0.5 rounded border border-gray-700 hover:bg-gray-700/80 transition-colors inline-flex items-center">
+                ${d.monster}
+            </span>
+            <!-- 漂浮視窗 Tooltip -->
+            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-max max-w-[220px] p-2.5 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-50 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <div class="text-xs text-yellow-400 mb-1.5 font-medium border-b border-gray-700/80 pb-1.5 flex items-center justify-between gap-3">
+                    <span><i class="fa-solid fa-cube mr-1"></i>掉落機率</span>
+                    <span>${d.chance}%</span>
+                </div>
+                <div class="text-xs text-gray-300 flex items-start gap-1.5 leading-relaxed">
+                    <i class="fa-solid fa-map-location-dot mt-0.5 text-gray-400 shrink-0"></i>
+                    <span class="break-words whitespace-normal">${mapsText}</span>
+                </div>
+                <!-- 下方箭頭 -->
+                <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-gray-600"></div>
+                <div class="absolute top-full left-1/2 -translate-x-1/2 border-[3px] border-transparent border-t-gray-900/95 mt-[-1px]"></div>
+            </div>
+        </div>`;
+}
+
 function getItemDropsHtml(itemId) {
     if (!wikiData.drops) return '';
     const drops = wikiData.drops.filter(d => d.itemId === itemId);
@@ -446,8 +470,7 @@ function getItemDropsHtml(itemId) {
     const maxShow = 6;
     if (drops.length <= maxShow) {
         drops.forEach(d => {
-            const mapsText = getMonsterMapsText(d.monster);
-            html += `<span class="bg-gray-800 text-gray-300 text-[10px] px-1.5 py-0.5 rounded border border-gray-700 cursor-help" title="掉落機率: ${d.chance}%&#10;出沒地圖: ${mapsText}">${d.monster}</span>`;
+            html += getMonsterDropTooltipHtml(d);
         });
         html += `</div></div>`;
     } else {
@@ -455,16 +478,14 @@ function getItemDropsHtml(itemId) {
         const toHide = drops.slice(5);
         
         toShow.forEach(d => {
-            const mapsText = getMonsterMapsText(d.monster);
-            html += `<span class="bg-gray-800 text-gray-300 text-[10px] px-1.5 py-0.5 rounded border border-gray-700 cursor-help" title="掉落機率: ${d.chance}%&#10;出沒地圖: ${mapsText}">${d.monster}</span>`;
+            html += getMonsterDropTooltipHtml(d);
         });
         
-        html += `<span class="bg-primary-900/50 text-primary-300 text-[10px] px-1.5 py-0.5 rounded border border-primary-700/50 cursor-pointer hover:bg-primary-800 transition-colors" onclick="this.nextElementSibling.classList.remove('hidden'); this.nextElementSibling.classList.add('flex', 'flex-wrap', 'gap-1.5', 'w-full', 'mt-1'); this.remove();">More..</span>`;
+        html += `<span class="bg-primary-900/50 text-primary-300 text-[10px] px-2.5 py-0.5 rounded border border-primary-700/50 cursor-pointer hover:bg-primary-800 transition-colors flex items-center justify-center font-medium" onclick="this.nextElementSibling.classList.remove('hidden'); this.nextElementSibling.classList.add('flex', 'flex-wrap', 'gap-1.5', 'w-full', 'mt-1'); this.remove();">More..</span>`;
         
         html += `<div class="hidden">`;
         toHide.forEach(d => {
-            const mapsText = getMonsterMapsText(d.monster);
-            html += `<span class="bg-gray-800 text-gray-300 text-[10px] px-1.5 py-0.5 rounded border border-gray-700 cursor-help" title="掉落機率: ${d.chance}%&#10;出沒地圖: ${mapsText}">${d.monster}</span>`;
+            html += getMonsterDropTooltipHtml(d);
         });
         html += `</div></div></div>`;
     }
