@@ -490,5 +490,66 @@
     <script src="./js/wiki-magics.js"></script>
     <script src="./js/wiki-maps.js"></script>
     <script src="./js/wiki-craft.js"></script>
+    <!-- 懸浮圖片預覽 -->
+    <div id="image-tooltip" class="hidden fixed z-50 pointer-events-none bg-gray-900 border border-gray-700 rounded-lg shadow-2xl p-2 transform -translate-x-1/2 -translate-y-[calc(100%+10px)] transition-opacity duration-200 opacity-0">
+        <img id="tooltip-img" src="" alt="preview" class="max-w-[250px] max-h-[250px] object-contain">
+    </div>
+
+    <!-- 懸浮圖片預覽邏輯 -->
+    <script>
+        const imageTooltip = document.getElementById('image-tooltip');
+        const tooltipImg = document.getElementById('tooltip-img');
+
+        document.addEventListener('mouseover', (e) => {
+            const target = e.target.closest('[data-hover-image]');
+            if (target) {
+                const src = target.getAttribute('data-hover-image') || target.src;
+                if (src && src !== 'true' && src !== '') {
+                    tooltipImg.src = src;
+                    imageTooltip.classList.remove('hidden');
+                    // 小延遲以觸發過渡效果
+                    requestAnimationFrame(() => {
+                        imageTooltip.classList.remove('opacity-0');
+                        imageTooltip.classList.add('opacity-100');
+                    });
+                }
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!imageTooltip.classList.contains('hidden')) {
+                const tooltipRect = imageTooltip.getBoundingClientRect();
+                let x = e.clientX;
+                let y = e.clientY;
+                
+                // 檢查是否超出上方邊界
+                if (y - tooltipRect.height - 10 < 0) {
+                    // 如果超出上方，顯示在滑鼠下方
+                    imageTooltip.style.transform = `translate(-50%, 20px)`;
+                } else {
+                    // 預設顯示在滑鼠上方
+                    imageTooltip.style.transform = `translate(-50%, calc(-100% - 10px))`;
+                }
+
+                imageTooltip.style.left = `${x}px`;
+                imageTooltip.style.top = `${y}px`;
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            const target = e.target.closest('[data-hover-image]');
+            if (target) {
+                imageTooltip.classList.remove('opacity-100');
+                imageTooltip.classList.add('opacity-0');
+                // 等待動畫結束後隱藏
+                setTimeout(() => {
+                    if (imageTooltip.classList.contains('opacity-0')) {
+                        imageTooltip.classList.add('hidden');
+                        tooltipImg.src = '';
+                    }
+                }, 200);
+            }
+        });
+    </script>
 </body>
 </html>

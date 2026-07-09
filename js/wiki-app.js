@@ -652,7 +652,7 @@ function createItemCard(item) {
             <div class="flex justify-between items-start mb-3">
                 <div class="flex items-center gap-2.5">
                     <div class="w-10 h-10 flex-shrink-0 rounded-lg bg-gray-950 border border-gray-800 flex items-center justify-center overflow-hidden">
-                        <img src="${getItemIconPath(item)}" alt="${item.n}" class="w-full h-full object-contain"
+                        <img src="${getItemIconPath(item)}" alt="${item.n}" class="w-full h-full object-contain cursor-pointer" data-hover-image
                             onerror="this.parentElement.style.display='none'">
                     </div>
                     <h4 class="text-lg ${titleClass} flex items-center gap-2">
@@ -837,7 +837,7 @@ function renderSets() {
         const itemsHtml = set.items.map(item => `
             <div class="flex items-center gap-2 p-2 bg-gray-950/50 rounded-lg border border-gray-800">
                 <div class="w-8 h-8 flex-shrink-0 bg-gray-900 border border-gray-700 rounded flex items-center justify-center">
-                    <img src="${getItemIconPath(item)}" alt="${item.n}" class="w-full h-full object-contain" onerror="this.style.display='none'">
+                    <img src="${getItemIconPath(item)}" alt="${item.n}" class="w-full h-full object-contain cursor-pointer" data-hover-image onerror="this.style.display='none'">
                 </div>
                 <span class="text-sm text-gray-300 font-medium">${item.n}</span>
             </div>
@@ -1125,14 +1125,14 @@ function renderDrops() {
             
             // 物品圖示
             const itemIconPath = d.itemData ? getItemIconPath(d.itemData) : `idle-lineage-class/assets/icons/items/${encodeURIComponent(d.itemId)}.png`;
-            const itemIconHtml = `<img src="./${itemIconPath}" class="w-6 h-6 object-contain inline-block mr-3 flex-shrink-0" onerror="this.outerHTML='<i class=\\\'fa-solid fa-box text-gray-500 text-sm mr-3\\\'></i>'">`;
+            const itemIconHtml = `<img src="./${itemIconPath}" class="w-6 h-6 object-contain inline-block mr-3 flex-shrink-0 cursor-pointer" data-hover-image onerror="this.outerHTML='<i class=\\\'fa-solid fa-box text-gray-500 text-sm mr-3\\\'></i>'">`;
 
             // 怪物圖示
             const mobImgFallback = d.mobData && d.mobData.img ? d.mobData.img : '';
             const mobIconPath = `idle-lineage-class/assets/anim/${encodeURIComponent(d.monster)}/idle_0.png`;
             const mobIconHtml = `
                 <div class="w-10 h-10 rounded-lg bg-gray-950 border border-gray-800 flex items-center justify-center overflow-hidden flex-shrink-0 mr-3">
-                    <img src="./${mobIconPath}" alt="${d.monster}" class="w-full h-full object-contain"
+                    <img src="./${mobIconPath}" alt="${d.monster}" class="w-full h-full object-contain cursor-pointer" data-hover-image
                         onerror="this.onerror=null; ${mobImgFallback ? `this.src='${mobImgFallback}'; this.onerror=function(){this.outerHTML='<i class=\\\'fa-solid fa-ghost text-gray-500 text-sm\\\'></i>'};` : `this.outerHTML='<i class=\\\'fa-solid fa-ghost text-gray-500 text-sm\\\'></i>';`}">
                 </div>
             `;
