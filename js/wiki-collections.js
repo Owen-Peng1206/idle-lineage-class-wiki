@@ -242,7 +242,6 @@ const WikiCollections = (() => {
 
         html += `<div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
             <div class="flex items-center gap-4">${titleStr}${bonusStr}</div>
-            <div class="text-sm text-slate-400">點擊卡片查看獲得來源</div>
         </div>`;
 
         // 3. 渲染項目網格 (Grid Cells)
@@ -263,12 +262,32 @@ const WikiCollections = (() => {
                     let placeholderSrc = `https://placehold.co/64x64/1e293b/334155?text=%3F`;
                     let fallbackChain = `this.onerror=function(){this.onerror=null;this.src='${placeholderSrc}';};this.src='${fallbackSrc}';`;
 
-                    html += `<div class="relative bg-slate-800/70 border border-slate-600 rounded-lg p-2 flex flex-col items-center gap-1 w-[136px] cursor-pointer hover:bg-slate-700 transition-colors" onclick="WikiCollections.showMonsterDetail('${item.name}')">
+                    let regionName = '未知地區';
+                    let rDef = CARD_REGIONS.find(r => r.key === state.currentSubCat);
+                    if (rDef) regionName = rDef.name;
+
+                    let sourceHtml = `
+                    <div class="text-left">
+                        <div class="text-sm font-bold text-white mb-2 border-b border-gray-700 pb-1 flex items-center gap-2">
+                            <img src="${imgUrl}" class="w-6 h-6 object-contain bg-gray-800 rounded border border-gray-600" onerror="${fallbackChain}">
+                            ${item.name} <span class="text-xs font-normal text-gray-400">的卡片</span>
+                        </div>
+                        <div class="mb-2"><div class="text-xs font-semibold text-primary-400 mb-1">🗺️ 出沒地區</div>
+                            <span class="px-2 py-0.5 bg-gray-800 rounded text-xs border border-gray-700">${regionName}</span>
+                        </div>
+                        <div class="text-[11px] text-gray-400 leading-tight">討伐 <span class="text-red-400 font-semibold">${item.name}</span> 有機率掉落其專屬卡片 (普/銀/金卡)。也可至威頓村魔法娃娃商人進行合成。</div>
+                    </div>`;
+
+                    html += `<div class="relative bg-slate-800/70 border border-slate-600 rounded-lg p-2 flex flex-col items-center gap-1 w-[136px] group/card hover:bg-slate-700 transition-colors">
                         <img src="${imgUrl}" alt="${item.name}" class="w-16 h-16 object-contain" onerror="${fallbackChain}">
                         <div class="text-center w-full mt-1">
                             <div class="text-sm font-bold text-white truncate" title="${item.name}">${item.name}</div>
                             <div class="text-[11px] text-slate-500">Lv ${item.lv || '?'}</div>
-                            <div class="text-[11px] text-slate-400 leading-tight mt-0.5">點擊查看來源</div>
+                        </div>
+                        <!-- 懸浮視窗 -->
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/card:block w-[260px] p-3 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-50 pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity duration-200">
+                            ${sourceHtml}
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-gray-600"></div>
                         </div>
                     </div>`;
                 } else {
@@ -280,11 +299,26 @@ const WikiCollections = (() => {
                     if (state.currentType === 'relic') badge = '<span class="absolute top-1 right-1 text-[9px] px-1 rounded text-yellow-500 border border-yellow-600/50 bg-black/50 font-bold">遺物</span>';
                     else if (item.legend) badge = '<span class="absolute top-1 right-1 text-[9px] px-1 rounded text-amber-300 bg-black/50 font-bold">傳說</span>';
 
-                    html += `<div class="relative bg-slate-800/70 border ${state.currentType === 'relic' ? 'border-sky-700/70' : 'border-slate-600'} rounded-lg p-2 flex flex-col items-center gap-1 w-[112px] cursor-pointer hover:bg-slate-700 transition-colors" onclick="WikiCollections.showItemDetail('${item.id}')">
+                    let sourceHtml = `
+                    <div class="text-left">
+                        <div class="text-sm font-bold ${color} mb-2 border-b border-gray-700 pb-1 flex items-center gap-2">
+                            <img src="${imgUrl}" class="w-6 h-6 object-contain bg-gray-800 rounded border border-gray-600" onerror="this.onerror=null;this.src='https://placehold.co/64x64/1e293b/334155?text=%3F';">
+                            ${item.n}
+                        </div>
+                        ${item.d ? `<div class="text-[11px] text-gray-400 mb-2 leading-tight">${item.d}</div>` : ''}
+                        ${getItemSourceHtml(item.id)}
+                    </div>`;
+
+                    html += `<div class="relative bg-slate-800/70 border ${state.currentType === 'relic' ? 'border-sky-700/70' : 'border-slate-600'} rounded-lg p-2 flex flex-col items-center gap-1 w-[112px] group/card hover:bg-slate-700 transition-colors">
                         ${badge}
                         <img src="${imgUrl}" alt="${item.n}" class="w-14 h-14 object-contain" onerror="this.onerror=null;this.src='https://placehold.co/56x56/1e293b/334155?text=%3F';">
                         <div class="text-center w-full">
                             <div class="text-xs font-bold ${color} truncate" title="${item.n}">${item.n}</div>
+                        </div>
+                        <!-- 懸浮視窗 -->
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/card:block w-[280px] p-3 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-[100] pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity duration-200">
+                            ${sourceHtml}
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-gray-600"></div>
                         </div>
                     </div>`;
                 }
@@ -296,62 +330,15 @@ const WikiCollections = (() => {
         document.getElementById('collections-empty-state').classList.add('hidden');
     }
 
-    // --- 獲取來源模態框 ---
-    function showSourceModal(title, iconHtml, titleClass, desc, sourceHtml) {
-        const modalHtml = `
-            <div id="collection-detail-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm opacity-0 transition-opacity duration-300">
-                <div class="glass-panel p-6 rounded-2xl border border-gray-700 max-w-lg w-full shadow-2xl relative transform scale-95 transition-transform duration-300">
-                    <button onclick="document.getElementById('collection-detail-modal').remove()" class="absolute top-4 right-4 text-gray-500 hover:text-red-400 transition-colors">
-                        <i class="fa-solid fa-xmark text-2xl"></i>
-                    </button>
-                    
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-16 h-16 bg-gray-900 border border-gray-700 rounded-lg p-2 flex items-center justify-center flex-shrink-0">
-                            ${iconHtml}
-                        </div>
-                        <div>
-                            <h3 class="text-xl font-bold ${titleClass}">${title}</h3>
-                        </div>
-                    </div>
-                    
-                    ${desc ? `<div class="text-sm text-gray-400 mb-6 bg-gray-900/50 p-3 rounded-lg border border-gray-800 leading-relaxed">${desc}</div>` : ''}
-                    
-                    <div class="border-t border-gray-800 pt-4 max-h-[300px] overflow-y-auto pr-2">
-                        <h4 class="text-md font-bold text-white mb-3">📍 獲取來源</h4>
-                        ${sourceHtml}
-                    </div>
-                </div>
-            </div>
-        `;
-
-        const existingModal = document.getElementById('collection-detail-modal');
-        if (existingModal) existingModal.remove();
-
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-        
-        requestAnimationFrame(() => {
-            const modal = document.getElementById('collection-detail-modal');
-            if (modal) {
-                modal.classList.remove('opacity-0');
-                modal.firstElementChild.classList.remove('scale-95');
-                modal.firstElementChild.classList.add('scale-100');
-            }
-        });
-
-        document.getElementById('collection-detail-modal').addEventListener('click', (e) => {
-            if (e.target.id === 'collection-detail-modal') e.target.remove();
-        });
-    }
-
     function getItemSourceHtml(itemId) {
         let sources = [];
         // Drops
         if (wikiData && wikiData.drops) {
             const drops = wikiData.drops.filter(d => d.itemId === itemId);
             if (drops.length > 0) {
-                sources.push(`<div class="mb-4"><div class="text-sm font-semibold text-primary-400 mb-2">⚔️ 怪物掉落</div><div class="flex flex-wrap gap-2">` + 
-                    drops.slice(0, 15).map(d => `<span class="px-2 py-1 bg-gray-800 rounded text-xs border border-gray-700">${d.mobName} <span class="text-gray-500">(${d.chanceStr})</span></span>`).join('') +
-                    (drops.length > 15 ? `<span class="px-2 py-1 text-xs text-gray-500">...等 ${drops.length} 隻</span>` : '') +
+                sources.push(`<div class="mb-2"><div class="text-xs font-semibold text-primary-400 mb-1">⚔️ 怪物掉落</div><div class="flex flex-wrap gap-1">` + 
+                    drops.slice(0, 10).map(d => `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">${d.mobName} <span class="text-gray-500">(${d.chanceStr})</span></span>`).join('') +
+                    (drops.length > 10 ? `<span class="px-1.5 py-0.5 text-[10px] text-gray-500">...等 ${drops.length} 隻</span>` : '') +
                     `</div></div>`);
             }
         }
@@ -366,8 +353,8 @@ const WikiCollections = (() => {
             }
             if (crafts.length > 0) {
                 const uniqueCrafts = [...new Set(crafts)];
-                sources.push(`<div class="mb-4"><div class="text-sm font-semibold text-amber-400 mb-2">🔨 製作來源</div><div class="flex flex-wrap gap-2">` +
-                    uniqueCrafts.map(c => `<span class="px-2 py-1 bg-gray-800 rounded text-xs border border-gray-700">NPC/城鎮: ${c}</span>`).join('') +
+                sources.push(`<div class="mb-2"><div class="text-xs font-semibold text-amber-400 mb-1">🔨 製作來源</div><div class="flex flex-wrap gap-1">` +
+                    uniqueCrafts.map(c => `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">NPC: ${c}</span>`).join('') +
                     `</div></div>`);
             }
         }
@@ -379,14 +366,14 @@ const WikiCollections = (() => {
                 if (SHOP_LISTS[npc].includes(itemId)) shops.push(npc);
             }
             if (shops.length > 0) {
-                sources.push(`<div class="mb-4"><div class="text-sm font-semibold text-emerald-400 mb-2">💰 商店購買</div><div class="flex flex-wrap gap-2">` +
-                    shops.map(s => `<span class="px-2 py-1 bg-gray-800 rounded text-xs border border-gray-700">${s}</span>`).join('') +
+                sources.push(`<div class="mb-2"><div class="text-xs font-semibold text-emerald-400 mb-1">💰 商店購買</div><div class="flex flex-wrap gap-1">` +
+                    shops.map(s => `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">${s}</span>`).join('') +
                     `</div></div>`);
             }
         }
 
         if (sources.length === 0) {
-            sources.push(`<div class="text-sm text-gray-500 italic">目前無已知的常規掉落或製作來源。</div>`);
+            sources.push(`<div class="text-[11px] text-gray-500 italic mt-1">目前無已知的常規掉落或製作來源。</div>`);
         }
         return sources.join('');
     }
@@ -431,41 +418,6 @@ const WikiCollections = (() => {
         setSubCat: (catKey) => {
             state.currentSubCat = catKey;
             render();
-        },
-        showItemDetail: (id) => {
-            const d = DB.items[id];
-            if (!d) return;
-            let imgUrl = typeof getItemIconPath === 'function' ? getItemIconPath(d) : (d.img || '');
-            if (imgUrl && imgUrl.startsWith('assets/')) imgUrl = 'idle-lineage-class/' + imgUrl;
-            const iconHtml = `<img src="${imgUrl}" class="max-w-full max-h-full object-contain" onerror="this.onerror=null;this.src='https://placehold.co/64x64/1e293b/334155?text=%3F';">`;
-            const titleClass = d.legend ? 'text-amber-300' : (d.c || 'text-white');
-            showSourceModal(d.n, iconHtml, titleClass, d.d, getItemSourceHtml(id));
-        },
-        showMonsterDetail: (name) => {
-            // 找出該怪物資料
-            let mobObj = null;
-            let regionName = '未知地區';
-            for (let reg in INDEX.monster) {
-                let m = INDEX.monster[reg].find(x => x.name === name);
-                if (m) { mobObj = m; regionName = CARD_REGIONS.find(r=>r.key===reg).name; break; }
-            }
-            if (!mobObj) return;
-
-            let imgUrl = `idle-lineage-class/assets/anim/${mobObj.name}/idle_0.png`;
-            let fallbackSrc = `idle-lineage-class/assets/icons/monsters/${mobObj.name}.png`;
-            let placeholderSrc = `https://placehold.co/64x64/1e293b/334155?text=%3F`;
-            let fallbackChain = `this.onerror=function(){this.onerror=null;this.src='${placeholderSrc}';};this.src='${fallbackSrc}';`;
-
-            const iconHtml = `<img src="${imgUrl}" class="max-w-full max-h-full object-contain" onerror="${fallbackChain}">`;
-            
-            let sourceHtml = `
-            <div class="mb-4"><div class="text-sm font-semibold text-primary-400 mb-2">🗺️ 出沒地區</div>
-                <span class="px-2 py-1 bg-gray-800 rounded text-xs border border-gray-700">${regionName}</span>
-            </div>
-            <div class="text-sm text-gray-400">討伐 <span class="text-red-400 font-semibold">${name}</span> 有機率掉落其專屬卡片 (普卡、銀卡、金卡)。也可至威頓村魔法娃娃商人進行低階卡片合成。</div>
-            `;
-            
-            showSourceModal(name + ' 的卡片', iconHtml, 'text-white', '怪物卡片。', sourceHtml);
         }
     };
 })();
