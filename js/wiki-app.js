@@ -721,33 +721,74 @@ function createItemCard(item) {
 }
 
 /**
- * 重新渲染卡片網格
+ * 分頁狀態（無限捲動）
+ */
+const ITEMS_PER_PAGE = 24;
+let itemsCurrentPage = 0;
+let itemsFilteredCache = [];
+let itemsIsLoading = false;
+let itemsScrollObserver = null;
+
+function setupItemsInfiniteScroll() {
+    if (itemsScrollObserver) { itemsScrollObserver.disconnect(); itemsScrollObserver = null; }
+    const sentinel = document.getElementById('items-scroll-sentinel');
+    if (!sentinel) return;
+    const scrollContainer = document.getElementById('content-container');
+    itemsScrollObserver = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !itemsIsLoading) appendNextPageItems();
+    }, { root: scrollContainer, threshold: 0.1 });
+    itemsScrollObserver.observe(sentinel);
+}
+
+function appendNextPageItems() {
+    if (itemsIsLoading) return;
+    const batch = itemsFilteredCache.slice(
+        itemsCurrentPage * ITEMS_PER_PAGE,
+        (itemsCurrentPage + 1) * ITEMS_PER_PAGE
+    );
+    if (batch.length === 0) {
+        const s = document.getElementById('items-scroll-sentinel');
+        if (s) s.remove();
+        if (itemsScrollObserver) { itemsScrollObserver.disconnect(); itemsScrollObserver = null; }
+        return;
+    }
+    itemsIsLoading = true;
+    itemsCurrentPage++;
+    const frag = document.createDocumentFragment();
+    batch.forEach(item => {
+        const w = document.createElement('div');
+        w.innerHTML = createItemCard(item);
+        frag.appendChild(w.firstElementChild);
+    });
+    const sentinel = document.getElementById('items-scroll-sentinel');
+    if (sentinel) itemsGrid.insertBefore(frag, sentinel);
+    else itemsGrid.appendChild(frag);
+    const countEl = document.getElementById('items-count-display');
+    if (countEl) {
+        const shown = Math.min(itemsCurrentPage * ITEMS_PER_PAGE, itemsFilteredCache.length);
+        countEl.textContent = '顯示 ' + shown + ' / ' + itemsFilteredCache.length + ' 件';
+    }
+    itemsIsLoading = false;
+}
+
+/**
+ * 重新渲染卡片網格（分頁 + 無限捲動版，避免一次性渲染大量 DOM）
  */
 function renderItems() {
     if (!itemsGrid) return;
-    
-    // 如果是套裝分類，轉由專屬的 renderSets 處理
-    if (currentFilterType === 'set') {
-        renderSets();
-        return;
-    }
-    
-    // 根據 filter 與 search 過濾資料
-    const filteredItems = wikiData.items.filter(item => {
-        // 分類過濾
+    if (currentFilterType === 'set') { renderSets(); return; }
+
+    itemsFilteredCache = wikiData.items.filter(item => {
         let matchType = false;
-        
         if (currentFilterType === 'all') {
             matchType = true;
         } else if (currentFilterType === 'relic') {
             matchType = !!item.relic;
         } else {
-            // 一般分類 (可以選擇排除或包含遺物，這裡我們如果是一般分類且不是 all，就預設排除 relic 以保持分類乾淨)
-            const isTargetType = item.type === currentFilterType || (currentFilterType === 'etc' && item.type === 'misc');
+            const isTargetType = item.type === currentFilterType
+                || (currentFilterType === 'etc' && item.type === 'misc');
             if (isTargetType && !item.relic) {
                 matchType = true;
-                
-                // 子分類過濾
                 if (currentFilterSubType !== 'all') {
                     if (currentFilterType === 'wpn') {
                         if (currentFilterSubType === '1h') matchType = !item.w2h && !item.isBow && !item.isArrow;
@@ -763,24 +804,32 @@ function renderItems() {
                 }
             }
         }
-        
-        // 關鍵字過濾 (名稱 or 描述 or ID)
         const keyword = currentSearchQuery.toLowerCase();
-        const matchSearch = keyword === '' || 
-                            (item.n && item.n.toLowerCase().includes(keyword)) ||
-                            (item.d && item.d.toLowerCase().includes(keyword)) ||
-                            (item.id.toLowerCase().includes(keyword));
-                            
+        const matchSearch = keyword === ''
+            || (item.n && item.n.toLowerCase().includes(keyword))
+            || (item.d && item.d.toLowerCase().includes(keyword))
+            || (item.id.toLowerCase().includes(keyword));
         return matchType && matchSearch;
     });
 
-    if (filteredItems.length === 0) {
+    if (itemsFilteredCache.length === 0) {
         itemsGrid.innerHTML = '';
         emptyState.classList.remove('hidden');
+        return;
+    }
+    emptyState.classList.add('hidden');
+    itemsCurrentPage = 0;
+    itemsIsLoading = false;
+    const total = itemsFilteredCache.length;
+    itemsGrid.innerHTML =
+        '<div id="items-count-display" class="col-span-full text-xs text-gray-500 mb-1 px-1">顯示 0 / ' + total + ' 件</div>'
+        + '<div id="items-scroll-sentinel" class="col-span-full h-4"></div>';
+    appendNextPageItems();
+    if (total > ITEMS_PER_PAGE) {
+        setupItemsInfiniteScroll();
     } else {
-        emptyState.classList.add('hidden');
-        // 大量 DOM 渲染優化，先轉成字串再一次性放入
-        itemsGrid.innerHTML = filteredItems.map(createItemCard).join('');
+        const s = document.getElementById('items-scroll-sentinel');
+        if (s) s.remove();
     }
 }
 
@@ -972,26 +1021,27 @@ filterBtns.forEach(btn => {
     });
 });
 
-// 頂部全域搜尋列事件
+// 頂部全域搜尋列事件（加防抖，避免每字觸發重渲染）
 const globalSearch = document.getElementById('global-search');
+let itemsSearchDebounce = null;
 globalSearch.addEventListener('input', (e) => {
     currentSearchQuery = e.target.value.trim();
-    
-    // 如果目前不在 items 頁面，自動切換過去 (為了展示搜尋功能)
-    // 這裡我們簡單判定，如果在首頁搜尋，就切換到圖鑑
+
+    // 如果目前不在 items 頁面，自動切換過去
     const activeSection = document.querySelector('.content-section.active');
-    if(activeSection.id !== 'tab-items' && currentSearchQuery !== '') {
+    if (activeSection.id !== 'tab-items' && currentSearchQuery !== '') {
         const tabBtns = document.querySelectorAll('.tab-btn');
         tabBtns.forEach(btn => {
-            if(btn.getAttribute('data-target') === 'tab-items') {
+            if (btn.getAttribute('data-target') === 'tab-items') {
                 btn.click();
             }
         });
     }
 
-    // 只有在 items 頁面才執行 item 的搜尋過濾
+    // 防抖：300ms 後才觸發渲染
+    clearTimeout(itemsSearchDebounce);
     if (document.getElementById('tab-items').classList.contains('active')) {
-        renderItems();
+        itemsSearchDebounce = setTimeout(() => renderItems(), 300);
     }
 });
 
@@ -1220,27 +1270,32 @@ function renderDrops() {
 }
 
 if (dropSearchInput) {
+    let dropSearchDebounce = null;
     dropSearchInput.addEventListener('input', (e) => {
         currentDropSearchQuery = e.target.value.trim();
-        renderDrops();
+        clearTimeout(dropSearchDebounce);
+        dropSearchDebounce = setTimeout(() => renderDrops(), 300);
     });
 }
 
-// 初始化：初次載入時渲染一次
+// 初始化：啟動時只做必要設定，不預渲染大量道具列表
 function initWikiApp() {
     // 若遊戲版本存在，顯示它
     if (typeof GAME_VERSION !== 'undefined') {
         const versionEl = document.getElementById('game-version-display');
         if (versionEl) versionEl.textContent = GAME_VERSION;
     }
-    
-    // 先執行一次渲染（雖然預設在首頁，但先產生好 DOM 讓切換時無延遲）
-    if (itemsGrid && !itemsGrid.innerHTML.trim()) renderItems();
-    
-    const dropTableBody = document.getElementById('drop-table-body');
-    if (dropTableBody && !dropTableBody.innerHTML.trim()) renderDrops();
-    
-    sortDropTable('chance'); // 初始化排序圖示
+
+    // 初始化掉落排序圖示（輕量操作）
+    sortDropTable('chance');
+
+    // 若當前 tab 是 items 或 drops，才渲染（避免在首頁時也觸發大量渲染）
+    const activeTabBtn = document.querySelector('.tab-btn.active');
+    if (activeTabBtn) {
+        const activeId = activeTabBtn.getAttribute('data-target');
+        if (activeId === 'tab-items') renderItems();
+        if (activeId === 'tab-drops') renderDrops();
+    }
 }
 
 initWikiApp();
