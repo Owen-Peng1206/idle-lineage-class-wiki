@@ -38,6 +38,3 @@
     *   `js/00-data.js`, `js/01-drops-config.js`: 遊戲的核心資料庫。
     *   `js/12-npc-quests.js`, `js/13-shop-save.js`, `js/14-craft-pandora.js`: NPC 與製作系統相關資料。
 
-## 📝 備註 (Notes)
-
-* 遊戲資料版本: v3.1.49 (根據當前資料庫)

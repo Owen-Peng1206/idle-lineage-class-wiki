@@ -21,27 +21,27 @@ const classesData = [
             {
                 "lv": 15,
                 "name": "紅色斗篷 / 魔法書(精準目標)",
-                "desc": "找 甘特 ＠說話之島。<br><span class=\"text-xs text-gray-500\">材料:</span> 王族搜索狀 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 王族搜索狀：黑騎士搜索隊 1%（古魯丁），或擊敗任何血盟敵人 100% 必掉（王族限定）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 紅色斗篷（防禦(AC) -2、魅力 +1）或 魔法書(精準目標)，二選一、可重複"
+                "desc": "未來的王者啊，第一步請先前往說話之島拜訪甘特導師。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 帶著王族搜索狀 1 份過去找他。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 去古魯丁討伐黑騎士搜索隊有機會(1%)獲得，當然，最快的方式是展現實力擊退血盟敵人，這是王族限定的必掉戰利品。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 他會賜予你紅色斗篷或魔法書(精準目標)二選一，這項修練隨時歡迎你再來挑戰。"
             },
             {
                 "lv": 30,
                 "name": "君主的威嚴 / 魔法書(呼喚盟友)",
-                "desc": "找 甘特 ＠說話之島。<br><span class=\"text-xs text-gray-500\">材料:</span> 村民的遺物 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 村民的遺物：巨大兵蟻 100%（風木領域：沙漠、螞蟻洞窟 1~2 樓；王族限定）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 君主的威嚴（防禦(AC) -2、全六屬性 +1）或 魔法書(呼喚盟友)，二選一、可重複"
+                "desc": "是時候展現君主的威嚴了，再次前往說話之島找甘特導師吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 這次我們需要村民的遺物 1 份。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 帶領你的勇氣前往風木沙漠或螞蟻洞窟 1~2 樓，只有王族親自擊敗巨大兵蟻才能確實(100%)找回遺物。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 完成任務可選擇君主的威嚴或魔法書(呼喚盟友)，有需要的話多磨練幾次吧！"
             },
             {
                 "lv": 45,
                 "name": "守護者的戒指",
-                "desc": "找 馬沙 ＠威頓村。<br><span class=\"text-xs text-gray-500\">材料:</span> 失去光明的靈魂 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 失去光明的靈魂：鬼魂／紅鬼魂 100%（歐瑞領域·象牙塔 6~8 樓；王族限定）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 守護者的戒指（HP上限 +30、MP上限 +20），可重複"
+                "desc": "想要獲得更強大的守護力量嗎？去威頓村向馬沙請益吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 他需要失去光明的靈魂 1 份來考驗你。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 鼓起勇氣踏入象牙塔 6~8 樓，王族的血統能讓你擊敗鬼魂或紅鬼魂時必定(100%)獲得。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 這枚守護者的戒指將賜予你強韌的生命，這門課也能反覆進修喔。"
             },
             {
                 "lv": 45,
                 "name": "四本特殊王族魔法書（灼熱武器／勇猛意志／閃亮之盾／王者加護）",
-                "desc": "找 拉比安尼 ＠說話之島。<br><span class=\"text-xs text-gray-500\">材料:</span> 飛龍之心、高崙之心、冰之女王之心、不死鳥之心 各 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 四顆心臟分別打對應 BOSS 取得（龍／高崙／冰之女王／不死鳥）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 四選一，製作一本特殊王族魔法書"
+                "desc": "王者必須掌握特殊的力量，去說話之島找拉比安尼導師學習吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 這是一項艱鉅的挑戰，你需要飛龍、高崙、冰之女王、不死鳥的心臟各 1 顆。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 組織你的盟友，去討伐這四個強大的首領吧，這是證明你領導力的絕佳時刻。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 將心臟交給她，你就能選擇並製作一本強大的王族專屬魔法書。"
             },
             {
                 "lv": 50,
                 "name": "王族 50 級試煉",
-                "desc": "找 迪嘉勒廷 ＠象牙塔（需等級 50）。<br><span class=\"text-xs text-gray-500\">材料:</span> 第一階段：交付 調職命令書 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 調職命令書：小惡魔 1%（傲慢之塔 21~30 樓；王族限定、不受經典掉率影響）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵/後續:</span> 完成後開放「魔族神殿」。在魔族神殿打「炎魔的惡魔」（Lv61）取得「炎魔之心」（3% 掉），每 1 個回來找迪嘉勒廷換傳說「黃金權杖」（王族單手劍、反擊／居合；可重複換）"
+                "desc": "終於邁入 50 級的門檻了，快前往象牙塔找迪嘉勒廷進行晉升試煉吧！<br><span class=\"text-xs text-gray-500\">材料準備:</span> 首先，交給他 1 份調職命令書來證明你的決心。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 闖入傲慢之塔 21~30 樓，從那些狡猾的小惡魔手中奪取(1%，王族限定)。別灰心，這考驗著你的毅力。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵與延伸:</span> 通過後你將獲准進入「魔族神殿」。去那裡挑戰炎魔的惡魔，若能帶回炎魔之心，導師會用傳說級的黃金權杖來獎勵你！"
             }
         ]
     },
@@ -62,27 +62,27 @@ const classesData = [
             {
                 "lv": 15,
                 "name": "紅騎士頭巾",
-                "desc": "找 瑞奇 ＠銀騎士村。<br><span class=\"text-xs text-gray-500\">材料:</span> 黑騎士的誓約 ×1、古老的交易文件 ×1、龍龜甲 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 交易文件：黑騎士／黑騎士搜索隊 1%（銀騎士地區、說話之島港口、古魯丁）；龍龜甲：龍龜 1%（銀騎士地區、海音·鏡子森林）；黑騎士的誓約來源未明（待確認）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 紅騎士頭巾"
+                "desc": "新兵注意！第一項任務是去銀騎士村找瑞奇報到。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 帶上黑騎士的誓約、古老的交易文件，還有堅固的龍龜甲，各 1 份。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 去古魯丁等地找黑騎士要交易文件(1%)，然後去鏡子森林找龍龜拿龜甲(1%)。至於誓約...自己去前線好好摸索吧！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 瑞奇會配發紅騎士頭巾給你，這是你身為騎士的榮耀象徵。"
             },
             {
                 "lv": 30,
                 "name": "紅騎士之劍 / 盾牌",
-                "desc": "找 甘特 ＠說話之島。<br><span class=\"text-xs text-gray-500\">材料:</span> 夏洛伯之爪 ×1（換劍）；蛇女之鱗 ×1（換盾），各自分開兌換<br><span class=\"text-xs text-gray-500\">來源:</span> 夏洛伯之爪：夏洛伯（蜘蛛）1%；蛇女之鱗：蛇女 1%（海音領域：海音周邊、鏡子森林、地下通道）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 紅騎士之劍 或 紅騎士盾牌"
+                "desc": "想要精良的武器防具？去說話之島請甘特大師幫你打造吧！<br><span class=\"text-xs text-gray-500\">材料準備:</span> 想換劍就帶 1 根夏洛伯之爪，想換盾就準備 1 片蛇女之鱗。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 夏洛伯會掉落爪子(1%)，而去海音一帶對付蛇女就能取得鱗片(1%)。拿出你的鬥志來！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 甘特會根據你帶來的材料，親手為你鑄造紅騎士之劍或盾牌。"
             },
             {
                 "lv": 45,
                 "name": "勇敢皮帶",
-                "desc": "找 馬沙 ＠威頓村。<br><span class=\"text-xs text-gray-500\">材料:</span> 夜之視野 ×1、古代鑰匙 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 夜之視野：強盜頭目 10%（奇岩）；古代鑰匙：鋼鐵高崙 1%（皆歐瑞領域：歐瑞雪原、水晶洞穴、國境要塞、象牙塔4/5樓）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 勇敢皮帶"
+                "desc": "戰士的腰桿要挺直！去威頓村找馬沙領取你的裝備吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 這次的考驗需要夜之視野和古代鑰匙各 1 份。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 到奇岩討伐強盜頭目拿夜之視野(10%)，再去歐瑞雪原對付鋼鐵高崙敲出古代鑰匙(1%)。不要畏懼寒冷與強敵！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 馬沙會為你繫上象徵勇氣的勇敢皮帶，好好珍惜它。"
             },
             {
                 "lv": 50,
                 "name": "騎士 50 級試煉",
-                "desc": "找 迪嘉勒廷 ＠象牙塔（需等級 50）。<br><span class=\"text-xs text-gray-500\">材料:</span> 兩階段依序交付：①丹特斯的召書 ×1 → ②精靈的私語 ×10<br><span class=\"text-xs text-gray-500\">來源:</span> 丹特斯的召書：黑暗妖精將軍 1%（燃柳村·大洞穴隱遁者村莊／拉斯塔巴德正門／拉斯塔巴德·魔獸訓練場）；精靈的私語：在「燃柳村·精靈墓穴」打任何怪 1% 掉<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵/後續:</span> 完成後開放「魔族神殿」。在魔族神殿打「炎魔的惡魔」（Lv61，每次掉 3 個）取得「炎魔之劍」，每 1 個回來找迪嘉勒廷換 1 把傳說武器「黑焰之劍」（可重複換）"
+                "desc": "恭喜你達到 50 級，去象牙塔找迪嘉勒廷接受真正的試煉吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 試煉分兩階段：先找回丹特斯的召書，接著收集 10 份精靈的私語。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 召書在拉斯塔巴德附近的黑暗妖精將軍身上(1%)；私語則要在精靈墓穴中耐心收集(1%)。這是對你武藝與耐心的雙重考驗。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵與延伸:</span> 試煉完成後你將能踏入「魔族神殿」。若能擊敗炎魔的惡魔奪得炎魔之劍，導師會幫你重鑄為傳說級的黑焰之劍！"
             },
             {
                 "lv": "★",
                 "name": "屠龍劍（卡瑞）",
-                "desc": "找 無 NPC，隱藏 BOSS。<br><span class=\"text-xs text-gray-500\">材料:</span> 同時帶齊四樣任務道具：飛龍的爪子、蜥蜴的角、水晶球、妖魔戰士護身符<br><span class=\"text-xs text-gray-500\">來源:</span> 飛龍的爪子：飛龍 1%（龍之谷）；蜥蜴的角：邪惡蜥蜴 0.01%（風木·沙漠）；水晶球：巫師 0.01%（古魯丁地監6樓）；妖魔戰士護身符：五種妖魔 各 0.01%。集齊四樣後，在「龍之谷地監6樓」有 1% 機率出現卡瑞<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 擊殺卡瑞 100% 掉屠龍劍（並消耗四道具各一）"
+                "desc": "聽說過屠龍劍的傳說嗎？這是一場沒有導師指引的終極試煉。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 你必須憑一己之力，同時帶著飛龍的爪子、蜥蜴的角、水晶球與妖魔戰士護身符。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 這四樣物品掉落率極低，分散在世界各地。集齊它們並帶著赴死的覺悟前往龍之谷地監6樓，傳說中的卡瑞才有可能現身考驗你(1%)。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 擊敗卡瑞，這把絕世神兵「屠龍劍」就是你實力最好的證明！"
             }
         ]
     },
@@ -103,27 +103,27 @@ const classesData = [
             {
                 "lv": 15,
                 "name": "精靈頭盔",
-                "desc": "找 歐斯 ＠燃柳村。<br><span class=\"text-xs text-gray-500\">材料:</span> 四大妖魔魔法書（都達瑪拉／那魯加／甘地／阿吐巴）各 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 對應四種妖魔 各 1%（燃柳村·妖魔森林、妖精森林周邊、妖精森林·眠龍洞穴）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 精靈敏捷頭盔 或 精靈體質頭盔"
+                "desc": "森林的孩子啊，前往燃柳村找歐斯接受你的初階試煉吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 收集都達瑪拉、那魯加、甘地、阿吐巴這四本妖魔魔法書交給他。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 在森林周邊懲戒那些妖魔，它們身上有機會(1%)會掉落這些書籍。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 歐斯會用精靈的工藝，為你製作敏捷或體質屬性的精靈頭盔，讓你更適應森林的生活。"
             },
             {
                 "lv": 30,
                 "name": "精靈水晶 / 精靈T恤",
-                "desc": "找 迷幻森林之母 ＠妖精森林。<br><span class=\"text-xs text-gray-500\">材料:</span> 受詛咒的精靈書 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 希爾黛斯 1%（海音·伊娃王國）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 精靈水晶(召喚屬性精靈) 或 精靈T恤"
+                "desc": "想要與大自然更親近，就回到妖精森林向迷幻森林之母請示吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 母親需要你找回 1 本受詛咒的精靈書。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 潛入海音的伊娃王國，從希爾黛斯手中淨化並奪回它(1%)，注意水下的安全。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 母親會賜予你召喚屬性精靈的水晶，或是輕盈的精靈T恤作為祝福。"
             },
             {
                 "lv": 45,
                 "name": "保護者手套 / 精靈水晶",
-                "desc": "找 馬沙 ＠威頓村。<br><span class=\"text-xs text-gray-500\">材料:</span> 藍色長笛 ×1、古代鑰匙 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 藍色長笛：黑暗精靈 1%（燃柳村·妖魔森林、龍之谷、奇岩、奇岩地監4樓）；古代鑰匙：鋼鐵高崙 1%<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 保護者手套 或 精靈水晶(召喚強力屬性精靈)"
+                "desc": "孩子，去威頓村找馬沙，他那裡有更進階的裝備等著你。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 請為他尋來藍色長笛與古代鑰匙各 1 份。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 從墮落的黑暗精靈身上找回長笛(1%)，並從鋼鐵高崙那取得鑰匙(1%)。這是一場考驗你準度的狩獵。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 你將獲得保護者手套，或是能召喚更強大屬性精靈的珍貴水晶。"
             },
             {
                 "lv": 50,
                 "name": "妖精 50 級試煉",
-                "desc": "找 迪嘉勒廷 ＠象牙塔（需等級 50）。<br><span class=\"text-xs text-gray-500\">材料:</span> 兩階段依序交付：①古代黑妖之秘笈 ×1 → ②密封的情報書 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 古代黑妖之秘笈：巨大兵蟻 1%（風木領域：沙漠／螞蟻洞窟 1~2 樓）；密封的情報書：在「燃柳村·大洞穴隱遁者村莊地區」打「魔族暗殺團」必掉。魔族暗殺團是特殊怪、不常駐，只有你正卡在這一步（缺密封的情報書）時，在這張圖每打一隻怪才有 1% 機率讓牠出現（一次只會有一隻）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵/後續:</span> 完成後開放「魔族神殿」。在魔族神殿打「炎魔的惡魔」（Lv61，每次掉 3 個）取得「炎魔之爪」，每 1 個回來找迪嘉勒廷換 1 把傳說「赤焰之弓」或「赤焰之劍」（可重複換）"
+                "desc": "當你足夠強大(50級)，就去象牙塔接受迪嘉勒廷的終極試煉吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 試煉分兩階段：先找出古代黑妖之秘笈，再奪取密封的情報書。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 去沙漠從巨大兵蟻那找回秘笈。至於情報書，你得在隱遁者村莊一帶耐心引出隱藏的魔族暗殺團，這需要一點運氣與敏銳的直覺。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵與延伸:</span> 通過後，魔族神殿的大門將為你敞開。若能從炎魔的惡魔手中奪得炎魔之爪，就能向導師換取強大的赤焰武器！"
             },
             {
                 "lv": "30",
                 "name": "選定屬性魔法",
-                "desc": "找 艾利溫 ＠妖精森林。<br><span class=\"text-xs text-gray-500\">材料:</span> 四種屬性（火／水／風／地）四選一<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 開啟所選屬性的魔法路線。注意：只能選一種、選了就固定"
+                "desc": "要與哪種自然元素結下契約呢？去妖精森林找艾利溫導師談談吧。<br><span class=\"text-xs text-gray-500\">修練抉擇:</span> 在火、水、風、地四種屬性中，慎重地選擇你的道路。<br><span class=\"text-xs text-gray-500\">導師叮嚀:</span> 這決定了你未來的戰鬥風格，選定後就無法輕易更改，請務必深思熟慮。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 你將正式開啟該專屬屬性的魔法天賦路線。"
             }
         ]
     },
@@ -144,27 +144,27 @@ const classesData = [
             {
                 "lv": 15,
                 "name": "魔法能量之書",
-                "desc": "找 詹姆 ＠說話之島。<br><span class=\"text-xs text-gray-500\">材料:</span> 食屍鬼的指甲 ×1、食屍鬼的牙齒 ×1、骷髏頭 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 指甲／牙齒：食屍鬼 各 1%；骷髏頭：骷髏 1%（皆廣布野外/地監）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 魔法能量之書"
+                "desc": "魔法學徒，你的第一堂實作課在說話之島的詹姆那裡。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 去收集不死生物的素材：食屍鬼的指甲、牙齒，還有一顆骷髏頭。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 用你所學的法術去淨化那些食屍鬼跟骷髏吧，素材取得機率(1%)雖然不高，但正好能鍛鍊你的施法熟練度。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 詹姆會將這些素材轉化為魔法能量之書，幫助你更深入理解魔力。"
             },
             {
                 "lv": 30,
                 "name": "水晶魔杖（水晶試煉）",
-                "desc": "找 塔拉斯 ＠象牙塔。<br><span class=\"text-xs text-gray-500\">材料:</span> 不死族的鑰匙 ×1、不死族的骨頭 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 鑰匙：骷髏 1%；骨頭：骷髏神射手 1%／骷髏警衛 0.1%（龍之谷地監1-5樓、龍之谷）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 水晶魔杖"
+                "desc": "想要擁有一把好魔杖？去象牙塔向塔拉斯導師請教水晶試煉吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 導師需要不死族的鑰匙與骨頭各 1 份。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 這次要面對更難纏的龍之谷骷髏大軍。保持距離，善用你的法術優勢！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 塔拉斯會親手為你製作一把水晶魔杖，這將大幅提升你的魔力恢復速度。"
             },
             {
                 "lv": 45,
                 "name": "瑪那魔杖 / 斗篷（瑪那試煉）",
-                "desc": "找 塔拉斯 ＠象牙塔。<br><span class=\"text-xs text-gray-500\">材料:</span> 變形怪的血 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 變形怪 1%／變形怪首領 10%（海音·鏡子森林）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 瑪那魔杖 或 瑪那斗篷"
+                "desc": "渴望探究瑪那的奧秘嗎？再次前往象牙塔找塔拉斯導師。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 這次的課題是取得變形怪的血 1 份。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 去鏡子森林尋找那些善於偽裝的變形怪吧。如果遇到首領(10%)，機率會高很多，但千萬小心！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 你可以選擇吸取魔力的瑪那魔杖，或是充滿法力波動的瑪那斗篷。"
             },
             {
                 "lv": 50,
                 "name": "法師 50 級試煉",
-                "desc": "找 迪嘉勒廷 ＠象牙塔（需等級 50）。<br><span class=\"text-xs text-gray-500\">材料:</span> 一階段：交付 間諜報告書 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 間諜報告書：在「燃柳村·大洞穴隱遁者村莊地區」打「魔族暗殺團」必掉。魔族暗殺團是特殊怪、不常駐，只有你正卡在這一步（缺間諜報告書）時，在這張圖每打一隻怪才有 1% 機率讓牠出現（一次只會有一隻）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵/後續:</span> 完成後開放「魔族神殿」。在魔族神殿打「炎魔的惡魔」（Lv61）取得「炎魔之眼」（3% 掉），每 1 個回來找迪嘉勒廷換傳說盾「瑪那水晶球」（可重複換）"
+                "desc": "魔法造詣達到 50 級的你，是時候去見見迪嘉勒廷導師了。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 他會指派你一項機密任務：帶回 1 份間諜報告書。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 你得去隱遁者村莊附近，用你的魔力感知並逼出潛藏的魔族暗殺團。這考驗著你對周遭環境的敏銳度。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵與延伸:</span> 完成後你便獲得進入「魔族神殿」的資格。若能帶回炎魔之眼，導師會用它為你打造傳說級的瑪那水晶球！"
             },
             {
                 "lv": "★",
                 "name": "巴列斯魔杖",
-                "desc": "找 無 NPC，道具喚醒。<br><span class=\"text-xs text-gray-500\">材料:</span> 失去魔力的巴列斯魔杖 ×1、靈魂之球 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 失去魔力的魔杖：BOSS 巴列斯 100%（風木城地監）；靈魂之球：鬼魂／紅鬼魂 0.01%（歐瑞領域·象牙塔6/7/8樓）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 帶著失魔魔杖使用靈魂之球 → 喚回成「巴列斯魔杖」"
+                "desc": "法師們夢寐以求的神器！這是一場追尋遠古魔力的自我試煉。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 你需要親自準備失去魔力的巴列斯魔杖與極其罕見的靈魂之球。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 去風木地監挑戰大魔法師的殘影取得魔杖；並在象牙塔高層苦修，直到從鬼魂身上奇蹟般地獲得靈魂之球(0.01%)。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 將兩者結合，你就能親手喚醒傳說中的「巴列斯魔杖」，感受那澎湃的魔力吧！"
             }
         ]
     },
@@ -185,22 +185,22 @@ const classesData = [
             {
                 "lv": 15,
                 "name": "影子手套",
-                "desc": "找 倫得 ＠沉默洞穴。<br><span class=\"text-xs text-gray-500\">材料:</span> 死亡誓約 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 強盜 1%（奇岩）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 影子手套"
+                "desc": "潛伏在暗處的刺客啊，去沉默洞穴找倫得接取你的第一個刺殺任務吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 帶回 1 份死亡誓約來證明你的身手。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 前往奇岩周邊，從那些作惡多端的強盜身上奪取(1%)。動靜要小，下手要快！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 倫得會交給你影子手套，這會讓你的雙手更靈活，更適合暗殺。"
             },
             {
                 "lv": 30,
                 "name": "影子面具",
-                "desc": "找 康 ＠沉默洞穴。<br><span class=\"text-xs text-gray-500\">材料:</span> 妖魔長老首級 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 妖魔法師 1%（低階區廣布）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 影子面具"
+                "desc": "想在暗影中更好地隱藏自己？去沉默洞穴找康導師。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 他指定的目標是妖魔長老首級 1 顆。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 那些會施法的妖魔法師就是你的目標(1%)。用你引以為傲的爆發力，在他們詠唱完畢前解決他們！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 康會為你戴上影子面具，讓你在黑暗中更加難以捉摸。"
             },
             {
                 "lv": 45,
                 "name": "影子長靴",
-                "desc": "找 布魯迪卡 ＠沉默洞穴。<br><span class=\"text-xs text-gray-500\">材料:</span> 雪怪首級 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 雪怪 1%（歐瑞、歐瑞雪原、水晶洞穴、國境要塞）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 影子長靴"
+                "desc": "步伐的輕盈是刺客的生命，去見見沉默洞穴的布魯迪卡吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 這次的狩獵目標是雪怪首級 1 顆。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 踏入冰冷的歐瑞雪原，尋找並擊殺那些皮糙肉厚的雪怪(1%)。這是對你體力與耐力的考驗。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 換取影子長靴後，你的腳步將如同鬼魅般無聲無息。"
             },
             {
                 "lv": 50,
                 "name": "黑暗妖精 50 級試煉",
-                "desc": "找 布魯迪卡 ＠沉默洞穴（需等級 50）。<br><span class=\"text-xs text-gray-500\">材料:</span> 一階段：交付 混沌鑰匙 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 混沌鑰匙：黑暗棲林者 1%（燃柳村·大洞穴隱遁者村莊／拉斯塔巴德·魔族神殿）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵/後續:</span> 完成後開放「魔族神殿」。在魔族神殿打「墮落的司祭」（50% 掉「墮落鑰匙」），每 1 個墮落鑰匙回來找布魯迪卡換 1 把傳說「死亡之指」（可重複換）"
+                "desc": "晉升 50 級的暗殺者，布魯迪卡有更危險的任務要交給你。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 你必須奪得 1 把混沌鑰匙。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 潛入拉斯塔巴德周邊，從黑暗棲林者手中搶下它(1%)。這是一條充滿危機的道路，小心行事。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵與延伸:</span> 成功後你將解鎖「魔族神殿」。若能從墮落的司祭身上搜刮到墮落鑰匙，就能換取恐怖的傳說武器「死亡之指」！"
             }
         ]
     },
@@ -221,22 +221,22 @@ const classesData = [
             {
                 "lv": 15,
                 "name": "龍騎士雙手劍 / 龍之護鎧書板",
-                "desc": "找 普洛凱爾 ＠貝希摩斯。<br><span class=\"text-xs text-gray-500\">材料:</span> 妖魔搜索文件 ×3<br><span class=\"text-xs text-gray-500\">來源:</span> 甘地／羅孚／阿吐巴／都達瑪拉妖魔 各 1%（妖精森林周邊、燃柳村·妖魔森林一帶）；龍騎士任務道具只有龍騎士本人擊殺才會掉<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 龍騎士雙手劍 或 龍之護鎧書板"
+                "desc": "龍的傳人啊，回到貝希摩斯找普洛凱爾導師，開始你的覺醒之路。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 收集 3 份妖魔搜索文件。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 去妖魔森林一帶掃蕩妖魔。記住，只有你親自揮舞武器擊殺，這些文件才會顯現(1%)。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 導師會賜予你龍騎士雙手劍，或是記載古老防禦術的龍之護鎧書板。"
             },
             {
                 "lv": 30,
                 "name": "龍鱗臂甲 / 血之渴望書板",
-                "desc": "找 普洛凱爾 ＠貝希摩斯。<br><span class=\"text-xs text-gray-500\">材料:</span> 妖魔密使首領間諜書 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 蛇女 1%（海音領域：海音周邊、鏡子森林、地下通道）；只有龍騎士本人擊殺才會掉<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 龍鱗臂甲 或 血之渴望書板"
+                "desc": "力量正在湧動！去找普洛凱爾導師接取進階任務吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 這次要攔截 1 份妖魔密使首領間諜書。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 追蹤海音地區的蛇女，用你的鎖鏈劍狠狠地教訓她們(1%)。同樣地，這必須由你親手完成。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 你可以選擇堅固的龍鱗臂甲，或是激發戰鬥本能的血之渴望書板。"
             },
             {
                 "lv": 45,
                 "name": "龍騎士斗篷",
-                "desc": "找 普洛凱爾 ＠貝希摩斯。<br><span class=\"text-xs text-gray-500\">材料:</span> 雪怪之心 ×10<br><span class=\"text-xs text-gray-500\">來源:</span> 雪怪 10%（歐瑞、歐瑞雪原、水晶洞穴）；只有龍騎士本人擊殺才會掉<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 龍騎士斗篷"
+                "desc": "龍的血脈需要嚴寒的淬鍊，再次拜訪普洛凱爾導師。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 帶來 10 顆雪怪之心來證明你的勇悍。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 挺進歐瑞的冰天雪地，大開殺戒吧！你的專屬獵物(10%)正等著你。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 披上這件龍騎士斗篷，讓敵人在你威壓的背影下顫抖。"
             },
             {
                 "lv": 50,
                 "name": "龍騎士 50 級試煉",
-                "desc": "找 普洛凱爾 ＠貝希摩斯（需等級 50）。<br><span class=\"text-xs text-gray-500\">材料:</span> 第一階段：交付 時空裂痕碎片 ×100<br><span class=\"text-xs text-gray-500\">來源:</span> 時空裂痕碎片：底比斯系列怪掉落（時空裂痕領域；多為 10%，固定數量）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵/後續:</span> 完成後開放「魔族神殿」。之後可重複：每交付 靈魂之火灰燼 ×1（火焰之靈魂 1%，傲慢之塔 41~50 樓）換 1 把傳說「消滅者鎖鏈劍」（可重複換）"
+                "desc": "突破 50 級的界限！普洛凱爾導師有項時空任務要交給你。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 收集 100 個時空裂痕碎片來修補裂縫。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 踏入神秘的底比斯領域，清理那裡的魔物就能大量獲得碎片。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵與延伸:</span> 完成後你便解鎖了「魔族神殿」。但你的終極兵器在另一處：去傲慢之塔尋找靈魂之火灰燼，導師會為你鑄造傳說中的「消滅者鎖鏈劍」！"
             }
         ]
     },
@@ -257,22 +257,22 @@ const classesData = [
             {
                 "lv": 15,
                 "name": "幻術士魔杖 / 記憶水晶(立方：燃燒)",
-                "desc": "找 希蓮恩 ＠希培利亞村莊。<br><span class=\"text-xs text-gray-500\">材料:</span> 污濁安特的水果 ×1、污濁安特的樹枝 ×1、污濁安特的樹皮 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 污染的安特 100%（妖精森林·眠龍洞穴 1~3 樓、妖精森林周邊）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 幻術士魔杖 或 記憶水晶(立方：燃燒)"
+                "desc": "掌握心智的學徒，去希培利亞村莊尋求希蓮恩導師的指引吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 收集污濁安特的水果、樹枝、樹皮各 1 份來研究污染的根源。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 前往眠龍洞穴，用你的幻術幫助那些被污染的安特解脫(100%掉落)。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 你將獲得施法用的幻術士魔杖，或是能召喚火焰立方的記憶水晶。"
             },
             {
                 "lv": 30,
                 "name": "幻術士法書 / 記憶水晶(立方：衝擊)",
-                "desc": "找 希蓮恩 ＠希培利亞村莊。<br><span class=\"text-xs text-gray-500\">材料:</span> 艾爾摩將軍之心 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 艾爾摩將軍 100%（歐瑞、歐瑞雪原、艾爾摩激戰地）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 幻術士法書 或 記憶水晶(立方：衝擊)"
+                "desc": "為了洞察更深層的幻境，再次去拜訪希蓮恩導師。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 導師需要 1 顆艾爾摩將軍之心來做研究。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 前往艾爾摩激戰地，粉碎那些不死將軍的執念吧(必掉)。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 帶著戰利品回去，你可以換取幻術士法書，或是掌握衝擊立方的記憶水晶。"
             },
             {
                 "lv": 45,
                 "name": "幻術士斗篷",
-                "desc": "找 希蓮恩 ＠希培利亞村莊。<br><span class=\"text-xs text-gray-500\">材料:</span> 完成的時間水晶球 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 熔岩高崙 100%（威頓·火龍窟）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 幻術士斗篷"
+                "desc": "時間與空間的奧秘即將為你揭曉，去見希蓮恩導師吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 請為她帶回 1 顆完成的時間水晶球。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 踏上火龍窟的焦土，在熔岩高崙熾熱的身軀中尋找這顆神奇的水晶(必掉)。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 披上導師贈予的幻術士斗篷，你的心智將更加無懈可擊。"
             },
             {
                 "lv": 50,
                 "name": "幻術士 50 級試煉",
-                "desc": "找 希蓮恩 ＠希培利亞村莊（需等級 50）。<br><span class=\"text-xs text-gray-500\">材料:</span> 第一階段：交付 時空裂痕碎片 ×100<br><span class=\"text-xs text-gray-500\">來源:</span> 時空裂痕碎片：底比斯系列怪掉落（時空裂痕領域；多為 10%，固定數量）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵/後續:</span> 完成後開放「魔族神殿」。之後可重複：每交付 翼龍之血 ×5（遺忘之島飛龍 5%，在遺忘之島本島）換 1 把傳說武器「藍寶石奇古獸」（可重複換）"
+                "desc": "當幻術達到化境(50級)，希蓮恩導師會賦予你穿越時空的任務。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 收集 100 個時空裂痕碎片交給導師。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 進入底比斯的異空間，用你的奇古獸將那裡的魔物一一粉碎來收集碎片。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵與延伸:</span> 任務完成即解鎖「魔族神殿」。但最棒的獎勵在遺忘之島：收集翼龍之血，導師就能為你打造傳說級的「藍寶石奇古獸」！"
             }
         ]
     },
@@ -293,22 +293,22 @@ const classesData = [
             {
                 "lv": 15,
                 "name": "試煉斧頭 / 戰士的印記(迅猛雙斧)",
-                "desc": "找 多文 ＠海音。<br><span class=\"text-xs text-gray-500\">材料:</span> 生命的卷軸 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 生命的卷軸：石頭高崙 1%（戰士限定，非戰士擊殺不掉；石頭高崙廣布奇岩等地）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 試煉斧頭（單手鈍器）或 戰士的印記(迅猛雙斧)，二選一"
+                "desc": "熱血的戰士啊，去海音找多文導師，開始你的肌肉鍛鍊之旅！<br><span class=\"text-xs text-gray-500\">材料準備:</span> 揮舞你的斧頭，拿回 1 份生命的卷軸。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 找石頭高崙練練拳頭吧！只有真正的戰士能從它們堅硬的身軀中打出這份卷軸(1%)。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 你將獲得實用的試煉斧頭，或者學習迅猛雙斧的印記，開啟雙持之路！"
             },
             {
                 "lv": 30,
                 "name": "戰士團的斗篷 / 戰士的印記(咆哮)",
-                "desc": "找 多文 ＠海音。<br><span class=\"text-xs text-gray-500\">材料:</span> 被偷的戒指 ×1、被偷的項鍊 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 被偷的戒指：強盜 1%（奇岩）；被偷的項鍊：強盜頭目 10%（奇岩）；皆戰士限定<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 戰士團的斗篷 或 戰士的印記(咆哮)，二選一"
+                "desc": "戰士不僅要有力氣，還要行俠仗義。去找多文導師接任務吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 幫忙找回被偷的戒指與項鍊各 1 份。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 去奇岩討伐強盜集團！小囉嘍會掉戒指(1%)，頭目則藏著項鍊(10%)，用你的力量制裁他們！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 導師會頒發戰士團的斗篷給你，或是傳授你震懾敵人的咆哮印記。"
             },
             {
                 "lv": 45,
                 "name": "戰士團頭盔",
-                "desc": "找 多文 ＠海音。<br><span class=\"text-xs text-gray-500\">材料:</span> 獨眼巨人之血 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 獨眼巨人之血：獨眼巨人 1%（奇岩；戰士限定）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 戰士團頭盔（防禦(AC) -2、HP上限 +20、每強化 +1 魔防 +1）"
+                "desc": "想要更堅固的防具？多文導師那裡有圖紙等著你。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 挑戰巨獸，帶回 1 份獨眼巨人之血。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 奇岩的獨眼巨人是最好的沙包，用你的雙斧讓它見血吧(1%)！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 你將獲得戰士團頭盔，這可是能隨強化提升魔防的極品防具喔！"
             },
             {
                 "lv": 50,
                 "name": "戰士 50 級試煉",
-                "desc": "找 多文 ＠海音（需等級 50）。<br><span class=\"text-xs text-gray-500\">材料:</span> 第一階段：交付 神秘魔杖 ×5<br><span class=\"text-xs text-gray-500\">來源:</span> 神秘魔杖：思克巴／思克巴女皇 1%（龍之谷地監 4~6 樓、傲慢之塔 11~20 樓；戰士限定）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵/後續:</span> 完成後開放「魔族神殿」。之後可重複：每交付 神秘慎重藥水 ×1（墮落的司祭 1%，魔族神殿）換 1 把「大匠的斧頭」（單手鈍器，對不死／狼人加成、近距離傷害 +1；可重複換）。戰士不走炎魔交付物"
+                "desc": "恭喜成為獨當一面的戰士(50級)，多文導師有最終試煉要給你。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 去收集 5 把神秘魔杖來證明你不畏懼魔法。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 深入龍之谷地監或傲慢之塔，那些思克巴就是你的目標(1%)，用暴力粉碎她們的魔法！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵與延伸:</span> 通過後即開放「魔族神殿」。戰士不屑炎魔的施捨，只要從墮落司祭那弄到神秘慎重藥水，導師就能為你打造專武「大匠的斧頭」！"
             }
         ]
     },
@@ -325,40 +325,40 @@ const classesData = [
             "傳說裝備"
         ],
         "quests": [
-            // {
-            //     "lv": "All",
-            //     "name": "雷德的復仇",
-            //     "desc": "找 雷德 ＠銀騎士村。<br><span class=\"text-xs text-gray-500\">材料:</span> 魔法寶石 ×100，以及五枚部下證明戒指各 ×1（黑暗棲林者／馴獸師／精靈使／喚獸師／黑暗法師戒指）<br><span class=\"text-xs text-gray-500\">來源:</span> 五戒指皆出自拉斯塔巴德區（黑暗棲林者 0.1%、馴獸師 0.05%、精靈使 0.001%、喚獸師 0.01%、黑暗法師 0.01%；機率極低、相當硬核）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 召喚控制戒指"
-            // },
-            // {
-            //     "lv": "All",
-            //     "name": "藍海賊裝備（五件擇一）",
-            //     "desc": "找 希米哲 ＠海賊島村莊。<br><span class=\"text-xs text-gray-500\">材料:</span> 兒子的信 ×1、兒子的遺骸 ×1、兒子的肖像畫 ×1<br><span class=\"text-xs text-gray-500\">來源:</span> 信：藍尾蜥蜴 3%；遺骸：高等蜥蜴人 3%；肖像畫：海賊骷髏首領 2%（皆海賊島一帶）<br><span class=\"text-xs text-primary-400 font-semibold\">獎勵:</span> 藍海賊頭巾／皮盔甲／手套／長靴／斗篷，五選一・無兌換次數限制（其中藍海賊斗篷也可直接打高等蜥蜴人 0.8% 掉）"
-            // },
-            // {
-            //     "lv": "50+",
-            //     "name": "🗺️ 炎魔謁見所怎麼進（完整流程）",
-            //     "desc": "① 等級 50：找你職業的試煉 NPC 接「50 級試煉」（各職業的 NPC／交付材料見上方 50 級試煉卡）。<br>② 完成試煉 → 開放「魔族神殿」（地圖選單的「拉斯塔巴德」分類）。<br>③ 在魔族神殿掛機：<b>每殺 1 隻怪，炎魔友好度 +1</b>（隱藏數值，介面看不到）。<br>④ 友好度累積到 <b>1000</b>（＝在魔族神殿殺滿 1000 隻）→ 開放城鎮「炎魔謁見所」（同在「拉斯塔巴德」分類）。<br>⑤ 謁見所內 4 個 NPC：炎魔之影（墮落鐮刀＋墮落首級 → 炎魔的血光斗篷）／小惡魔（惡魔腳鐐＋墮落素材 → 惡魔系列武器）／炎魔鐵匠（金屬板鍛造、暗影神殿鑰匙）／炎魔的輔佐官（靈魂石碎片 → 耳環逐階精煉）。<br>⑥ 延伸：向炎魔鐵匠做「暗影神殿鑰匙」（靈魂石碎片 ×10＋100 萬金幣；碎片就在魔族神殿打墮落的司祭 1%／頭目墮落 5%），<b>持鑰匙（不消耗）＋友好度 ≥1000</b> 即可進「暗影神殿」。"
-            // },
-            // {
-            //     "lv": "60+",
-            //     "name": "魔族神殿（要完成試煉才能進）",
-            //     "desc": "進入條件：<b>完成你職業的 50 級試煉</b>。怪物有炎魔系列、墮落的司祭，頭目「墮落」（Lv68，不死）；掉墮落系列裝備（斗篷／盔甲／手套／靴）。<b>在這裡每打一隻怪，「炎魔友好度」+1</b>。"
-            // },
-            // {
-            //     "lv": "60+",
-            //     "name": "炎魔交付物（騎士／妖精／法師／王族的兌換材料）",
-            //     "desc": "炎魔之劍（騎士）／炎魔之爪（妖精）／炎魔之眼（法師）／炎魔之心（王族）：在魔族神殿打「炎魔的惡魔」（Lv61）取得，<b>你的職業對應的那一種各 3% 機率掉落</b>（別職業的炎魔材料你打不到）。拿回去找迪嘉勒廷，每 1 個換 1 把對應的傳說武器（可重複換）。"
-            // },
-            // {
-            //     "lv": "60+",
-            //     "name": "炎魔謁見所與暗影神殿",
-            //     "desc": "炎魔友好度<b>累積到 1000</b>，開放城鎮「炎魔謁見所」，裡面有製作 NPC（炎魔之影／小惡魔／炎魔鐵匠），能做惡魔系列武器、炎魔的血光斗篷與「暗影神殿鑰匙」。<br>暗影神殿鑰匙：在炎魔鐵匠用「靈魂石碎片 ×10 ＋ 100 萬金幣」製作。<br>進「暗影神殿」要兩個條件：<b>持有暗影神殿鑰匙</b>（不會被消耗）＋<b>炎魔友好度 ≥ 1000</b>。裡面頭目「死亡」（Lv70）、「混沌」（Lv70），掉死亡／混沌系列裝備。"
-            // },
+            {
+                "lv": "All",
+                "name": "雷德的復仇",
+                "desc": "想挑戰極限嗎？前往銀騎士村找雷德了解他的復仇計畫吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 準備魔法寶石 100 顆，以及黑暗棲林者、馴獸師、精靈使、喚獸師、黑暗法師這五種部下的證明戒指各 1 枚。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 這些戒指全藏在拉斯塔巴德區的敵人身上，掉落率極低(0.1% ~ 0.001%)，這是一場極其漫長且硬核的長期抗戰。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 雷德會為你的毅力折服，並將稀有的召喚控制戒指託付給你。"
+            },
+            {
+                "lv": "All",
+                "name": "藍海賊裝備（五件擇一）",
+                "desc": "在海賊島村莊，有位名叫希米哲的母親正等著消息。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 幫她找回兒子的信、遺骸，以及肖像畫各 1 份。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 這些遺物散落在海賊島一帶，分別在藍尾蜥蜴(3%)、高等蜥蜴人(3%)以及海賊骷髏首領(2%)的手上，替她討回來吧。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 為了感謝你，她會讓你從藍海賊五件套(頭巾、皮盔甲、手套、長靴、斗篷)中任選一件，只要你願意幫忙，隨時可以再來。"
+            },
+            {
+                "lv": "50+",
+                "name": "🗺️ 炎魔謁見所怎麼進（完整流程）",
+                "desc": "同學們，想進入炎魔謁見所？跟著老師的筆記一步步來：<br>① 首先，請確保你已完成 50 級職業專屬試煉。<br>② 通過試煉後，你便獲得進入「魔族神殿」的資格。<br>③ 接下來是漫長的修行：在神殿中戰鬥，<b>每擊倒 1 隻魔物，炎魔友好度 +1</b> (這是隱藏的，請自己心裡有個底)。<br>④ 堅持殺滿 <b>1000</b> 隻，你就能解鎖「炎魔謁見所」。<br>⑤ 謁見所裡有 4 位重要人物，提供從血光斗篷到惡魔武器等傳說級裝備的製作，記得帶上對應的戰利品去見他們。<br>⑥ 進階挑戰：向炎魔鐵匠打造「暗影神殿鑰匙」(需 10 個靈魂石碎片與一百萬金幣)。帶著鑰匙且<b>友好度維持在 1000 以上</b>，就能探索更深層的「暗影神殿」！"
+            },
+            {
+                "lv": "60+",
+                "name": "魔族神殿（要完成試煉才能進）",
+                "desc": "想前往這處險惡之地，<b>必須先向各職業導師證明實力(完成 50 級試煉)</b>。<br><span class=\"text-xs text-gray-500\">狩獵重點:</span> 這裡盤踞著炎魔手下與墮落的司祭，還有頭目「墮落」(Lv68)。打敗他們就有機會獲得強大的墮落套裝。<br><span class=\"text-xs text-primary-400 font-semibold\">導師提示:</span> 記住，<b>你在這裡每斬殺一隻魔物，就能累積 1 點炎魔友好度</b>，這是解鎖更進階區域的關鍵。"
+            },
+            {
+                "lv": "60+",
+                "name": "炎魔交付物（騎士／妖精／法師／王族的兌換材料）",
+                "desc": "還記得迪嘉勒廷導師的承諾嗎？去魔族神殿找「炎魔的惡魔」(Lv61)較量吧！<br><span class=\"text-xs text-gray-500\">材料獲取:</span> 打敗牠有 3% 的機率掉落<b>專屬於你職業</b>的證明物 (劍、爪、眼、心)。別擔心，你只會打到自己能用的。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 只要帶回 1 個證明物，就能向導師兌換一把對應的傳說武器，這項交易永遠有效！"
+            },
+            {
+                "lv": "60+",
+                "name": "炎魔謁見所與暗影神殿",
+                "desc": "當你的炎魔友好度<b>達到 1000 點</b>，便能獲得覲見炎魔的資格，進入「炎魔謁見所」。<br><span class=\"text-xs text-gray-500\">神殿鐵匠:</span> 備妥 10 個靈魂石碎片與一百萬金幣，請炎魔鐵匠為你打造一把「暗影神殿鑰匙」。<br><span class=\"text-xs text-primary-400 font-semibold\">暗影挑戰:</span> 只要你<b>握有鑰匙(不會損耗)且友好度維持在 1000 以上</b>，就能踏入暗影神殿，挑戰令人畏懼的頭目「死亡」(Lv70)與「混沌」(Lv70)，贏取傳奇裝備！"
+            },
             {
                 "lv": "All",
                 "name": "提卡爾 庫庫爾坎祭壇",
-                "desc": "進入條件：<b>持有「提卡爾庫庫爾坎祭壇鑰匙」</b>。<br>1. 在「時空裂痕」區域前往「提卡爾神廟地區深處」。<br>2. 擊殺深處的怪物（如提卡爾薩德泥偶、司卡、提歐系列），有 2% 機率掉落鑰匙。<br>3. 獲得鑰匙後，從地圖選單的「時空裂痕」進入「提卡爾 庫庫爾坎祭壇」挑戰頭目。<br>⚠️ <b>每次進入（包含死亡或回城後重新進入）皆會消耗 1 把鑰匙。</b>"
+                "desc": "各位同學注意了，想挑戰強大的提卡爾祭壇，必須先做好功課喔！<br><span class=\"text-xs text-gray-500\">事前準備:</span> 想要進去，你得先拿到「提卡爾庫庫爾坎祭壇鑰匙」。<br><span class=\"text-xs text-gray-500\">挑戰步驟:</span> 1. 勇敢地踏入時空裂痕，前往「提卡爾神廟地區深處」。<br>2. 擊敗那裡的泥偶和怪物們，它們身上有機會(2%)掉落鑰匙。<br>3. 拿到鑰匙後，就能從選單正式進入祭壇挑戰頭目了。<br><span class=\"text-xs text-primary-400 font-semibold\">導師的嚴重警告:</span> ⚠️ 這把鑰匙是一次性的！只要你進去過，不論是戰死還是回城，鑰匙都會消耗掉。進去前請務必做好萬全準備！"
             }
         ]
     }
