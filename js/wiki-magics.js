@@ -15,12 +15,11 @@ function buildMagicData() {
             tier: value.tier || 1,
             mp: value.mp || 0,
             hp: value.hp || 0,
-            // 提取各職業需求
             req: {
                 mage: value.reqM,
                 elf: value.reqE,
                 knight: value.reqK,
-                royal: value.reqR,
+                royal: value.reqRoy,
                 dark: value.reqD,
                 dragon: value.reqDk,
                 illusion: value.reqI,
