@@ -37,7 +37,19 @@ const subFilterOptions = {
         { id: 'all', name: '全部武器' },
         { id: '1h', name: '單手武器' },
         { id: '2h', name: '雙手武器' },
-        { id: 'bow', name: '遠程武器' }
+        { id: 'ranged', name: '遠距武器' },
+        { id: 'sword', name: '劍' },
+        { id: 'dagger', name: '匕首' },
+        { id: 'blunt', name: '斧頭/鈍器' },
+        { id: 'spear', name: '矛/槍' },
+        { id: 'wand', name: '法杖' },
+        { id: 'bow', name: '弓' },
+        { id: 'crossbow', name: '十字弓' },
+        { id: 'arrow', name: '箭矢' },
+        { id: 'dual', name: '雙刀' },
+        { id: 'claw', name: '鋼爪' },
+        { id: 'chainsword', name: '鎖鏈劍' },
+        { id: 'kiringku', name: '奇古獸' }
     ],
     arm: [
         { id: 'all', name: '全部防具' },
@@ -193,8 +205,16 @@ function getItemEffectsHtml(item) {
         effects.push(`<span class="bg-indigo-900/40 text-indigo-300 text-[11px] px-2 py-1 rounded border border-indigo-700/50"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>${effNamesMap[item.eff]}</span>`);
     }
     
-    if (item.spellProc || item.meleeHitSpell) effects.push(`<span class="bg-indigo-900/40 text-indigo-300 text-[11px] px-2 py-1 rounded border border-indigo-700/50"><i class="fa-solid fa-bolt mr-1"></i>魔法發動</span>`);
-    if (item.procSkill || item.procStatusSkill) effects.push(`<span class="bg-indigo-900/40 text-indigo-300 text-[11px] px-2 py-1 rounded border border-indigo-700/50"><i class="fa-solid fa-fire mr-1"></i>技能發動</span>`);
+    let magicObj1 = item.spellProc || item.meleeHitSpell;
+    if (magicObj1) {
+        let spellName = magicObj1.skn || '魔法';
+        effects.push(`<span class="bg-indigo-900/40 text-indigo-300 text-[11px] px-2 py-1 rounded border border-indigo-700/50"><i class="fa-solid fa-bolt mr-1"></i>發動: ${spellName}</span>`);
+    }
+    let procSkillId1 = item.procSkill || item.procStatusSkill;
+    if (procSkillId1) {
+        let skillName = (typeof DB !== 'undefined' && DB.skills && DB.skills[procSkillId1]) ? DB.skills[procSkillId1].n : '技能';
+        effects.push(`<span class="bg-indigo-900/40 text-indigo-300 text-[11px] px-2 py-1 rounded border border-indigo-700/50"><i class="fa-solid fa-fire mr-1"></i>發動: ${skillName}</span>`);
+    }
     if (item.procPoison) effects.push(`<span class="bg-green-900/40 text-green-300 text-[11px] px-2 py-1 rounded border border-green-700/50"><i class="fa-solid fa-skull mr-1"></i>毒素發動</span>`);
     if (item.ignHardSkin) effects.push(`<span class="bg-orange-900/40 text-orange-300 text-[11px] px-2 py-1 rounded border border-orange-700/50"><i class="fa-solid fa-burst mr-1"></i>貫穿硬皮</span>`);
     if (item.set) effects.push(`<span class="bg-yellow-900/40 text-yellow-300 text-[11px] px-2 py-1 rounded border border-yellow-700/50"><i class="fa-solid fa-layer-group mr-1"></i>套裝效果</span>`);
@@ -475,7 +495,7 @@ function getMonsterDropTooltipHtml(d) {
     return `
         <div class="relative group/monster cursor-help inline-block">
             <span class="bg-gray-800 text-gray-300 text-[10px] px-1.5 py-0.5 rounded border border-gray-700 hover:bg-gray-700/80 transition-colors inline-flex items-center">
-                ${d.monster}
+                ${d.monster} <span class="text-[9px] text-amber-500/80 ml-1">${d.chance}%</span>
             </span>
             <!-- 漂浮視窗 Tooltip -->
             <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/monster:block w-max max-w-[220px] p-2.5 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-50 pointer-events-none opacity-0 group-hover/monster:opacity-100 transition-opacity duration-200">
@@ -682,39 +702,215 @@ function createItemCard(item) {
     const borderClass = isLegend ? 'border-gold-500 shadow-[0_0_10px_rgba(245,158,11,0.3)]' : 'border-gray-800';
     const titleClass = isLegend ? 'text-gold-400 font-bold' : 'text-gray-200 font-semibold';
     
-    // 處理描述中的 HTML (原本遊戲中可能有 <br> 等)
-    const desc = item.d ? item.d : '<span class="text-gray-600 italic">無說明</span>';
+    // 1. 標題與特殊標籤區塊
+    let setEffectHtml = item.set ? `<div class="text-green-400 text-[11px] font-bold mt-1.5"><i class="fa-solid fa-layer-group mr-1"></i>${item.set} 套裝效果</div>` : '';
+    const desc = item.d ? `<div class="text-[11px] text-gray-400 italic mt-2 leading-relaxed border-l-2 border-gray-700 pl-2 py-0.5">${item.d}</div>` : '';
+
+    // 2. 武器專屬數值區
+    let wpnStatsHtml = '';
+    if (item.type === 'wpn' && !item.isArrow) {
+        let hitText = item.isBow ? '遠距離命中' : '近距離命中';
+        let dmgText = item.isBow ? '遠距離傷害' : '近距離傷害';
+        let hitVal = (item.hit || 0) + (item.isBow ? (item.rangedHit || 0) : (item.meleeHit || 0));
+        let dmgVal = (item.dmgBonus || 0) + (item.isBow ? (item.rangedDmg || 0) : (item.meleeDmg || 0));
+        let apm = 0;
+        if (typeof atkSpdApm === 'function') {
+            apm = atkSpdApm(null, item.id);
+        } else {
+            apm = item.spd ? Math.floor(100 / item.spd) : 60;
+        }
+        
+        wpnStatsHtml = `
+            <div class="mt-2.5 border border-gray-700/50 rounded bg-gray-900/50 p-2 shadow-inner">
+                <div class="text-[11px] text-yellow-500 font-bold mb-1.5 flex items-center border-b border-gray-800 pb-1"><i class="fa-solid fa-khanda mr-1.5"></i>武器專屬數值</div>
+                <div class="grid grid-cols-2 gap-y-1 gap-x-2 text-[11px] text-gray-300 mb-1.5">
+                    <div class="flex justify-between"><span>傷害力:</span> <span class="text-white">${item.dmgS || 0} / ${item.dmgL || 0}</span></div>
+                    <div class="flex justify-between"><span>${hitText}:</span> <span class="text-white">${hitVal > 0 ? '+'+hitVal : hitVal}</span></div>
+                    <div class="flex justify-between"><span>${dmgText}:</span> <span class="text-white">${dmgVal > 0 ? '+'+dmgVal : dmgVal}</span></div>
+                    ${item.mdmg ? `<div class="flex justify-between"><span>魔法傷害:</span> <span class="text-white">+${item.mdmg}</span></div>` : '<div></div>'}
+                </div>
+                <div class="text-[10px] text-gray-400 mt-1 border-t border-gray-800 pt-1.5 bg-gray-950/50 p-1.5 rounded flex items-center justify-between">
+                    <span class="text-blue-300 font-medium"><i class="fa-solid fa-bolt mr-1"></i>基準攻擊速度:</span>
+                    <span class="text-gray-200">${apm} <span class="text-gray-500 text-[9px]">次/分</span></span>
+                </div>
+            </div>
+        `;
+    }
+
+    // 3. 防具、飾品防禦與生存區
+    let defStatsHtml = '';
+    let hasDefStats = item.ac || item.mr || item.resFire || item.resWater || item.resEarth || item.resWind || item.dr || item.er;
+    if (hasDefStats) {
+        defStatsHtml = `
+            <div class="mt-2.5 border border-gray-700/50 rounded bg-gray-900/50 p-2 shadow-inner">
+                <div class="text-[11px] text-blue-400 font-bold mb-1.5 flex items-center border-b border-gray-800 pb-1"><i class="fa-solid fa-shield-halved mr-1.5"></i>防禦與生存數值</div>
+                <div class="grid grid-cols-2 gap-y-1 gap-x-2 text-[11px] text-gray-300">
+                    ${item.ac ? `<div class="flex justify-between"><span>防禦力(AC):</span> <span class="text-white">${item.ac < 0 ? item.ac : '-'+Math.abs(item.ac)}</span></div>` : ''}
+                    ${item.mr ? `<div class="flex justify-between"><span>魔法防禦(MR):</span> <span class="text-white">+${item.mr}</span></div>` : ''}
+                    ${item.dr ? `<div class="flex justify-between"><span>額外減傷:</span> <span class="text-white">+${item.dr}</span></div>` : ''}
+                    ${item.er ? `<div class="flex justify-between"><span>迴避率(ER):</span> <span class="text-white">+${item.er}</span></div>` : ''}
+                    ${item.resFire ? `<div class="flex justify-between"><span>火屬性抗性:</span> <span class="text-red-400">+${item.resFire}</span></div>` : ''}
+                    ${item.resWater ? `<div class="flex justify-between"><span>水屬性抗性:</span> <span class="text-blue-400">+${item.resWater}</span></div>` : ''}
+                    ${item.resEarth ? `<div class="flex justify-between"><span>地屬性抗性:</span> <span class="text-yellow-600">+${item.resEarth}</span></div>` : ''}
+                    ${item.resWind ? `<div class="flex justify-between"><span>風屬性抗性:</span> <span class="text-green-400">+${item.resWind}</span></div>` : ''}
+                </div>
+                ${(item.slot === 'shield' && item.n && item.n.includes('臂甲')) ? `
+                <div class="text-[10px] text-gray-400 mt-1.5 border-t border-gray-800 pt-1.5 bg-gray-950/50 p-1.5 rounded">
+                    <div class="text-blue-300 font-medium mb-0.5"><i class="fa-solid fa-hand-fist mr-1"></i>臂甲特效:</div>
+                    <div class="ml-1 text-gray-300">隨強化等級動態增加額外減傷、傷害或 HP 加成。</div>
+                </div>` : ''}
+            </div>
+        `;
+    }
+
+    // 4. 基礎人物能力加成 (紫色)
+    let baseStatsHtml = '';
+    let hasBaseStats = item.str || item.dex || item.con || item.int || item.wis || item.cha || item.mhp || item.mmp || item.hpR || item.mpR || item.weightCap;
+    if (hasBaseStats) {
+        baseStatsHtml = `
+            <div class="mt-2.5 border border-purple-900/40 rounded bg-purple-950/20 p-2 shadow-inner">
+                <div class="text-[11px] text-purple-400 font-bold mb-1.5 flex items-center border-b border-purple-900/50 pb-1"><i class="fa-solid fa-user-plus mr-1.5"></i>基礎人物能力加成</div>
+                <div class="grid grid-cols-2 gap-y-1 gap-x-2 text-[11px] text-purple-300">
+                    ${item.str ? `<div class="flex justify-between"><span>力量(STR):</span> <span class="text-purple-200">+${item.str}</span></div>` : ''}
+                    ${item.dex ? `<div class="flex justify-between"><span>敏捷(DEX):</span> <span class="text-purple-200">+${item.dex}</span></div>` : ''}
+                    ${item.con ? `<div class="flex justify-between"><span>體質(CON):</span> <span class="text-purple-200">+${item.con}</span></div>` : ''}
+                    ${item.int ? `<div class="flex justify-between"><span>智力(INT):</span> <span class="text-purple-200">+${item.int}</span></div>` : ''}
+                    ${item.wis ? `<div class="flex justify-between"><span>精神(WIS):</span> <span class="text-purple-200">+${item.wis}</span></div>` : ''}
+                    ${item.cha ? `<div class="flex justify-between"><span>魅力(CHA):</span> <span class="text-purple-200">+${item.cha}</span></div>` : ''}
+                    ${item.mhp ? `<div class="flex justify-between"><span>HP上限:</span> <span class="text-purple-200">+${item.mhp}</span></div>` : ''}
+                    ${item.mmp ? `<div class="flex justify-between"><span>MP上限:</span> <span class="text-purple-200">+${item.mmp}</span></div>` : ''}
+                    ${item.hpR ? `<div class="flex justify-between"><span>HP恢復:</span> <span class="text-purple-200">+${item.hpR}</span></div>` : ''}
+                    ${item.mpR ? `<div class="flex justify-between"><span>MP恢復:</span> <span class="text-purple-200">+${item.mpR}</span></div>` : ''}
+                    ${item.weightCap ? `<div class="flex justify-between"><span>負重上限:</span> <span class="text-purple-200">+${item.weightCap}</span></div>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    // 5. 魔力與特殊回復數值
+    let mpSpecialHtml = '';
+    let hasMpSpecial = item.mpDrain || item.extraMp || item.id === 'wpn_crystal_wand' || item.id === 'wpn_mana_wand';
+    if (hasMpSpecial) {
+        mpSpecialHtml = `
+            <div class="mt-2.5 border border-cyan-900/40 rounded bg-cyan-950/20 p-2 shadow-inner">
+                <div class="text-[11px] text-cyan-400 font-bold mb-1.5 flex items-center border-b border-cyan-900/50 pb-1"><i class="fa-solid fa-droplet mr-1.5"></i>魔力與特殊回復數值</div>
+                <div class="text-[10px] text-cyan-300 space-y-1 ml-1">
+                    ${item.id === 'wpn_mana_wand' || item.mpDrain ? `<div class="flex items-start"><i class="fa-solid fa-caret-right mt-[3px] mr-1 text-cyan-500"></i><span>命中恢復MP: 命中時恢復一定量 MP (隨強化等級動態變化)</span></div>` : ''}
+                    ${item.id === 'wpn_crystal_wand' ? `<div class="flex items-start"><i class="fa-solid fa-caret-right mt-[3px] mr-1 text-cyan-500"></i><span>MP自然恢復升級: 超過安定值將帶來額外回魔量</span></div>` : ''}
+                    ${item.extraMp ? `<div class="flex items-start"><i class="fa-solid fa-caret-right mt-[3px] mr-1 text-cyan-500"></i><span>強化額外加成: 強化時會額外給予加成數值</span></div>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    // 6. 裝備特效標籤 (Effects) - 粉紅色
+    let effectsHtml = '';
+    let effArr = [];
+    if (item.eff && effNamesMap[item.eff]) effArr.push(effNamesMap[item.eff]);
+    let magicObj2 = item.spellProc || item.meleeHitSpell;
+    if (magicObj2) {
+        let spellName = magicObj2.skn || '魔法';
+        effArr.push(`發動: ${spellName}`);
+    }
+    let procSkillId2 = item.procSkill || item.procStatusSkill;
+    if (procSkillId2) {
+        let skillName = (typeof DB !== 'undefined' && DB.skills && DB.skills[procSkillId2]) ? DB.skills[procSkillId2].n : '技能';
+        effArr.push(`發動: ${skillName}`);
+    }
+    if (item.procPoison) effArr.push("毒素發動");
+    if (item.ignHardSkin) effArr.push("貫穿硬皮");
+    if (item.unBonus) effArr.push("不死系加成");
+    if (item.thorns) effArr.push(`反擊(${item.thorns})`);
+    if (item.stunResist) effArr.push(`抗暈+${item.stunResist}`);
+    if (item.freezeResist) effArr.push(`抗冰+${item.freezeResist}`);
+    if (item.immFreeze) effArr.push("免疫冰凍");
+    if (item.immPoison) effArr.push("免疫中毒");
+    if (item.immParalyze) effArr.push("免疫麻痺");
+    if (item.immStone) effArr.push("免疫石化");
+    if (item.immSlow) effArr.push("免疫緩速");
+    if (item.immHold) effArr.push("免疫木乃伊");
+    if (item.vanderStunHit) effArr.push("衝暈命中+1");
+    if (item.dragonStrike) effArr.push("龍的一擊");
+    if (item.pierceChance) effArr.push(`穿透(${item.pierceChance}%)`);
+    if (item.rapidfire) effArr.push(`連射`);
+
+    if (effArr.length > 0) {
+        effectsHtml = `
+            <div class="mt-2.5 border border-pink-900/40 rounded bg-pink-950/20 p-2 shadow-inner">
+                <div class="text-[11px] text-pink-400 font-bold mb-1.5 flex items-center border-b border-pink-900/50 pb-1"><i class="fa-solid fa-sparkles mr-1.5"></i>裝備特效標籤</div>
+                <div class="text-[11px] text-pink-300 leading-relaxed font-medium">
+                    <span class="text-pink-500 mr-1">│</span>${effArr.join('、')}
+                </div>
+            </div>
+        `;
+    }
+
+    // 7. 通用系統與限制資訊
+    let safeText;
+    if (item.noEnhance) {
+        safeText = '<span class="text-red-400 font-bold bg-red-900/30 px-1.5 py-0.5 rounded border border-red-800/50">無法強化</span>';
+    } else {
+        safeText = `<span class="text-gray-200">${item.safe !== undefined ? item.safe : 0}</span>`;
+    }
+    
+    let systemHtml = `
+        <div class="mt-auto border-t border-gray-800 pt-2.5">
+            <div class="bg-gray-900/40 p-2 rounded border border-gray-800/50">
+                <div class="text-[10px] text-gray-500 mb-1 font-medium"><i class="fa-solid fa-users-gear mr-1"></i>適用職業:</div>
+                <div class="mb-2">
+                    ${generateClassIcons(item.req).replace('mt-2', 'mt-1')}
+                </div>
+                <div class="flex items-center justify-between text-[11px] text-gray-400 border-t border-gray-800/50 pt-2">
+                    <div class="flex items-center"><i class="fa-solid fa-shield mr-1.5 text-gray-500"></i>安定值: &nbsp;${safeText}</div>
+                    ${ITEM_WEIGHTS[item.n] !== undefined ? `<div class="flex items-center"><i class="fa-solid fa-weight-hanging mr-1.5 text-gray-500"></i>重量: <span class="text-gray-200 ml-1">${ITEM_WEIGHTS[item.n]}</span></div>` : '<div></div>'}
+                </div>
+            </div>
+            ${item.p ? `
+            <div class="flex items-center justify-center text-[10px] text-yellow-600 font-mono mt-2 bg-yellow-900/10 p-1 rounded border border-yellow-900/30">
+                <i class="fa-solid fa-coins mr-1.5 text-yellow-500"></i>販賣價格: <span class="ml-1 text-yellow-500 font-bold text-[11px]">${item.p.toLocaleString()}</span>
+            </div>` : ''}
+        </div>
+    `;
 
     return `
-        <div class="glass-panel p-5 rounded-xl border ${borderClass} hover:-translate-y-1 hover:shadow-lg transition-all duration-200 flex flex-col h-full">
-            <div class="flex justify-between items-start mb-3">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-10 h-10 flex-shrink-0 rounded-lg bg-gray-950 border border-gray-800 flex items-center justify-center overflow-hidden">
-                        <img src="${getItemIconPath(item)}" alt="${item.n}" class="w-full h-full object-contain cursor-pointer" data-hover-image
-                            onerror="this.parentElement.style.display='none'">
-                    </div>
-                    <h4 class="text-lg ${titleClass} flex items-center gap-2">
-                        ${isLegend ? '<i class="fa-solid fa-crown text-gold-500 text-sm"></i>' : ''}
+        <div class="glass-panel p-4 rounded-xl border ${borderClass} hover:-translate-y-1 hover:shadow-lg transition-all duration-200 flex flex-col h-full bg-gray-950/80">
+            <!-- 1. 標題區 -->
+            <div class="flex items-start gap-3 mb-2">
+                <div class="w-12 h-12 flex-shrink-0 rounded-lg bg-gray-900 border border-gray-700 flex items-center justify-center overflow-hidden shadow-inner">
+                    <img src="${getItemIconPath(item)}" alt="${item.n}" class="w-8 h-8 object-contain cursor-pointer drop-shadow-md" data-hover-image
+                        onerror="this.parentElement.style.display='none'">
+                </div>
+                <div class="flex-1 pt-0.5">
+                    <h4 class="text-[15px] ${titleClass} flex items-center gap-1.5 leading-tight tracking-wide">
                         ${item.n}
                     </h4>
+                    <div class="flex flex-wrap gap-1 mt-1.5">
+                        ${isLegend ? '<span class="text-[9px] bg-gold-900/60 text-gold-300 px-1.5 py-0.5 rounded border border-gold-700/60 font-medium tracking-widest"><i class="fa-solid fa-crown mr-1"></i>傳說</span>' : ''}
+                        ${item.type === 'wpn' ? '<span class="text-[9px] bg-red-900/50 text-red-300 px-1.5 py-0.5 rounded border border-red-700/50"><i class="fa-solid fa-khanda mr-1"></i>武器</span>' : ''}
+                        ${item.type === 'arm' ? '<span class="text-[9px] bg-blue-900/50 text-blue-300 px-1.5 py-0.5 rounded border border-blue-700/50"><i class="fa-solid fa-shield-halved mr-1"></i>防具</span>' : ''}
+                        ${item.type === 'acc' ? '<span class="text-[9px] bg-purple-900/50 text-purple-300 px-1.5 py-0.5 rounded border border-purple-700/50"><i class="fa-solid fa-ring mr-1"></i>飾品</span>' : ''}
+                        ${(item.type === 'etc' || item.type === 'misc' || item.type === 'pot' || item.type === 'mat') ? '<span class="text-[9px] bg-green-900/50 text-green-300 px-1.5 py-0.5 rounded border border-green-700/50"><i class="fa-solid fa-box mr-1"></i>消耗品/材料</span>' : ''}
+                    </div>
                 </div>
-                ${item.p ? `<span class="text-xs text-yellow-500 font-mono flex-shrink-0"><i class="fa-solid fa-coins mr-1"></i>${item.p.toLocaleString()}</span>` : ''}
             </div>
             
-            <div class="mb-3">
-                ${generateItemBadges(item)}
-                ${generateClassIcons(item.req)}
-                ${getItemEffectsHtml(item)}
+            ${setEffectHtml}
+            ${desc}
+            
+            <div class="flex-1 flex flex-col mb-3">
+                ${wpnStatsHtml}
+                ${defStatsHtml}
+                ${baseStatsHtml}
+                ${mpSpecialHtml}
+                ${effectsHtml}
             </div>
             
-            <div class="mt-auto pt-3 border-t border-gray-800">
-                <p class="text-sm text-gray-400 leading-relaxed text-sm">
-                    ${desc}
-                </p>
-                ${getItemDropsHtml(item.id)}
-                <div class="mt-3 text-xs text-gray-600 font-mono">
-                    ID: ${item.id}
-                </div>
+            ${getItemDropsHtml(item.id)}
+            <div class="mt-3">
+                ${systemHtml}
+            </div>
+            <div class="mt-2 text-center text-[10px] text-gray-700 font-mono border-t border-gray-800/30 pt-1.5">
+                ID: ${item.id}
             </div>
         </div>
     `;
@@ -791,9 +987,35 @@ function renderItems() {
                 matchType = true;
                 if (currentFilterSubType !== 'all') {
                     if (currentFilterType === 'wpn') {
-                        if (currentFilterSubType === '1h') matchType = !item.w2h && !item.isBow && !item.isArrow;
-                        else if (currentFilterSubType === '2h') matchType = !!item.w2h && !item.isBow && !item.isArrow;
-                        else if (currentFilterSubType === 'bow') matchType = !!item.isBow || !!item.isArrow;
+                        if (currentFilterSubType === '1h') matchType = !item.w2h && !item.isBow && !item.isArrow && !/箭$/.test(item.n || '');
+                        else if (currentFilterSubType === '2h') matchType = !!item.w2h && !item.isBow && !item.isArrow && !/箭$/.test(item.n || '');
+                        else if (currentFilterSubType === 'ranged') matchType = !!item.isBow || !!item.isArrow || !!item.ranged || /箭$/.test(item.n || '');
+                        else if (currentFilterSubType === 'arrow') matchType = !!item.isArrow || /箭$/.test(item.n || '');
+                        else {
+                            let n = item.n || '';
+                            let isKiringku = !!item.qigu;
+                            let isChainsword = !!item.chainsword;
+                            let isClaw = n.includes('鋼爪');
+                            let isDual = n.includes('雙刀');
+                            let isCrossbow = item.isBow && /十字弓|弩/.test(n);
+                            let isBow = item.isBow && !isCrossbow;
+                            let isWand = item.isWand || /魔杖|法杖|水晶球/.test(n) || (/杖/.test(n) && !/權杖/.test(n));
+                            let isSpear = /矛|槍|戟/.test(n);
+                            let isBlunt = /斧|鎚|錘|槌|棒|棍|鐮/.test(n);
+                            let isDagger = /匕首|小刀|之刺/.test(n);
+                            
+                            if (currentFilterSubType === 'kiringku') matchType = isKiringku;
+                            else if (currentFilterSubType === 'chainsword') matchType = isChainsword;
+                            else if (currentFilterSubType === 'claw') matchType = isClaw;
+                            else if (currentFilterSubType === 'dual') matchType = isDual;
+                            else if (currentFilterSubType === 'crossbow') matchType = isCrossbow;
+                            else if (currentFilterSubType === 'bow') matchType = isBow;
+                            else if (currentFilterSubType === 'wand') matchType = isWand;
+                            else if (currentFilterSubType === 'spear') matchType = isSpear && !isWand; // 避免某些衝突
+                            else if (currentFilterSubType === 'blunt') matchType = isBlunt && !isWand;
+                            else if (currentFilterSubType === 'dagger') matchType = isDagger && !isWand;
+                            else if (currentFilterSubType === 'sword') matchType = !isKiringku && !isChainsword && !isClaw && !isDual && !item.isBow && !item.isArrow && !isWand && !isSpear && !isBlunt && !isDagger;
+                        }
                     } else if (currentFilterType === 'arm' || currentFilterType === 'acc') {
                         matchType = item.slot === currentFilterSubType;
                     } else if (currentFilterType === 'etc') {
