@@ -36,6 +36,7 @@ const CRAFT_NPC_INFO = {
     npc_bamut:        { name: '巴姆特',       location: '傲慢之塔入口',title: '製作',       icon: 'fa-cloak',            color: 'text-violet-400' },
     npc_tas:          { name: '塔斯',         location: '象牙塔',     title: '製作',        icon: 'fa-flask',            color: 'text-lime-400' },
     npc_dytite:       { name: '迪泰特',       location: '象牙塔',     title: '解除封印',    icon: 'fa-unlock',           color: 'text-indigo-400' },
+    npc_mystic_mage:  { name: '神秘的魔法師', location: '象牙塔',     title: '魔杖改造',    icon: 'fa-wand-sparkles',    color: 'text-violet-400' },
     npc_keluya:       { name: '客盧亞',       location: '威頓村',     title: '製作',        icon: 'fa-hammer',           color: 'text-amber-300' },
     npc_zeus_golem:   { name: '宙斯之熔岩高崙',location:'威頓村',    title: '製作',        icon: 'fa-mountain-sun',     color: 'text-orange-500' },
     npc_bartel:       { name: '巴特爾',       location: '希培利亞村莊',title: '製作',       icon: 'fa-gem',              color: 'text-violet-300' },
@@ -260,6 +261,12 @@ function craftGetMaterialTooltipHtml(itemId) {
 function craftRenderRequirements(req) {
     if (!req || !req.length) return '<span class="text-gray-500">無需材料</span>';
     return req.map(r => {
+        // 特殊材料：魔杖改造所需的 +7 以上來源魔杖
+        if (r._special && r._displayName) {
+            return `<span class="inline-flex items-center gap-1 bg-violet-900/30 text-violet-300 text-xs px-2 py-1 rounded border border-violet-700/40 mr-1 mb-1" title="需要 +7 強化值以上的來源魔杖（不繼承強化值／屬性至成品）">
+                        <i class="fa-solid fa-wand-sparkles text-violet-400"></i> ${r._displayName}
+                    </span>`;
+        }
         if (r.id === 'gold') {
             return `<span class="inline-flex items-center gap-1 bg-yellow-900/30 text-yellow-400 text-xs px-2 py-1 rounded border border-yellow-700/40 mr-1 mb-1">
                         <i class="fa-solid fa-coins text-yellow-400"></i> ${r.cnt.toLocaleString()} 金幣
@@ -376,6 +383,23 @@ function renderCraftWiki() {
         if (typeof SHERINE_REMAINS !== 'undefined') {
             const ioRecipes = SHERINE_REMAINS.map(r => ({ result: r.id, req: [{ id: 'sherine_crystal', cnt: 1 }] }));
             injectRecipes('npc_io', { name: '伊奧', location: '席琳神殿', title: '遺骸兌換', icon: 'fa-bone', color: 'text-purple-400' }, ioRecipes);
+        }
+
+        // 7. 神秘的魔法師 (鋼鐵瑪那魔杖・魔杖改造)
+        if (typeof MYSTICWAND_RECIPES !== 'undefined' && typeof MYSTICWAND_MATS !== 'undefined') {
+            const mysticWandRecipes = MYSTICWAND_RECIPES.map(r => ({
+                result: r.result,
+                req: [
+                    ...MYSTICWAND_MATS.map(m => ({ id: m.id, cnt: m.cnt })),
+                    { id: `_wand_src_${r.src}`, cnt: 1, _displayName: `+7以上 ${r.srcName} ×1`, _special: true }
+                ]
+            }));
+            if (!CRAFT_RECIPES['npc_mystic_mage']) CRAFT_RECIPES['npc_mystic_mage'] = [];
+            mysticWandRecipes.forEach(r => {
+                if (!CRAFT_RECIPES['npc_mystic_mage'].some(cr => cr.result === r.result)) {
+                    CRAFT_RECIPES['npc_mystic_mage'].push(r);
+                }
+            });
         }
     }
 
