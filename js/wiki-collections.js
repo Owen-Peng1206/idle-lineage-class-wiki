@@ -330,6 +330,35 @@ const WikiCollections = (() => {
         document.getElementById('collections-empty-state').classList.add('hidden');
     }
 
+    const NPC_MAP = {
+        'npc_boni': '波尼 (雜貨)', 'npc_linda': '琳達 (魔法)', 'npc_bayes': '巴耶斯 (魔法)',
+        'npc_gilen': '吉倫 (魔法)', 'npc_vangil': '凡吉爾 (防具)', 'npc_evert': '愛沃特 (武器)',
+        'npc_wino': '威諾 (武器)', 'npc_skvati': '絲克巴蒂 (裝備)', 'npc_saedia': '賽迪亞 (水晶)',
+        'npc_sphere': '史菲爾 (水晶)', 'npc_sempal': '森帕爾 (書板)', 'default': '一般村莊商店',
+        'pandora': '潘朵拉', 'silver_knight': '鐵匠 (銀騎士村)', 'gludin': '鐵匠 (古魯丁)', 
+        'giran': '迪歐 (奇岩)', 'oren': '鐵匠 (歐瑞)', 'heine': '鐵匠 (海音)',
+        'werner': '威爾納 (威頓)', 'aden': '鐵匠 (亞丁)', 'witon': '魔法娃娃商人 (威頓)',
+        'npc_sebas': '賽巴斯 (奇岩)', 'npc_kororanz': '可羅蘭斯 (沉默洞穴)', 'npc_moli': '莫麗雅 (象牙塔)',
+        'npc_brabo': '布拉伯 (燃柳)'
+    };
+
+    function getTranslateName(key) {
+        if (NPC_MAP[key]) return NPC_MAP[key];
+        
+        // 嘗試從遊戲資料庫中的城鎮 NPC 清單尋找
+        if (typeof DB !== 'undefined' && DB.towns) {
+            for (let t in DB.towns) {
+                let town = DB.towns[t];
+                if (town.npcs) {
+                    let npc = town.npcs.find(x => x.id === key);
+                    if (npc) return `${npc.n} (${town.n})`;
+                }
+            }
+        }
+        
+        return key.replace('npc_', '');
+    }
+
     function getItemSourceHtml(itemId) {
         let sources = [];
         // Drops
@@ -337,7 +366,10 @@ const WikiCollections = (() => {
             const drops = wikiData.drops.filter(d => d.itemId === itemId);
             if (drops.length > 0) {
                 sources.push(`<div class="mb-2"><div class="text-xs font-semibold text-primary-400 mb-1">⚔️ 怪物掉落</div><div class="flex flex-wrap gap-1">` + 
-                    drops.slice(0, 10).map(d => `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">${d.mobName} <span class="text-gray-500">(${d.chanceStr})</span></span>`).join('') +
+                    drops.slice(0, 10).map(d => {
+                        let chanceText = d.isSpecial ? `<span class="text-amber-400 font-bold">${d.isSpecial}</span> (${d.chance}%)` : `${d.chance}%`;
+                        return `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">${d.monster} <span class="text-gray-500">(${chanceText})</span></span>`;
+                    }).join('') +
                     (drops.length > 10 ? `<span class="px-1.5 py-0.5 text-[10px] text-gray-500">...等 ${drops.length} 隻</span>` : '') +
                     `</div></div>`);
             }
@@ -349,12 +381,12 @@ const WikiCollections = (() => {
             for (let cn in CRAFT_RECIPES) {
                 let recs = CRAFT_RECIPES[cn];
                 if (!Array.isArray(recs)) continue;
-                recs.forEach(r => { if (r && r.result === itemId) crafts.push(cn); });
+                recs.forEach(r => { if (r && r.result === itemId) crafts.push(getTranslateName(cn)); });
             }
             if (crafts.length > 0) {
                 const uniqueCrafts = [...new Set(crafts)];
                 sources.push(`<div class="mb-2"><div class="text-xs font-semibold text-amber-400 mb-1">🔨 製作來源</div><div class="flex flex-wrap gap-1">` +
-                    uniqueCrafts.map(c => `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">NPC: ${c}</span>`).join('') +
+                    uniqueCrafts.map(c => `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">${c}</span>`).join('') +
                     `</div></div>`);
             }
         }
@@ -363,11 +395,12 @@ const WikiCollections = (() => {
         if (typeof SHOP_LISTS !== 'undefined') {
             const shops = [];
             for (let npc in SHOP_LISTS) {
-                if (SHOP_LISTS[npc].includes(itemId)) shops.push(npc);
+                if (SHOP_LISTS[npc].includes(itemId)) shops.push(getTranslateName(npc));
             }
             if (shops.length > 0) {
+                const uniqueShops = [...new Set(shops)];
                 sources.push(`<div class="mb-2"><div class="text-xs font-semibold text-emerald-400 mb-1">💰 商店購買</div><div class="flex flex-wrap gap-1">` +
-                    shops.map(s => `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">${s}</span>`).join('') +
+                    uniqueShops.map(s => `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">${s}</span>`).join('') +
                     `</div></div>`);
             }
         }
