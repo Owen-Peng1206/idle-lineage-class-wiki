@@ -198,6 +198,10 @@
                 <i class="fa-solid fa-hammer w-6 text-center mr-3 text-amber-400"></i>
                 <span class="text-gray-300 font-medium">製作百科</span>
             </button>
+            <button data-target="tab-collections" class="tab-btn w-full flex items-center px-6 py-3 text-left text-gray-400">
+                <i class="fa-solid fa-swatchbook w-6 text-center mr-3 text-pink-400"></i>
+                <span class="text-gray-300 font-medium">收藏圖鑑</span>
+            </button>
             
             <div class="px-6 py-2 mt-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">進階工具</div>
             <button data-target="tab-drops" class="tab-btn w-full flex items-center px-6 py-3 text-left text-gray-400">
@@ -413,6 +417,29 @@
                 <div id="craft-empty-state" class="hidden text-center mt-20 text-gray-500">
                     <i class="fa-solid fa-ghost text-5xl mb-4 opacity-50"></i>
                     <p class="text-lg">找不到符合條件的製作配方</p>
+                </div>
+            </section>
+
+            <!-- Tab: Collections -->
+            <section id="tab-collections" class="content-section">
+                <!-- 類別過濾器 -->
+                <div class="flex flex-wrap gap-2 mb-6" id="collection-filters">
+                    <button data-type="all" class="px-4 py-1.5 rounded-full bg-primary-600 text-white text-sm font-medium transition-colors filter-btn">全部</button>
+                    <button data-type="equip" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 filter-btn">裝備</button>
+                    <button data-type="item" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 filter-btn">道具</button>
+                    <button data-type="monster" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 filter-btn">怪物</button>
+                    <button data-type="relic" class="px-4 py-1.5 rounded-full bg-gray-800 text-gray-300 hover:bg-gray-700 text-sm font-medium transition-colors border border-gray-700 filter-btn border-gold-500/50 text-gold-400">遺物</button>
+                </div>
+                
+                <!-- 卡片容器 -->
+                <div id="collections-grid">
+                    <!-- 卡片與分類將由 JavaScript 動態生成 -->
+                </div>
+                
+                <!-- 無結果提示 -->
+                <div id="collections-empty-state" class="hidden text-center mt-20 text-gray-500">
+                    <i class="fa-solid fa-ghost text-5xl mb-4 opacity-50"></i>
+                    <p class="text-lg">找不到符合條件的收藏</p>
                 </div>
             </section>
 
@@ -633,6 +660,7 @@
             'tab-monsters': 'maps-grid',
             'tab-craft':    'craft-sections-container',
             'tab-drops':    'drop-table-body',
+            'tab-collections': 'collections-grid',
         };
 
         function showTabSkeleton(tabId) {
@@ -664,6 +692,7 @@
             'tab-monsters': ['./js/wiki-maps.js'],
             'tab-craft':    ['./js/wiki-craft.js'],
             'tab-drops':    [], // wiki-app.js 已處理
+            'tab-collections': ['./js/wiki-collections.js'],
         };
         const loadedTabs = new Set();
         let coreReady = false;
@@ -779,7 +808,7 @@
 
                 // 閒時預載其他常用 tab（不影響當前體驗）
                 scheduleAfterPaint(() => {
-                    const prefetchOrder = ['tab-classes', 'tab-items', 'tab-drops', 'tab-magics', 'tab-monsters', 'tab-craft'];
+                    const prefetchOrder = ['tab-classes', 'tab-items', 'tab-drops', 'tab-magics', 'tab-monsters', 'tab-craft', 'tab-collections'];
                     let delay = 0;
                     for (const tabId of prefetchOrder) {
                         if (!loadedTabs.has(tabId)) {
