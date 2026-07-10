@@ -56,7 +56,7 @@ const TOWN_ORDER = [
     '奇岩', '海音', '歐瑞村莊', '亞丁',
     '傲慢之塔入口', '象牙塔', '威頓村',
     '希培利亞村莊', '貝希摩斯', '沉默洞穴',
-    '炎魔謁見所'
+    '炎魔謁見所', '席琳神殿'
 ];
 
 // ==========================================
@@ -370,6 +370,12 @@ function renderCraftWiki() {
                 const recipes = qData.rewards.map(rId => ({ result: rId, req: reqs }));
                 injectRecipes(npcId, { name: qData.npc, location: '各級別試煉', title: `試煉任務`, icon: 'fa-scroll', color: 'text-emerald-400' }, recipes);
             });
+        }
+
+        // 6. 伊奧 (席琳遺骸兌換)
+        if (typeof SHERINE_REMAINS !== 'undefined') {
+            const ioRecipes = SHERINE_REMAINS.map(r => ({ result: r.id, req: [{ id: 'sherine_crystal', cnt: 1 }] }));
+            injectRecipes('npc_io', { name: '伊奧', location: '席琳神殿', title: '遺骸兌換', icon: 'fa-bone', color: 'text-purple-400' }, ioRecipes);
         }
     }
 
