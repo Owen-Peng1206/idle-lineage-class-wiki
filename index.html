@@ -98,9 +98,67 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* ==============================
+           頂部載入進度條
+        ============================== */
+        #wiki-progress-bar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        #wiki-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa, #a78bfa);
+            border-radius: 0 2px 2px 0;
+            box-shadow: 0 0 8px rgba(96, 165, 250, 0.7);
+            transition: width 0.3s ease-out, opacity 0.4s ease;
+        }
+        #wiki-progress-bar.done {
+            opacity: 0;
+        }
+
+        /* ==============================
+           骨架屏 Skeleton Loader
+        ============================== */
+        .wiki-skeleton-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding: 8px 0;
+        }
+        .wiki-skeleton-card {
+            background: rgba(31, 41, 55, 0.5);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .wiki-skeleton-line {
+            background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
     </style>
 </head>
 <body class="bg-gray-950 text-gray-300 h-screen overflow-hidden flex font-sans antialiased selection:bg-primary-500 selection:text-white">
+
+    <!-- 頂部載入進度條 -->
+    <div id="wiki-progress-bar-container">
+        <div id="wiki-progress-bar"></div>
+    </div>
 
     <!-- Mobile Sidebar Overlay -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
@@ -442,7 +500,9 @@
             const searchInput = document.getElementById('global-search');
             searchInput.value = '';
             
-            // 觸發自定義事件，讓各模組可以監聽並重新渲染
+            // 觸發 wikiTabSwitch 讓按需載入系統處理腳本載入
+            document.dispatchEvent(new CustomEvent('wikiTabSwitch', { detail: targetId }));
+            // 觸發 tabChanged 讓各已載入模組重新渲染
             document.dispatchEvent(new CustomEvent('tabChanged', { detail: targetId }));
         }
 
@@ -477,9 +537,11 @@
         }
     </script>
     
-    <!-- 延遲載入模組，讓主頁面先出來 (Lazy Load) -->
+    <!-- 延遲載入模組 (優化版：進度條 + 按需載入 + 骨架屏) -->
     <script>
-        // 定義假的全域變數或 Mock，讓遊戲原始資料能正常載入不報錯
+        // ==========================================
+        // Mock 函式：讓遊戲原始資料載入時不報錯
+        // ==========================================
         function logSys(){}
         function getIconUrl(){ return ''; }
         function getItemColor(){ return ''; }
@@ -497,48 +559,243 @@
         function refreshPandoraMarket(){}
         function msgEl(){ return null; }
 
-        // 將要載入的腳本以陣列形式管理，確保依序執行
-        const lazyScripts = [
+        // ==========================================
+        // 進度條控制器
+        // ==========================================
+        const WikiProgress = (() => {
+            const bar = document.getElementById('wiki-progress-bar');
+            let current = 0;
+
+            function set(pct) {
+                current = Math.min(pct, 100);
+                if (bar) bar.style.width = current + '%';
+            }
+            function increment(amount) {
+                set(current + amount);
+            }
+            function done() {
+                set(100);
+                setTimeout(() => { if (bar) bar.classList.add('done'); }, 300);
+            }
+            return { set, increment, done };
+        })();
+
+        // ==========================================
+        // 腳本載入器
+        // ==========================================
+        function loadScript(src) {
+            return new Promise((resolve) => {
+                // 避免重複載入
+                if (document.querySelector(`script[src="${src}"]`)) {
+                    resolve();
+                    return;
+                }
+                const s = document.createElement('script');
+                s.src = src;
+                s.onload = resolve;
+                s.onerror = () => {
+                    console.error('[Wiki] Failed to load:', src);
+                    resolve(); // 失敗也繼續
+                };
+                document.body.appendChild(s);
+            });
+        }
+
+        async function loadScriptsSequentially(scripts, onProgress) {
+            for (let i = 0; i < scripts.length; i++) {
+                await loadScript(scripts[i]);
+                if (onProgress) onProgress(i + 1, scripts.length);
+            }
+        }
+
+        // ==========================================
+        // 骨架屏：為各 tab 插入載入中 placeholder
+        // ==========================================
+        function buildSkeletonCards(count = 3) {
+            let html = '<div class="wiki-skeleton-wrap">';
+            for (let i = 0; i < count; i++) {
+                html += `
+                <div class="wiki-skeleton-card">
+                    <div class="wiki-skeleton-line" style="height:18px;width:40%"></div>
+                    <div class="wiki-skeleton-line" style="height:12px;width:90%"></div>
+                    <div class="wiki-skeleton-line" style="height:12px;width:75%"></div>
+                    <div class="wiki-skeleton-line" style="height:12px;width:60%"></div>
+                </div>`;
+            }
+            html += '</div>';
+            return html;
+        }
+
+        const tabSkeletonTargets = {
+            'tab-classes':  'classes-grid',
+            'tab-magics':   'magics-grid',
+            'tab-items':    'items-grid',
+            'tab-monsters': 'maps-grid',
+            'tab-craft':    'craft-sections-container',
+            'tab-drops':    'drop-table-body',
+        };
+
+        function showTabSkeleton(tabId) {
+            const targetId = tabSkeletonTargets[tabId];
+            if (!targetId) return;
+            const el = document.getElementById(targetId);
+            if (el && el.children.length === 0) {
+                el.innerHTML = buildSkeletonCards(4);
+            }
+        }
+
+        function clearTabSkeleton(tabId) {
+            const targetId = tabSkeletonTargets[tabId];
+            if (!targetId) return;
+            const el = document.getElementById(targetId);
+            // 只清除骨架屏（保留真實內容）
+            if (el && el.querySelector('.wiki-skeleton-wrap')) {
+                el.innerHTML = '';
+            }
+        }
+
+        // ==========================================
+        // 按需載入：tab → 對應腳本對映
+        // ==========================================
+        const tabScriptMap = {
+            'tab-classes':  ['./js/wiki-classes.js'],
+            'tab-magics':   ['./js/wiki-magics.js'],
+            'tab-items':    [], // wiki-app.js 已在 core 裡處理
+            'tab-monsters': ['./js/wiki-maps.js'],
+            'tab-craft':    ['./js/wiki-craft.js'],
+            'tab-drops':    [], // wiki-app.js 已處理
+        };
+        const loadedTabs = new Set();
+        let coreReady = false;
+        let pendingTabLoad = null; // 若 core 未就緒時用戶已點 tab，記錄等待
+
+        async function loadTabOnDemand(tabId) {
+            if (loadedTabs.has(tabId)) {
+                // 已載入，直接觸發渲染
+                document.dispatchEvent(new CustomEvent('tabChanged', { detail: tabId }));
+                return;
+            }
+
+            const scripts = tabScriptMap[tabId];
+            if (!scripts || scripts.length === 0) {
+                // 無需額外腳本，直接觸發渲染
+                loadedTabs.add(tabId);
+                document.dispatchEvent(new CustomEvent('tabChanged', { detail: tabId }));
+                return;
+            }
+
+            if (!coreReady) {
+                // core 還沒好，記住等 core 完成後再載
+                pendingTabLoad = tabId;
+                showTabSkeleton(tabId);
+                return;
+            }
+
+            showTabSkeleton(tabId);
+            WikiProgress.set(85);
+            await loadScriptsSequentially(scripts);
+            loadedTabs.add(tabId);
+            WikiProgress.set(95);
+            clearTabSkeleton(tabId);
+            document.dispatchEvent(new CustomEvent('tabChanged', { detail: tabId }));
+            WikiProgress.done();
+        }
+
+        // ==========================================
+        // 攔截 switchTab，加入按需載入邏輯
+        // ==========================================
+        // 在 switchTab 事件後觸發按需載入（搭配 tabChanged 事件系統）
+        document.addEventListener('wikiTabSwitch', (e) => {
+            const tabId = e.detail;
+            if (tabId === 'tab-home') return; // 首頁無需載入
+            if (coreReady) {
+                loadTabOnDemand(tabId);
+            } else {
+                pendingTabLoad = tabId;
+                showTabSkeleton(tabId);
+            }
+        });
+
+        // ==========================================
+        // 主流程：Core 腳本優先載入
+        // ==========================================
+        const coreScripts = [
             './idle-lineage-class/js/00-data.js',
             './idle-lineage-class/js/01-drops-config.js',
             './idle-lineage-class/js/12-npc-quests.js',
             './idle-lineage-class/js/13-shop-save.js',
             './idle-lineage-class/js/14-craft-pandora.js',
             './js/wiki-app.js',
-            './js/wiki-classes.js',
-            './js/wiki-magics.js',
-            './js/wiki-maps.js',
-            './js/wiki-craft.js'
         ];
 
-        function loadScriptsSequentially(scripts, index = 0) {
-            if (index >= scripts.length) {
-                // 全部載入完成後觸發事件
-                document.dispatchEvent(new CustomEvent('wikiDataLoaded'));
-                
-                // 如果目前在別的頁籤，手動觸發一次渲染，避免點擊太快導致畫面空白
-                const activeTabBtn = document.querySelector('.tab-btn.active');
-                if (activeTabBtn && activeTabBtn.getAttribute('data-target') !== 'tab-home') {
-                    document.dispatchEvent(new CustomEvent('tabChanged', { detail: activeTabBtn.getAttribute('data-target') }));
-                }
-                return;
+        // 使用 requestIdleCallback（降低對手機主執行緒的干擾）
+        // 若瀏覽器不支援則 fallback 為 setTimeout
+        function scheduleAfterPaint(fn) {
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(fn, { timeout: 2000 });
+            } else {
+                setTimeout(fn, 80);
             }
-            
-            const script = document.createElement('script');
-            script.src = scripts[index];
-            script.onload = () => loadScriptsSequentially(scripts, index + 1);
-            script.onerror = () => {
-                console.error('Failed to load script:', scripts[index]);
-                loadScriptsSequentially(scripts, index + 1);
-            };
-            document.body.appendChild(script);
         }
 
-        // 使用 load 事件，讓頁面先完全繪製後再開始載入大型腳本
         window.addEventListener('load', () => {
-            setTimeout(() => {
-                loadScriptsSequentially(lazyScripts);
-            }, 50); // 小延遲確保渲染執行緒有足夠時間把主畫面畫出來
+            scheduleAfterPaint(async () => {
+                WikiProgress.set(5);
+
+                await loadScriptsSequentially(coreScripts, (done, total) => {
+                    // Core 佔進度條 0-80%
+                    WikiProgress.set(Math.round((done / total) * 80));
+                });
+
+                coreReady = true;
+                WikiProgress.set(80);
+
+                // Core 完成，觸發全域事件
+                document.dispatchEvent(new CustomEvent('wikiDataLoaded'));
+                loadedTabs.add('tab-items');   // wiki-app.js 已初始化 items
+                loadedTabs.add('tab-drops');   // wiki-app.js 已初始化 drops
+
+                WikiProgress.set(82);
+
+                // 若有待處理的 tab 請求，現在處理
+                if (pendingTabLoad) {
+                    const tabToLoad = pendingTabLoad;
+                    pendingTabLoad = null;
+                    loadTabOnDemand(tabToLoad);
+                } else {
+                    // 沒有 pending，確認當前 active tab 是否需要渲染
+                    const activeTabBtn = document.querySelector('.tab-btn.active');
+                    if (activeTabBtn) {
+                        const activeTabId = activeTabBtn.getAttribute('data-target');
+                        if (activeTabId !== 'tab-home') {
+                            loadTabOnDemand(activeTabId);
+                        } else {
+                            WikiProgress.done();
+                        }
+                    } else {
+                        WikiProgress.done();
+                    }
+                }
+
+                // 閒時預載其他常用 tab（不影響當前體驗）
+                scheduleAfterPaint(() => {
+                    const prefetchOrder = ['tab-classes', 'tab-items', 'tab-drops', 'tab-magics', 'tab-monsters', 'tab-craft'];
+                    let delay = 0;
+                    for (const tabId of prefetchOrder) {
+                        if (!loadedTabs.has(tabId)) {
+                            const scripts = tabScriptMap[tabId];
+                            if (scripts && scripts.length > 0) {
+                                setTimeout(async () => {
+                                    await loadScriptsSequentially(scripts);
+                                    loadedTabs.add(tabId);
+                                    console.log('[Wiki] Prefetched:', tabId);
+                                }, delay);
+                                delay += 800; // 每隔 800ms 預載一個，避免搶佔網路
+                            }
+                        }
+                    }
+                });
+            });
         });
     </script>
     <!-- 懸浮圖片預覽 -->
