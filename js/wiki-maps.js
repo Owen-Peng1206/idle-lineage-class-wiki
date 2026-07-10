@@ -265,6 +265,87 @@ function initMapSelector() {
     }
 }
 
+// 初始化全域物品 Tooltip (避免被 overflow 遮擋)
+let mapsGlobalItemTooltip = null;
+function initMapsGlobalItemTooltip() {
+    if (document.getElementById('maps-global-item-tooltip')) return;
+    mapsGlobalItemTooltip = document.createElement('div');
+    mapsGlobalItemTooltip.id = 'maps-global-item-tooltip';
+    mapsGlobalItemTooltip.className = 'hidden fixed z-[9999] pointer-events-none w-max max-w-[280px] p-3 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl transform -translate-x-1/2 -translate-y-[calc(100%+10px)] transition-opacity duration-200 opacity-0';
+    document.body.appendChild(mapsGlobalItemTooltip);
+
+    document.addEventListener('mouseover', (e) => {
+        const target = e.target.closest('[data-hover-item]');
+        if (target) {
+            const itemId = target.getAttribute('data-hover-item');
+            const itemData = typeof DB !== 'undefined' && DB.items ? DB.items[itemId] : null;
+            if (itemData && typeof generateItemBadges === 'function') {
+                const badges = generateItemBadges(itemData);
+                if (badges) {
+                    const itemName = itemData.n || itemId;
+                    const isLegend = itemData.legend;
+                    let textColor = 'text-gray-400';
+                    let icon = '';
+                    if (isLegend) {
+                        textColor = 'text-gold-400 font-bold';
+                        icon = '<i class="fa-solid fa-crown text-gold-500 mr-1 text-[10px]"></i>';
+                    } else if (itemData.type === 'wpn' || itemData.type === 'arm') {
+                        textColor = 'text-blue-300 font-medium';
+                    } else if (itemData.type === 'pot' || itemData.type === 'scroll') {
+                        textColor = 'text-green-300';
+                    }
+                    
+                    mapsGlobalItemTooltip.innerHTML = `
+                        <div class="text-sm font-bold ${textColor} mb-2 border-b border-gray-700 pb-1">${icon}${itemName}</div>
+                        <div class="flex flex-wrap">${badges}</div>
+                    `;
+                    mapsGlobalItemTooltip.classList.remove('hidden');
+                    requestAnimationFrame(() => {
+                        mapsGlobalItemTooltip.classList.remove('opacity-0');
+                        mapsGlobalItemTooltip.classList.add('opacity-100');
+                    });
+                }
+            }
+        }
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (mapsGlobalItemTooltip && !mapsGlobalItemTooltip.classList.contains('hidden')) {
+            const tooltipRect = mapsGlobalItemTooltip.getBoundingClientRect();
+            let x = e.clientX;
+            let y = e.clientY;
+            
+            // 檢查是否超出上方邊界
+            if (y - tooltipRect.height - 10 < 0) {
+                mapsGlobalItemTooltip.style.transform = `translate(-50%, 20px)`;
+            } else {
+                mapsGlobalItemTooltip.style.transform = `translate(-50%, calc(-100% - 10px))`;
+            }
+            // 檢查左右邊界
+            if (x - tooltipRect.width/2 < 10) x = tooltipRect.width/2 + 10;
+            if (x + tooltipRect.width/2 > window.innerWidth - 10) x = window.innerWidth - tooltipRect.width/2 - 10;
+
+            mapsGlobalItemTooltip.style.left = `${x}px`;
+            mapsGlobalItemTooltip.style.top = `${y}px`;
+        }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+        const target = e.target.closest('[data-hover-item]');
+        if (target && mapsGlobalItemTooltip) {
+            mapsGlobalItemTooltip.classList.remove('opacity-100');
+            mapsGlobalItemTooltip.classList.add('opacity-0');
+            setTimeout(() => {
+                if (mapsGlobalItemTooltip.classList.contains('opacity-0')) {
+                    mapsGlobalItemTooltip.classList.add('hidden');
+                }
+            }, 200);
+        }
+    });
+}
+// 執行初始化
+initMapsGlobalItemTooltip();
+
 // 取得怪物掉落物清單 HTML
 function getMonsterDropsHtml(monsterId) {
     const mob = DB.mobs[monsterId];
@@ -300,10 +381,10 @@ function getMonsterDropsHtml(monsterId) {
         } else if (itemData?.type === 'pot' || itemData?.type === 'scroll') {
             textColor = 'text-green-300';
         }
-        
+
         return `
-            <div class="flex justify-between items-center bg-gray-950/50 p-1.5 rounded border border-gray-800/50 text-xs hover:border-gray-600 transition-colors">
-                <span class="${textColor} truncate max-w-[70%]" title="${itemName}">${icon}${itemName}</span>
+            <div class="flex justify-between items-center bg-gray-950/50 p-1.5 rounded border border-gray-800/50 text-xs hover:border-gray-600 transition-colors cursor-help" data-hover-item="${itemId}">
+                <span class="${textColor} truncate max-w-[70%]">${icon}${itemName}</span>
                 <span class="text-gray-500 font-mono">${chance}%</span>
             </div>
         `;
@@ -398,6 +479,34 @@ function renderMonsters() {
                             }
                             return '';
                         })()}
+                    </div>
+                    
+                    <!-- 數值面板 -->
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-1.5 mb-3">
+                        <div class="bg-gray-950/60 p-1.5 rounded border border-gray-800/80 flex justify-between items-center text-[11px]">
+                            <span class="text-gray-500"><i class="fa-solid fa-heart text-red-500/70 mr-1 w-3 text-center"></i>HP</span>
+                            <span class="text-gray-300 font-medium">${mob.hp || 0}</span>
+                        </div>
+                        <div class="bg-gray-950/60 p-1.5 rounded border border-gray-800/80 flex justify-between items-center text-[11px]">
+                            <span class="text-gray-500"><i class="fa-solid fa-khanda text-blue-400/70 mr-1 w-3 text-center"></i>攻擊</span>
+                            <span class="text-gray-300 font-medium">${mob.dmg ? (mob.dmg[0] + (mob.db||0)) + '~' + (mob.dmg[1] + (mob.db||0)) : '0'}</span>
+                        </div>
+                        <div class="bg-gray-950/60 p-1.5 rounded border border-gray-800/80 flex justify-between items-center text-[11px]">
+                            <span class="text-gray-500"><i class="fa-solid fa-crosshairs text-green-400/70 mr-1 w-3 text-center"></i>命中</span>
+                            <span class="text-gray-300 font-medium">${mob.hit || 0}</span>
+                        </div>
+                        <div class="bg-gray-950/60 p-1.5 rounded border border-gray-800/80 flex justify-between items-center text-[11px]">
+                            <span class="text-gray-500"><i class="fa-solid fa-shield-halved text-purple-400/70 mr-1 w-3 text-center"></i>魔防</span>
+                            <span class="text-gray-300 font-medium">${mob.mr || 0}%</span>
+                        </div>
+                        <div class="bg-gray-950/60 p-1.5 rounded border border-gray-800/80 flex justify-between items-center text-[11px]">
+                            <span class="text-gray-500"><i class="fa-solid fa-angles-up text-amber-400/70 mr-1 w-3 text-center"></i>經驗</span>
+                            <span class="text-gray-300 font-medium">${mob.exp || 0}</span>
+                        </div>
+                        <div class="bg-gray-950/60 p-1.5 rounded border border-gray-800/80 flex justify-between items-center text-[11px]">
+                            <span class="text-gray-500"><i class="fa-solid fa-coins text-gold-500/70 mr-1 w-3 text-center"></i>金幣</span>
+                            <span class="text-gold-400 font-medium">${mob.goldMin || 0}~${mob.goldMax || 0}</span>
+                        </div>
                     </div>
                     
                     <!-- 詳細資訊 (魔法與出沒地圖) -->
