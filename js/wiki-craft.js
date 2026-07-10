@@ -590,9 +590,7 @@ function buildCraftTownFilters() {
     });
 }
 
-// ==========================================
 // 初始化
-// ==========================================
 let _craftWikiInited = false;
 
 function initCraftWiki() {
@@ -627,3 +625,16 @@ document.addEventListener('tabChanged', (e) => {
         setTimeout(initCraftWiki, 50);
     }
 });
+
+// 當所有資料載入完成時，如果目前在製作百科分頁，就進行初始化
+document.addEventListener('wikiDataLoaded', () => {
+    const activeTab = document.querySelector('.tab-btn.active');
+    if (activeTab && activeTab.getAttribute('data-target') === 'tab-craft') {
+        initCraftWiki();
+    }
+});
+
+// 腳本載入當下也檢查一次
+if (document.querySelector('.tab-btn.active')?.getAttribute('data-target') === 'tab-craft') {
+    initCraftWiki();
+}

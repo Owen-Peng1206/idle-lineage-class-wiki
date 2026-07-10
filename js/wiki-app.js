@@ -1227,7 +1227,7 @@ if (dropSearchInput) {
 }
 
 // 初始化：初次載入時渲染一次
-document.addEventListener('DOMContentLoaded', () => {
+function initWikiApp() {
     // 若遊戲版本存在，顯示它
     if (typeof GAME_VERSION !== 'undefined') {
         const versionEl = document.getElementById('game-version-display');
@@ -1235,7 +1235,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // 先執行一次渲染（雖然預設在首頁，但先產生好 DOM 讓切換時無延遲）
-    renderItems();
-    renderDrops();
+    if (itemsGrid && !itemsGrid.innerHTML.trim()) renderItems();
+    
+    const dropTableBody = document.getElementById('drop-table-body');
+    if (dropTableBody && !dropTableBody.innerHTML.trim()) renderDrops();
+    
     sortDropTable('chance'); // 初始化排序圖示
-});
+}
+
+initWikiApp();
+document.addEventListener('wikiDataLoaded', initWikiApp);

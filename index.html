@@ -477,22 +477,9 @@
         }
     </script>
     
-    <!-- 載入遊戲原始資料 (DB, MOB_DROPS) -->
-    <!-- 為防止報錯，我們先定義一些假的全域變數或 Mock 讓 00-data.js 正常載入 -->
+    <!-- 延遲載入模組，讓主頁面先出來 (Lazy Load) -->
     <script>
-        // 不再定義 player，因為 01-drops-config.js 會用 let player 宣告，重複宣告會導致 SyntaxError
-        var window = window || {};
-    </script>
-    <script src="./idle-lineage-class/js/00-data.js"></script>
-    <script src="./idle-lineage-class/js/01-drops-config.js"></script>
-
-    <!-- Wiki 製作百科：注入最小 stub，讓 14-craft-pandora.js 可安全載入（只取 CRAFT_RECIPES 資料） -->
-    <script>
-        // Stubs for game-only globals referenced inside 14-craft-pandora.js functions
-        // These functions are never called in the wiki context; we only need CRAFT_RECIPES constant.
-        if (typeof player === 'undefined') {
-            var player = { inv: [], gold: 0, classicMode: false, pandoraMarket2: null, pandoraAnnounce: null };
-        }
+        // 定義假的全域變數或 Mock，讓遊戲原始資料能正常載入不報錯
         function logSys(){}
         function getIconUrl(){ return ''; }
         function getItemColor(){ return ''; }
@@ -509,18 +496,51 @@
         function renderPandoraBanner(){}
         function refreshPandoraMarket(){}
         function msgEl(){ return null; }
-        var RECIPE_BY_RESULT = null;
-    </script>
-    <script src="./idle-lineage-class/js/12-npc-quests.js"></script>
-    <script src="./idle-lineage-class/js/13-shop-save.js"></script>
-    <script src="./idle-lineage-class/js/14-craft-pandora.js"></script>
 
-    <!-- 載入 Wiki 應用邏輯 -->
-    <script src="./js/wiki-app.js"></script>
-    <script src="./js/wiki-classes.js"></script>
-    <script src="./js/wiki-magics.js"></script>
-    <script src="./js/wiki-maps.js"></script>
-    <script src="./js/wiki-craft.js"></script>
+        // 將要載入的腳本以陣列形式管理，確保依序執行
+        const lazyScripts = [
+            './idle-lineage-class/js/00-data.js',
+            './idle-lineage-class/js/01-drops-config.js',
+            './idle-lineage-class/js/12-npc-quests.js',
+            './idle-lineage-class/js/13-shop-save.js',
+            './idle-lineage-class/js/14-craft-pandora.js',
+            './js/wiki-app.js',
+            './js/wiki-classes.js',
+            './js/wiki-magics.js',
+            './js/wiki-maps.js',
+            './js/wiki-craft.js'
+        ];
+
+        function loadScriptsSequentially(scripts, index = 0) {
+            if (index >= scripts.length) {
+                // 全部載入完成後觸發事件
+                document.dispatchEvent(new CustomEvent('wikiDataLoaded'));
+                
+                // 如果目前在別的頁籤，手動觸發一次渲染，避免點擊太快導致畫面空白
+                const activeTabBtn = document.querySelector('.tab-btn.active');
+                if (activeTabBtn && activeTabBtn.getAttribute('data-target') !== 'tab-home') {
+                    document.dispatchEvent(new CustomEvent('tabChanged', { detail: activeTabBtn.getAttribute('data-target') }));
+                }
+                return;
+            }
+            
+            const script = document.createElement('script');
+            script.src = scripts[index];
+            script.onload = () => loadScriptsSequentially(scripts, index + 1);
+            script.onerror = () => {
+                console.error('Failed to load script:', scripts[index]);
+                loadScriptsSequentially(scripts, index + 1);
+            };
+            document.body.appendChild(script);
+        }
+
+        // 使用 load 事件，讓頁面先完全繪製後再開始載入大型腳本
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                loadScriptsSequentially(lazyScripts);
+            }, 50); // 小延遲確保渲染執行緒有足夠時間把主畫面畫出來
+        });
+    </script>
     <!-- 懸浮圖片預覽 -->
     <div id="image-tooltip" class="hidden fixed z-50 pointer-events-none bg-gray-900 border border-gray-700 rounded-lg shadow-2xl p-2 transform -translate-x-1/2 -translate-y-[calc(100%+10px)] transition-opacity duration-200 opacity-0">
         <img id="tooltip-img" src="" alt="preview" class="max-w-[250px] max-h-[250px] object-contain">

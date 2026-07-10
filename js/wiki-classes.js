@@ -460,6 +460,16 @@ window.closeClassDetail = function() {
     classDetailPanel.classList.add('hidden');
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    renderClasses();
+// 當腳本載入完成時，直接嘗試渲染一次
+renderClasses();
+
+// 監聽後續的資料更新事件或切換事件，確保內容始終存在
+document.addEventListener('wikiDataLoaded', renderClasses);
+document.addEventListener('tabChanged', (e) => {
+    if (e.detail === 'tab-classes') {
+        const grid = document.getElementById('classes-grid');
+        if (grid && grid.innerHTML.trim() === '') {
+            renderClasses();
+        }
+    }
 });
