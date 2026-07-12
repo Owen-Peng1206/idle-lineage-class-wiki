@@ -441,13 +441,19 @@ function renderMonsters() {
             const titleClass = isBoss ? 'text-red-400 font-bold' : 'text-gray-200 font-semibold';
             const bgClass = isBoss ? 'bg-gradient-to-br from-gray-900 to-red-950/20' : 'bg-gray-900/40';
             
+            const encodedMobN = encodeURIComponent(mob.n);
+            const fallbackImg = mob.img 
+                ? `this.onerror=null; this.src='${mob.img}'; this.onerror=function(){this.outerHTML='<i class=\\'fa-solid fa-ghost text-gray-500 text-xl\\'></i>'};`
+                : `this.outerHTML='<i class=\\'fa-solid fa-ghost text-gray-500 text-xl\\'></i>';`;
+            const onerrorStr = `this.onerror=null; this.src='idle-lineage-class/assets/anim/${encodedMobN}/d4/idle_0.png'; this.onerror=function(){ ${fallbackImg} }`;
+            
             return `
                 <div class="glass-panel p-5 rounded-xl border ${borderClass} ${bgClass} transition-all duration-300">
                     <div class="flex justify-between items-start mb-3 border-b border-gray-800/80 pb-3">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 rounded-lg bg-gray-950 border border-gray-800 flex items-center justify-center overflow-hidden">
-                                <img src="idle-lineage-class/assets/anim/${encodeURIComponent(mob.n)}/idle_0.png" alt="${mob.n}" class="w-full h-full object-contain cursor-pointer" data-hover-image
-                                    onerror="this.onerror=null; ${mob.img ? `this.src='${mob.img}'; this.onerror=function(){this.outerHTML='<i class=\\'fa-solid fa-ghost text-gray-500 text-xl\\'></i>'};` : `this.outerHTML='<i class=\\'fa-solid fa-ghost text-gray-500 text-xl\\'></i>';`}">
+                                <img src="idle-lineage-class/assets/anim/${encodedMobN}/idle_0.png" alt="${mob.n}" class="w-full h-full object-contain cursor-pointer" data-hover-image
+                                    onerror="${onerrorStr}">
                             </div>
                             <div>
                                 <h4 class="text-lg ${titleClass}">
