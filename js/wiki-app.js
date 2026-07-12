@@ -66,7 +66,8 @@ const subFilterOptions = {
         { id: 'amulet', name: '項鍊' },
         { id: 'ring', name: '戒指' },
         { id: 'belt', name: '腰帶' },
-        { id: 'ear', name: '耳環' }
+        { id: 'ear', name: '耳環' },
+        { id: 'pet', name: '寵物裝備' }
     ],
     etc: [
         { id: 'all', name: '全部雜項' },
@@ -982,7 +983,8 @@ function renderItems() {
             matchType = !!item.relic;
         } else {
             const isTargetType = item.type === currentFilterType
-                || (currentFilterType === 'etc' && item.type === 'misc');
+                || (currentFilterType === 'etc' && item.type === 'misc')
+                || (currentFilterType === 'acc' && (item.slot === 'petwpn' || item.slot === 'petarm' || item.slot === 'pet'));
             if (isTargetType && !item.relic) {
                 matchType = true;
                 if (currentFilterSubType !== 'all') {
@@ -1017,7 +1019,11 @@ function renderItems() {
                             else if (currentFilterSubType === 'sword') matchType = !isKiringku && !isChainsword && !isClaw && !isDual && !item.isBow && !item.isArrow && !isWand && !isSpear && !isBlunt && !isDagger;
                         }
                     } else if (currentFilterType === 'arm' || currentFilterType === 'acc') {
-                        matchType = item.slot === currentFilterSubType;
+                        if (currentFilterSubType === 'pet') {
+                            matchType = item.slot === 'petwpn' || item.slot === 'petarm' || item.slot === 'pet';
+                        } else {
+                            matchType = item.slot === currentFilterSubType;
+                        }
                     } else if (currentFilterType === 'etc') {
                         const isMat = item.id.startsWith('mat_') || (item.d && item.d.includes('製作材料'));
                         if (currentFilterSubType === 'mat') matchType = isMat;
