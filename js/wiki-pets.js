@@ -74,7 +74,7 @@
 
     function renderPetBook() {
         const grid = document.getElementById('pets-grid');
-        grid.innerHTML = '';
+        let htmlContent = '';
 
         Object.entries(PET_BOOK).forEach(([name, def]) => {
             if (currentTierFilter !== 'all' && def.tier.toString() !== currentTierFilter) return;
@@ -103,12 +103,12 @@
                 evoHtml = `<div class="text-[11px] text-emerald-400/80 mt-2"><i class="fa-solid fa-arrow-turn-up mr-1 transform rotate-90"></i>可進化為 ${def.evo}</div>`;
             }
 
-            const html = `
+            htmlContent += `
                 <div class="${bgClass} border ${borderClass} rounded-xl p-4 flex flex-col hover:border-emerald-500 transition-colors relative overflow-hidden">
                     <div class="flex justify-between items-start mb-2">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 rounded-lg bg-gray-950/80 border border-gray-700/80 flex items-center justify-center overflow-hidden shrink-0">
-                                <img src="idle-lineage-class/assets/anim/${encodeURIComponent(name)}/d4/idle_0.png" alt="${name}" class="w-full h-full object-contain scale-[1.2] cursor-pointer" data-hover-image onerror="this.style.display='none'">
+                                <img src="idle-lineage-class/assets/anim/${encodeURIComponent(name)}/d4/idle_0.png" alt="${name}" loading="lazy" class="w-full h-full object-contain scale-[1.2] cursor-pointer" data-hover-image onerror="this.style.display='none'">
                             </div>
                             <div class="font-bold text-base ${nameColor}">${name}</div>
                         </div>
@@ -139,8 +139,9 @@
                     ${evoHtml}
                 </div>
             `;
-            grid.insertAdjacentHTML('beforeend', html);
         });
+        
+        grid.innerHTML = htmlContent;
     }
 
     function renderCaptureAndRaising() {
