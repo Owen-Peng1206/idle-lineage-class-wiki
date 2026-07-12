@@ -150,6 +150,14 @@ function generateItemBadges(item) {
 
     if (item.thorns) badges += `<span class="text-xs px-2 py-1 rounded bg-red-900/40 text-red-300 mr-2 mb-2 inline-block border border-red-700/50">反擊 ${item.thorns}</span>`;
 
+    // 寵物專屬屬性
+    if (item.petDmg) badges += `<span class="text-xs px-2 py-1 rounded bg-orange-900/40 text-orange-300 mr-2 mb-2 inline-block border border-orange-700/50">寵物傷害 ${item.petDmg > 0 ? '+' : ''}${item.petDmg}</span>`;
+    if (item.petHit) badges += `<span class="text-xs px-2 py-1 rounded bg-orange-900/40 text-orange-300 mr-2 mb-2 inline-block border border-orange-700/50">寵物命中 ${item.petHit > 0 ? '+' : ''}${item.petHit}</span>`;
+    if (item.petAc) badges += `<span class="text-xs px-2 py-1 rounded bg-blue-900/40 text-blue-300 mr-2 mb-2 inline-block border border-blue-700/50">寵物防禦(AC) ${item.petAc < 0 ? '+' : '-'}${Math.abs(item.petAc)}</span>`;
+    if (item.petMr) badges += `<span class="text-xs px-2 py-1 rounded bg-purple-900/40 text-purple-300 mr-2 mb-2 inline-block border border-purple-700/50">寵物魔防 ${item.petMr > 0 ? '+' : ''}${item.petMr}</span>`;
+    if (item.petInt) badges += `<span class="text-xs px-2 py-1 rounded bg-blue-900/40 text-blue-300 mr-2 mb-2 inline-block border border-blue-700/50">寵物智力 ${item.petInt > 0 ? '+' : ''}${item.petInt}</span>`;
+    if (item.petWis) badges += `<span class="text-xs px-2 py-1 rounded bg-purple-900/40 text-purple-300 mr-2 mb-2 inline-block border border-purple-700/50">寵物精神 ${item.petWis > 0 ? '+' : ''}${item.petWis}</span>`;
+
     return badges;
 }
 
@@ -804,7 +812,26 @@ function createItemCard(item) {
         `;
     }
 
-    // 6. 裝備特效標籤 (Effects) - 粉紅色
+    // 6. 寵物專屬屬性 (橙色)
+    let petStatsHtml = '';
+    let hasPetStats = item.petDmg || item.petHit || item.petAc || item.petMr || item.petInt || item.petWis;
+    if (hasPetStats) {
+        petStatsHtml = `
+            <div class="mt-2.5 border border-orange-900/40 rounded bg-orange-950/20 p-2 shadow-inner">
+                <div class="text-[11px] text-orange-400 font-bold mb-1.5 flex items-center border-b border-orange-900/50 pb-1"><i class="fa-solid fa-paw mr-1.5"></i>寵物專屬屬性加成</div>
+                <div class="grid grid-cols-2 gap-y-1 gap-x-2 text-[11px] text-orange-300">
+                    ${item.petDmg ? `<div class="flex justify-between"><span>寵物傷害:</span> <span class="text-orange-200">+${item.petDmg}</span></div>` : ''}
+                    ${item.petHit ? `<div class="flex justify-between"><span>寵物命中:</span> <span class="text-orange-200">+${item.petHit}</span></div>` : ''}
+                    ${item.petAc ? `<div class="flex justify-between"><span>寵物防禦(AC):</span> <span class="text-orange-200">${item.petAc < 0 ? item.petAc : '-'+Math.abs(item.petAc)}</span></div>` : ''}
+                    ${item.petMr ? `<div class="flex justify-between"><span>寵物魔防:</span> <span class="text-orange-200">+${item.petMr}</span></div>` : ''}
+                    ${item.petInt ? `<div class="flex justify-between"><span>寵物智力:</span> <span class="text-orange-200">+${item.petInt}</span></div>` : ''}
+                    ${item.petWis ? `<div class="flex justify-between"><span>寵物精神:</span> <span class="text-orange-200">+${item.petWis}</span></div>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    // 7. 裝備特效標籤 (Effects) - 粉紅色
     let effectsHtml = '';
     let effArr = [];
     if (item.eff && effNamesMap[item.eff]) effArr.push(effNamesMap[item.eff]);
@@ -903,6 +930,7 @@ function createItemCard(item) {
                 ${defStatsHtml}
                 ${baseStatsHtml}
                 ${mpSpecialHtml}
+                ${petStatsHtml}
                 ${effectsHtml}
             </div>
             
