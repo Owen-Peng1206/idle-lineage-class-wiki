@@ -104,6 +104,8 @@ const mapNameTranslations = {
     "dark_magic_lab": "黑魔法研究室",
     "necro_training": "魔獸兵訓練場",
     "elder_room": "格蘭肯神殿：長老之室",
+    "dark_elf_sanctuary": "黑暗妖精聖地",
+    "cursed_dark_elf_sanctuary": "受詛咒的黑暗妖精聖地",
     "antaras_lair": "地龍安塔瑞斯棲息地",
     "fafurion_lair": "水龍法利昂棲息地",
     "valakas_lair": "火龍巴拉卡斯棲息地",

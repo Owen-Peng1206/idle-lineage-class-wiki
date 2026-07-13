@@ -326,6 +326,8 @@ const wikiMapNames = {
     "dark_magic_lab": "黑魔法研究室",
     "necro_training": "冥法軍訓練場",
     "elder_room": "格蘭肯神殿．長老之室",
+    "dark_elf_sanctuary": "黑暗妖精聖地",
+    "cursed_dark_elf_sanctuary": "受詛咒的黑暗妖精聖地",
     "demon_temple": "魔族神殿",
     "shadow_temple": "暗影神殿",
     "training": "新兵修練場",
