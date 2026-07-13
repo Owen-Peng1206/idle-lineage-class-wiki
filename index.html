@@ -67,14 +67,32 @@
         .tab-btn {
             transition: all 0.2s ease-in-out;
         }
-        .tab-btn.active {
+        #nav-menu .tab-btn.active {
             background-color: rgba(59, 130, 246, 0.15); /* primary-500 with opacity */
             border-right: 4px solid #3b82f6;
             color: #60a5fa;
             font-weight: 600;
         }
+        #mobile-bottom-nav .tab-btn {
+            border-top: 2px solid transparent;
+        }
+        #mobile-bottom-nav .tab-btn.active {
+            background-color: rgba(59, 130, 246, 0.15);
+            border-top-color: #3b82f6;
+            color: #60a5fa;
+            font-weight: 600;
+        }
         .tab-btn:hover:not(.active) {
             background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Hide scrollbar for bottom nav */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         /* Glassmorphism elements */
@@ -217,7 +235,7 @@
         <!-- Footer Info -->
         <div class="p-4 border-t border-gray-800 text-xs text-gray-500 text-center">
             Wiki Database v1.0<br>
-            Game Version: <span id="game-version-display">v3.1.49</span>
+            <a href="https://github.com/shines871/idle-lineage-class" target="_blank" class="hover:text-gold-400 transition-colors">Game Version: <span id="game-version-display">v3.1.49</span></a>
         </div>
     </aside>
 
@@ -226,7 +244,7 @@
         <!-- Topbar -->
         <header class="h-16 glass-panel border-b border-gray-800 flex items-center justify-between px-4 md:px-8 z-10 shrink-0">
             <div class="flex items-center gap-3">
-                <button id="mobile-menu-btn" class="md:hidden text-gray-400 hover:text-white transition-colors focus:outline-none">
+                <button id="mobile-menu-btn" class="hidden text-gray-400 hover:text-white transition-colors focus:outline-none">
                     <i class="fa-solid fa-bars text-xl"></i>
                 </button>
                 <h2 id="current-page-title" class="text-lg font-semibold text-white truncate">首頁簡介</h2>
@@ -252,12 +270,38 @@
                         這是一個專為開源遊戲 <span class="text-primary-400 font-semibold">Idle Lineage Class</span> 打造的資料查詢網站。<br>
                         你可以在左側導覽列切換不同的圖鑑，或是使用進階的<span class="text-gold-400 font-semibold">「掉落雙向查詢系統」</span>來尋找你需要的裝備與怪物。
                     </p>
-                    <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <button onclick="switchTab('tab-items')" class="px-6 py-3 sm:py-2 bg-primary-600 hover:bg-primary-500 text-white rounded-lg font-medium transition-colors shadow-[0_0_15px_rgba(37,99,235,0.4)] w-full sm:w-auto">
-                            瀏覽裝備
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6 w-full">
+                        <button onclick="switchTab('tab-classes')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-gray-500 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                            <i class="fa-solid fa-users text-2xl mb-3 text-gray-400 group-hover:text-white transition-colors"></i>
+                            <span class="text-sm font-medium text-gray-300 group-hover:text-white">職業與任務</span>
                         </button>
-                        <button onclick="switchTab('tab-drops')" class="px-6 py-3 sm:py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors border border-gray-600 w-full sm:w-auto">
-                            查詢掉落
+                        <button onclick="switchTab('tab-magics')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-gray-500 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                            <i class="fa-solid fa-book-journal-whills text-2xl mb-3 text-gray-400 group-hover:text-white transition-colors"></i>
+                            <span class="text-sm font-medium text-gray-300 group-hover:text-white">魔法圖鑑</span>
+                        </button>
+                        <button onclick="switchTab('tab-items')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-gray-500 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                            <i class="fa-solid fa-khanda text-2xl mb-3 text-gray-400 group-hover:text-white transition-colors"></i>
+                            <span class="text-sm font-medium text-gray-300 group-hover:text-white">道具裝備</span>
+                        </button>
+                        <button onclick="switchTab('tab-monsters')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-gray-500 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                            <i class="fa-solid fa-spaghetti-monster-flying text-2xl mb-3 text-gray-400 group-hover:text-white transition-colors"></i>
+                            <span class="text-sm font-medium text-gray-300 group-hover:text-white">怪物地圖</span>
+                        </button>
+                        <button onclick="switchTab('tab-craft')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-amber-400/50 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                            <i class="fa-solid fa-hammer text-2xl mb-3 text-amber-400/70 group-hover:text-amber-400 transition-colors"></i>
+                            <span class="text-sm font-medium text-gray-300 group-hover:text-white">製作菜單</span>
+                        </button>
+                        <button onclick="switchTab('tab-collections')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-pink-400/50 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                            <i class="fa-solid fa-swatchbook text-2xl mb-3 text-pink-400/70 group-hover:text-pink-400 transition-colors"></i>
+                            <span class="text-sm font-medium text-gray-300 group-hover:text-white">收藏圖鑑</span>
+                        </button>
+                        <button onclick="switchTab('tab-pets')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-emerald-400/50 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                            <i class="fa-solid fa-paw text-2xl mb-3 text-emerald-400/70 group-hover:text-emerald-400 transition-colors"></i>
+                            <span class="text-sm font-medium text-gray-300 group-hover:text-white">寵物圖鑑</span>
+                        </button>
+                        <button onclick="switchTab('tab-drops')" class="flex flex-col items-center justify-center p-4 bg-primary-900/20 hover:bg-primary-900/40 border border-primary-500/30 hover:border-primary-500/80 rounded-xl transition-all duration-300 hover:-translate-y-1 group shadow-[0_0_15px_rgba(37,99,235,0.05)] hover:shadow-[0_0_15px_rgba(37,99,235,0.2)]">
+                            <i class="fa-solid fa-magnifying-glass-chart text-2xl mb-3 text-primary-400 group-hover:text-primary-300 transition-colors"></i>
+                            <span class="text-sm font-medium text-gray-300 group-hover:text-white">掉落查詢</span>
                         </button>
                     </div>
                     
@@ -546,6 +590,46 @@
             </section>
 
         </div>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav id="mobile-bottom-nav" class="md:hidden glass-panel border-t border-gray-800 flex overflow-x-auto whitespace-nowrap hide-scrollbar shrink-0" style="padding-bottom: env(safe-area-inset-bottom);">
+            <button data-target="tab-home" class="tab-btn active flex-none w-[72px] flex flex-col items-center justify-center py-2 text-gray-400">
+                <i class="fa-solid fa-house text-xl mb-1"></i>
+                <span class="text-[10px]">首頁</span>
+            </button>
+            <button data-target="tab-classes" class="tab-btn flex-none w-[72px] flex flex-col items-center justify-center py-2 text-gray-400">
+                <i class="fa-solid fa-users text-xl mb-1"></i>
+                <span class="text-[10px]">職業</span>
+            </button>
+            <button data-target="tab-magics" class="tab-btn flex-none w-[72px] flex flex-col items-center justify-center py-2 text-gray-400">
+                <i class="fa-solid fa-book-journal-whills text-xl mb-1"></i>
+                <span class="text-[10px]">魔法</span>
+            </button>
+            <button data-target="tab-items" class="tab-btn flex-none w-[72px] flex flex-col items-center justify-center py-2 text-gray-400">
+                <i class="fa-solid fa-khanda text-xl mb-1"></i>
+                <span class="text-[10px]">裝備</span>
+            </button>
+            <button data-target="tab-monsters" class="tab-btn flex-none w-[72px] flex flex-col items-center justify-center py-2 text-gray-400">
+                <i class="fa-solid fa-spaghetti-monster-flying text-xl mb-1"></i>
+                <span class="text-[10px]">怪物</span>
+            </button>
+            <button data-target="tab-craft" class="tab-btn flex-none w-[72px] flex flex-col items-center justify-center py-2 text-gray-400">
+                <i class="fa-solid fa-hammer text-xl mb-1 text-amber-400"></i>
+                <span class="text-[10px]">製作</span>
+            </button>
+            <button data-target="tab-collections" class="tab-btn flex-none w-[72px] flex flex-col items-center justify-center py-2 text-gray-400">
+                <i class="fa-solid fa-swatchbook text-xl mb-1 text-pink-400"></i>
+                <span class="text-[10px]">收藏</span>
+            </button>
+            <button data-target="tab-pets" class="tab-btn flex-none w-[72px] flex flex-col items-center justify-center py-2 text-gray-400">
+                <i class="fa-solid fa-paw text-xl mb-1 text-emerald-400"></i>
+                <span class="text-[10px]">寵物</span>
+            </button>
+            <button data-target="tab-drops" class="tab-btn flex-none w-[72px] flex flex-col items-center justify-center py-2 text-gray-400">
+                <i class="fa-solid fa-magnifying-glass-chart text-xl mb-1 text-gold-400"></i>
+                <span class="text-[10px]">掉落</span>
+            </button>
+        </nav>
     </main>
 
     <!-- UI Logic Script -->
@@ -556,15 +640,21 @@
         const pageTitle = document.getElementById('current-page-title');
 
         function switchTab(targetId) {
+            let newTitle = '';
             // 更新按鈕狀態
             tabBtns.forEach(btn => {
                 if (btn.getAttribute('data-target') === targetId) {
                     btn.classList.add('active');
-                    pageTitle.textContent = btn.innerText.trim();
+                    if (btn.closest('#nav-menu')) {
+                        newTitle = btn.innerText.trim();
+                    }
                 } else {
                     btn.classList.remove('active');
                 }
             });
+            if (newTitle) {
+                pageTitle.textContent = newTitle;
+            }
 
             // 更新內容狀態
             sections.forEach(sec => {

@@ -40,7 +40,7 @@
     *   `js/00-data.js`, `js/01-drops-config.js`: 遊戲的核心資料庫。
     *   `js/12-npc-quests.js`, `js/13-shop-save.js`, `js/14-craft-pandora.js`: NPC 與製作系統相關資料。
 ## ⚖️聲明
-* 遊戲創意及美術設計歸屬於原作者 秋玥(https://github.com/shines871)。
+* 遊戲創意及美術設計歸屬於原作者 秋玥(https://github.com/shines871)
 * 本專案為學習用途，僅供參考，不提供任何商業用途。
 * 不保證所有資料正確性。
 
