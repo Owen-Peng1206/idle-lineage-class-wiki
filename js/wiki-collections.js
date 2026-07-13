@@ -21,7 +21,6 @@ const WikiCollections = (() => {
         { key: 'dual',       name: '雙刀',     group: '武器', bonus: '傷害減免 +1' }, { key: 'chainsword', name: '鎖鏈劍',   group: '武器', bonus: 'HP +5' },
         { key: 'bow',        name: '弓',       group: '武器', bonus: 'ER +1' }, { key: 'xbow',       name: '十字弓',   group: '武器', bonus: 'MR +1' },
         { key: 'wand',       name: '魔杖',     group: '武器', bonus: 'MP自動恢復量 +1' }, { key: 'qigu',       name: '奇古獸',   group: '武器', bonus: 'MP +5' },
-        { key: 'wpn_other',  name: '其他武器', group: '武器', bonus: '' },
         { key: 'helm',     name: '頭盔',   group: '防具', bonus: '傷害減免 +1' }, { key: 'armor',    name: '盔甲',   group: '防具', bonus: 'AC -1' },
         { key: 'shin',     name: '脛甲',   group: '防具', bonus: '傷害減免 +1' }, { key: 'tshirt',   name: '內衣',   group: '防具', bonus: '' },
         { key: 'cloak',    name: '斗篷',   group: '防具', bonus: 'MR +1' }, { key: 'boots',    name: '長靴',   group: '防具', bonus: 'ER +1' },
@@ -60,27 +59,112 @@ const WikiCollections = (() => {
         { key: 'rift',         name: '時空裂痕',   stat: 'resEarth', vals: [1, 2, 3],   maps: ['thebes_desert', 'thebes_pyramid', 'thebes_temple', 'tikal_area', 'tikal_deep', 'tikal_altar'] }
     ];
 
+    const WEAPON_TAGS = {
+        wpn_katana: ['單手劍','武士刀'], wpn_siruge: ['單手劍','武士刀'], wpn_golden_scepter: ['單手劍','武士刀'],
+        wpn_dagger2: ['匕首'], wpn_dagger1: ['匕首'], wpn_11: ['匕首'], wpn_33: ['匕首'],
+        wpn_longsword: ['單手劍'], wpn_9: ['單手劍'], wpn_scimitar: ['單手劍'], wpn_26: ['單手劍'],
+        wpn_elfsword: ['單手劍'], wpn_27: ['單手劍'], wpn_shortsword: ['單手劍'], wpn_redknight: ['單手劍'],
+        wpn_invader: ['單手劍'], wpn_34: ['單手劍'], wpn_35: ['單手劍'],
+        wpn_36: ['單手劍'], wpn_rapier: ['單手劍'], wpn_mailbreaker: ['單手劍'], wpn_silversword: ['單手劍'], wpn_37: ['單手劍'],
+        wpn_21: ['矛'], wpn_24: ['矛'], wpn_25: ['矛'], wpn_28: ['矛'], wpn_39: ['矛'], wpn_40: ['矛'], wpn_41: ['矛'], wpn_17: ['矛'], wpn_4: ['矛'], wpn_halberd: ['矛'],
+        wpn_20: ['單手鈍器'], wpn_10: ['單手鈍器'], wpn_13: ['單手鈍器'], wpn_alien: ['單手鈍器'], wpn_1: ['單手鈍器'], wpn_2: ['單手鈍器'], wpn_ancient_axe: ['單手鈍器'], wpn_warrior_trial_axe: ['單手鈍器'], wpn_master_axe: ['單手鈍器'], wpn_demon_axehead: ['單手鈍器'], wpn_iron_axehead: ['單手鈍器'], wpn_giant_axehead: ['單手鈍器'],
+        wpn_2hsword: ['雙手劍'], wpn_dragonslayer: ['雙手劍'], wpn_official_2h: ['雙手劍'],
+        wpn_battleaxe: ['雙手鈍器'], wpn_19: ['雙手鈍器'], wpn_23: ['雙手鈍器'], wpn_giantaxe: ['雙手鈍器'], wpn_berserker: ['雙手鈍器'], wpn_silveraxe: ['雙手鈍器'], wpn_taurus_axe: ['雙手鈍器'],
+        wpn_claw_bronze:['鋼爪'], wpn_claw_steel:['鋼爪'], wpn_claw_shadow:['鋼爪'], wpn_claw_silver:['鋼爪'], wpn_claw_dark:['鋼爪'], wpn_claw_gloom:['鋼爪'], wpn_claw_damascus:['鋼爪'], wpn_claw_abyss:['鋼爪'],
+        wpn_baranka_claw:['鋼爪'], wpn_baranka_steelclaw:['鋼爪'],
+        wpn_blood_2hsword:['雙手劍'], wpn_dark_sword:['單手劍'],
+        wpn_dk_flameblade:['單手劍'], wpn_kurt_sword:['單手劍'],
+        wpn_assassin_mark:['雙刀'],
+        wpn_dual_bronze:['雙刀'], wpn_dual_steel:['雙刀'], wpn_dual_silver:['雙刀'], wpn_dual_gloom:['雙刀'], wpn_dual_dark:['雙刀'], wpn_dual_shadow:['雙刀'], wpn_dual_damascus:['雙刀'], wpn_dual_abyss:['雙刀'], wpn_thebes_dual:['雙刀'],
+        wpn_manadagger:['匕首'], wpn_crystal_dagger:['匕首'],
+        wpn_chaos_thorn:['匕首'], wpn_demonking_dual:['雙刀'], wpn_demonking_2hsword:['雙手劍'],
+        wpn_small_katana:['匕首'], wpn_dagger_rasta:['匕首'], wpn_sword_rasta:['單手劍'], wpn_dual_rasta:['雙刀'], wpn_spear_rasta:['矛'],
+        wpn_dual_spike:['雙刀'], wpn_official_blade:['單手劍'],
+        wpn_emperor_blade:['雙手劍'], wpn_windblade_dagger:['匕首'], wpn_redshadow_dual:['雙刀'], wpn_beastking_claw:['鋼爪'],
+        wpn_mithril_dagger:['匕首'], wpn_ori_dagger:['匕首'], wpn_crimson_spear:['矛'], wpn_demon_axe:['雙手鈍器'],
+        wpn_frost_spear:['矛'], wpn_thunder_sword:['單手劍'],
+        wpn_vengeance:['雙手劍'], wpn_blackflame_sword:['單手劍','武士刀'], wpn_hate_claw:['鋼爪'], wpn_demon_claw:['鋼爪'], wpn_death_finger:['鋼爪'],
+        wpn_demon_sword:['單手劍'], wpn_redflame_sword:['單手劍','武士刀'], wpn_demon_dual:['雙刀'],
+        wpn_dual_destroy:['雙刀'], wpn_claw_destroy:['鋼爪'],
+        wpn_old_sword:['單手劍','武士刀'],
+        wpn_ancient_darkelf_sword:['單手劍'],
+        wpn_demon_sword_hidden:['單手劍'],
+        wpn_demon_claw_hidden:['鋼爪'],
+        wpn_pirate_dagger:['匕首'], wpn_glory_sword:['單手劍'], wpn_pirate_shortblade:['單手劍'], wpn_pirate_cutlass:['單手劍'], wpn_abyss_dualblade:['雙刀'],
+        wpn_thor_hammer:['單手鈍器'], wpn_osis_hammer:['單手鈍器'], wpn_mapler_punish:['雙手鈍器'], wpn_pagrio_wrath:['單手劍'], wpn_eva_scold:['單手劍'],
+        relic_goblin_blade:['單手劍'], relic_gremlin_club:['單手鈍器'], relic_husky_bone:['單手鈍器'], relic_doberman_fang:['匕首'],
+        relic_gladiator_scimitar:['單手劍'], relic_icefield_pick:['單手鈍器'], relic_werewolf_mace:['單手鈍器'], relic_orc_nail:['匕首'], relic_pan_staff:['矛'], relic_elastic_rib:['雙刀'],
+        relic_golem_fist:['雙手鈍器'], relic_orc_cleaver:['單手劍'], relic_strong_femur:['單手鈍器'], relic_forgotten_spear:['矛'], relic_spider_claw:['鋼爪'], relic_hobgoblin_grinder:['單手劍'], relic_orc_butcher:['單手劍'], relic_orc_pole:['矛'], relic_sparta_grudge:['雙刀'], relic_shark_teeth:['匕首'],
+        relic_guard_spear:['矛'], relic_crab_claw:['鋼爪'], relic_venom_fang:['雙手劍'], relic_ratman_skewer:['矛'], relic_lizardman_cleaver:['矛'],
+        relic_ohm_maul:['雙手鈍器'], relic_parrot_beak:['雙手劍'], relic_pirate_scimitar:['單手劍'], relic_scorpion_sting:['匕首'], relic_harvey_claw:['單手劍'], relic_guard_pike:['矛'], relic_ogi_greataxe:['雙手鈍器'],
+        relic_darkthief_claw:['鋼爪'], relic_fighter_axe:['雙手鈍器'],
+        relic_darkelf_grindblade:['單手劍','武士刀'],
+        relic_wisp_remnant:['單手劍','武士刀'], relic_summoner_whip:['單手鈍器'], relic_griffin_claw:['鋼爪'], relic_croc_fang:['雙手劍'], relic_icestone_maul:['雙手鈍器'],
+        relic_mutant_lamia_scale:['匕首'], relic_thorn_needle:['匕首'], relic_giant_toothpick:['雙手劍'], relic_veteran_greatsword:['雙手劍'], relic_giant_throwstone:['雙手鈍器'], relic_armor_spareblade:['雙刀'],
+        relic_aruba_haste:['單手鈍器'], relic_ashwarrior_flamesword:['單手劍'], relic_deadgeneral_greatsword:['雙手劍'], relic_darkscorpion_pincers:['雙刀'],
+        relic_medusa_stinger:['單手鈍器'], relic_silent_venom:['矛'],
+        relic_axetaurus_brutalaxe:['雙手鈍器'],
+        relic_lizard_tongue:['矛'], relic_killerbee_sting:['匕首'], relic_ancient_spider_claw:['單手劍','武士刀'], relic_guardian_greatsword:['雙手劍'],
+        wpn_kukulkan_spear:['矛'], relic_eto_whip:['矛'], relic_serpent_fang:['矛'], relic_kaira_fang:['匕首'], relic_mud_idol:['雙手鈍器'], relic_teo_hammer:['單手鈍器'],
+        relic_executor_axe:['單手鈍器'], relic_healer_wand:['單手鈍器'], relic_minotaur_flail:['單手鈍器'],
+        relic_executor_skewer:['矛'], relic_weathered_obelisk:['雙手鈍器'], relic_shadow_stinger:['匕首'], relic_soulreaper_dual:['雙刀'],
+        relic_ghoul_fang:['單手劍'], relic_sparto_shard:['單手劍'], relic_pirate_dual:['雙刀'], relic_lava_fists:['單手鈍器']
+    };
+
     // 分類判定邏輯
     function equipCatKey(id, d) {
         if (!d) return null;
         if (d.type === 'wpn') {
-            if (d.isArrow) return null;
+            if (d.isArrow) return null; // wiki 版無 quiver
             if (d.isBow) return /十字弓|弩/.test(d.n || '') ? 'xbow' : 'bow';
             if (d.qigu) return 'qigu';
             if (d.chainsword) return 'chainsword';
+            
+            const isWandWeapon = !!(d && d.type === 'wpn' && (d.isWand || /魔杖|法杖/.test(d.n || '') || (/杖/.test(d.n || '') && !/權杖/.test(d.n || ''))));
+            const WAND_LIGHTARROW_IDS = ['wpn_oakwand', 'wpn_38', 'wpn_witchwand', 'wpn_manawand', 'wpn_crystalwand', 'wpn_baless', 'wpn_wand_rasta', 'wpn_red_crystalwand', 'wpn_laia_wand', 'wpn_icequeen_wand', 'wpn_demon_scythe', 'wpn_darkmage_wand', 'wpn_baphomet_wand', 'wpn_illu_wand', 'wpn_demon_wand_hidden', 'wpn_dark_crystalball', 'wpn_steel_manawand_blue', 'relic_amp_staff', 'relic_elder_thunder', 'relic_cerberus_wand', 'relic_evillizard_eye', 'relic_lightbeam_wand', 'relic_warlock_grimoire'];
+            
+            if (isWandWeapon) return 'wand';
+            if (WAND_LIGHTARROW_IDS.includes(id)) return 'wand';
+            
+            let tags = WEAPON_TAGS[id] || [];
+            if (tags.includes('武士刀')) return 'katana';
+            if (tags.includes('雙刀')) return 'dual';
+            if (tags.includes('鋼爪')) return 'claw';
+            if (tags.includes('匕首')) return 'dagger';
+            if (tags.includes('雙手劍')) return 'sword2';
+            if (tags.includes('單手劍')) return 'sword1';
+            if (tags.includes('雙手鈍器')) return 'blunt2';
+            if (tags.includes('單手鈍器')) return 'blunt1';
+            if (tags.includes('矛')) return 'spear';
+
             if (/水晶球/.test(d.n || '')) return 'wand';
             if (d.eff === 'pierce') return 'spear';
             if (d.eff === 'cleave') return 'sword2';
             if (d.eff === 'crush') return d.w2h ? 'blunt2' : 'blunt1';
-            return 'wpn_other';
+            
+            return null;
         }
         if (d.type === 'arm') {
             if (d.armguard) return 'armguard';
-            if (d.slot) return d.slot;
+            if (d.slot === 'helm') return 'helm';
+            if (d.slot === 'armor') return 'armor';
+            if (d.slot === 'shin') return 'shin';
+            if (d.slot === 'tshirt') return 'tshirt';
+            if (d.slot === 'cloak') return 'cloak';
+            if (d.slot === 'boots') return 'boots';
+            if (d.slot === 'gloves') return 'gloves';
+            if (d.slot === 'shield') return 'shield';
+            if (d.slot === 'petarm') return 'pet';
+            return null;
         }
         if (d.type === 'acc') {
-            if (d.slot === 'ear1' || d.slot === 'ear2') return 'ear';
-            if (d.slot) return d.slot;
+            if (d.slot === 'amulet') return 'amulet';
+            if (d.slot === 'ring') return 'ring';
+            if (d.slot === 'belt') return 'belt';
+            if (d.slot === 'ear1' || d.slot === 'ear2' || d.slot === 'ear') return 'ear';
+            if (d.slot === 'pet' || d.slot === 'petwpn') return 'pet';
+            if (d.slot === 'doll') return 'doll';
+            return null;
         }
         return null;
     }
@@ -205,7 +289,7 @@ const WikiCollections = (() => {
             let count = INDEX[state.currentType][c.key].length;
             
             html += `<button onclick="WikiCollections.setSubCat('${c.key}')" class="${baseClass} ${cls}">
-                ${c.name} <span class="ml-1 text-[10px] text-slate-400">全部</span>
+                ${c.name} <span class="ml-1 text-[10px] text-slate-400 font-normal opacity-80">(${count})</span>
             </button>`;
         });
         html += `</div>`;
