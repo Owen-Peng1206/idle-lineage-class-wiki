@@ -169,8 +169,15 @@ const WikiCollections = (() => {
         return null;
     }
 
+    const MISC_BOOK_EXCLUDED = {
+        new_item_bless_wpn: true,
+        new_item_bless_arm: true,
+        new_item_bless_acc: true
+    };
+
     function miscCatKey(id, d) {
         if (!d) return null;
+        if (MISC_BOOK_EXCLUDED[id]) return null;
         var t = d.type;
         if (t === 'wpn' || t === 'arm' || t === 'acc') return null;
         if (id === 'item_card_book' || id === 'item_equip_book') return null;
@@ -180,6 +187,34 @@ const WikiCollections = (() => {
         if (t === 'skillbk' || id.startsWith('bk_') || id.startsWith('mem_')) return 'skillbk';
         if (t === 'etc' || id.startsWith('mat_') || id.startsWith('new_item_')) return 'mat';
         return 'special';
+    }
+
+    let OBTAINABLE_MISC = null;
+    function buildObtainableMisc() {
+        if (OBTAINABLE_MISC) return;
+        var S = {};
+        function add(id) { if (id && id !== 'gold' && DB.items[id]) S[id] = true; }
+        for (var id in DB.items) { var d = DB.items[id]; if (d && (d.gachaWeight || 0) > 0) S[id] = true; }
+        function addTable(tbl) {
+            if (!tbl || typeof tbl !== 'object') return;
+            for (var mob in tbl) { var arr = tbl[mob]; if (!Array.isArray(arr)) continue; arr.forEach(function (e) { add(Array.isArray(e) ? e[0] : e); }); }
+        }
+        if (typeof MOB_DROPS !== 'undefined') addTable(MOB_DROPS);
+        if (typeof DARK_WEAPON_DROPS !== 'undefined') addTable(DARK_WEAPON_DROPS);
+        if (typeof DARK_CRYSTAL_DROPS !== 'undefined') addTable(DARK_CRYSTAL_DROPS);
+        if (typeof DRAGON_DROPS !== 'undefined') addTable(DRAGON_DROPS);
+        if (typeof WARRIOR_DROPS !== 'undefined') addTable(WARRIOR_DROPS);
+        if (typeof MEM_DROPS !== 'undefined') addTable(MEM_DROPS);
+        try { if (typeof SHOP_LISTS === 'object' && SHOP_LISTS) for (var npc in SHOP_LISTS) { var lst = SHOP_LISTS[npc]; if (Array.isArray(lst)) lst.forEach(add); } } catch (e) {}
+        try {
+            if (typeof CRAFT_RECIPES === 'object' && CRAFT_RECIPES) for (var cn in CRAFT_RECIPES) {
+                var recs = CRAFT_RECIPES[cn]; if (!Array.isArray(recs)) continue;
+                recs.forEach(function (r) { if (!r) return; add(r.result); if (Array.isArray(r.req)) r.req.forEach(function (m) { if (m) add(m.id); }); });
+            }
+        } catch (e) {}
+        ['new_item_164', 'new_item_195', 'new_item_165'].forEach(add);
+        ['scroll_weapon_b', 'scroll_armor_b', 'new_item_uncurse'].forEach(add);
+        OBTAINABLE_MISC = S;
     }
 
     // 資料索引
@@ -197,6 +232,8 @@ const WikiCollections = (() => {
         MISC_CATEGORIES.forEach(c => { INDEX.item[c.key] = []; });
         CARD_REGIONS.forEach(c => { INDEX.monster[c.key] = []; });
 
+        buildObtainableMisc();
+
         // 整理裝備、道具、遺物
         for (let id in DB.items) {
             let d = DB.items[id];
@@ -208,9 +245,11 @@ const WikiCollections = (() => {
             } else if (['wpn', 'arm', 'acc'].includes(d.type)) {
                 let ck = equipCatKey(id, d);
                 if (ck && INDEX.equip[ck]) INDEX.equip[ck].push({ id, ...d });
-            } else if (['pot', 'scroll', 'skillbk', 'etc'].includes(d.type)) {
-                let ck = miscCatKey(id, d);
-                if (ck && INDEX.item[ck]) INDEX.item[ck].push({ id, ...d });
+            } else if (!['wpn', 'arm', 'acc'].includes(d.type)) {
+                if (OBTAINABLE_MISC[id]) {
+                    let ck = miscCatKey(id, d);
+                    if (ck && INDEX.item[ck]) INDEX.item[ck].push({ id, ...d });
+                }
             }
         }
 
@@ -255,6 +294,12 @@ const WikiCollections = (() => {
         }
 
         let html = '';
+
+        html += `<div class="mb-4 p-3 bg-slate-800/80 border border-slate-600 rounded text-sm text-slate-300">
+            <span class="text-amber-400 font-bold">💡 說明：</span>
+            Wiki 看到的總數不一定和玩家遊戲中的數量完全一致。
+            因為遊戲主程式設有「動態補登」機制，只要玩家的存檔 (Save Data) 裡擁有某個道具，就算這個道具目前已經絕版、或沒有任何常規獲得管道（例如舊活動道具、被移除的舊材料），遊戲就會把它「動態加入」到你的收藏圖鑑中，讓總數 +1。
+        </div>`;
         
         // 1. 渲染次分類標籤列 (Tab Row)
         html += `<div class="flex flex-wrap items-center gap-1 mb-4 p-2 bg-gray-900/50 rounded border border-gray-800">`;
