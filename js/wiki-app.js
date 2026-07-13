@@ -29,6 +29,7 @@ const itemsGrid = document.getElementById('items-grid');
 const emptyState = document.getElementById('items-empty-state');
 let currentFilterType = 'all'; // all, wpn, arm, acc, etc, relic
 let currentFilterSubType = 'all';
+let currentFilterSubSubType = 'all';
 let currentSearchQuery = '';
 
 // 子分類設定
@@ -73,6 +74,12 @@ const subFilterOptions = {
         { id: 'all', name: '全部雜項' },
         { id: 'mat', name: '製作材料' },
         { id: 'other', name: '其他' }
+    ],
+    relic: [
+        { id: 'all', name: '全部遺物' },
+        { id: 'wpn', name: '武器' },
+        { id: 'arm', name: '防具' },
+        { id: 'acc', name: '飾品' }
     ]
 };
 
@@ -774,7 +781,7 @@ function createItemCard(item) {
 
     // 4. 基礎人物能力加成 (紫色)
     let baseStatsHtml = '';
-    let hasBaseStats = item.str || item.dex || item.con || item.int || item.wis || item.cha || item.mhp || item.mmp || item.hpR || item.mpR || item.weightCap;
+    let hasBaseStats = item.str || item.dex || item.con || item.int || item.wis || item.cha || item.hp || item.mp || item.mhp || item.mmp || item.hpR || item.mpR || item.regenHp || item.weightCap;
     if (hasBaseStats) {
         baseStatsHtml = `
             <div class="mt-2.5 border border-purple-900/40 rounded bg-purple-950/20 p-2 shadow-inner">
@@ -786,9 +793,12 @@ function createItemCard(item) {
                     ${item.int ? `<div class="flex justify-between"><span>智力(INT):</span> <span class="text-purple-200">+${item.int}</span></div>` : ''}
                     ${item.wis ? `<div class="flex justify-between"><span>精神(WIS):</span> <span class="text-purple-200">+${item.wis}</span></div>` : ''}
                     ${item.cha ? `<div class="flex justify-between"><span>魅力(CHA):</span> <span class="text-purple-200">+${item.cha}</span></div>` : ''}
+                    ${item.hp ? `<div class="flex justify-between"><span>HP加成:</span> <span class="text-purple-200">+${item.hp}</span></div>` : ''}
+                    ${item.mp ? `<div class="flex justify-between"><span>MP加成:</span> <span class="text-purple-200">+${item.mp}</span></div>` : ''}
                     ${item.mhp ? `<div class="flex justify-between"><span>HP上限:</span> <span class="text-purple-200">+${item.mhp}</span></div>` : ''}
                     ${item.mmp ? `<div class="flex justify-between"><span>MP上限:</span> <span class="text-purple-200">+${item.mmp}</span></div>` : ''}
                     ${item.hpR ? `<div class="flex justify-between"><span>HP恢復:</span> <span class="text-purple-200">+${item.hpR}</span></div>` : ''}
+                    ${item.regenHp ? `<div class="flex justify-between"><span>HP自然恢復:</span> <span class="text-purple-200">+${item.regenHp}</span></div>` : ''}
                     ${item.mpR ? `<div class="flex justify-between"><span>MP恢復:</span> <span class="text-purple-200">+${item.mpR}</span></div>` : ''}
                     ${item.weightCap ? `<div class="flex justify-between"><span>負重上限:</span> <span class="text-purple-200">+${item.weightCap}</span></div>` : ''}
                 </div>
@@ -814,7 +824,7 @@ function createItemCard(item) {
 
     // 6. 寵物專屬屬性 (橙色)
     let petStatsHtml = '';
-    let hasPetStats = item.petDmg || item.petHit || item.petAc || item.petMr || item.petInt || item.petWis;
+    let hasPetStats = item.petDmg || item.petHit || item.petAc || item.petMr || item.petInt || item.petWis || item.summonDmg || item.summonHit || item.petDmgAll || item.petHitAll || item.petSkillDmgMult;
     if (hasPetStats) {
         petStatsHtml = `
             <div class="mt-2.5 border border-orange-900/40 rounded bg-orange-950/20 p-2 shadow-inner">
@@ -826,6 +836,52 @@ function createItemCard(item) {
                     ${item.petMr ? `<div class="flex justify-between"><span>寵物魔防:</span> <span class="text-orange-200">+${item.petMr}</span></div>` : ''}
                     ${item.petInt ? `<div class="flex justify-between"><span>寵物智力:</span> <span class="text-orange-200">+${item.petInt}</span></div>` : ''}
                     ${item.petWis ? `<div class="flex justify-between"><span>寵物精神:</span> <span class="text-orange-200">+${item.petWis}</span></div>` : ''}
+                    ${item.summonDmg ? `<div class="flex justify-between"><span>召喚物傷害:</span> <span class="text-orange-200">+${item.summonDmg}</span></div>` : ''}
+                    ${item.summonHit ? `<div class="flex justify-between"><span>召喚物命中:</span> <span class="text-orange-200">+${item.summonHit}</span></div>` : ''}
+                    ${item.petDmgAll ? `<div class="flex justify-between"><span>全體寵物傷害:</span> <span class="text-orange-200">+${item.petDmgAll}</span></div>` : ''}
+                    ${item.petHitAll ? `<div class="flex justify-between"><span>全體寵物命中:</span> <span class="text-orange-200">+${item.petHitAll}</span></div>` : ''}
+                    ${item.petSkillDmgMult ? `<div class="flex justify-between"><span>寵物技能傷害:</span> <span class="text-orange-200">x${item.petSkillDmgMult}</span></div>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    // 6.5 進階戰鬥數值 (綠色)
+    let advStatsHtml = '';
+    let advMap = {
+        mcrit: '魔法爆擊率(%)', rcrit: '遠程爆擊率(%)',
+        mcritDmg: '魔法爆擊傷害', magicHit: '魔法命中',
+        atkDoubleChance: '雙重攻擊機率(%)', dmgReflect: '傷害反射', painReflect: '反彈痛苦',
+        magicDrNonEle: '無屬性魔法減免', stormInterval: '風暴間隔縮短',
+        dragonStrike: '屠龍額外傷害', skillAddDmg: '技能額外傷害', skillDmgMult: '技能傷害倍率',
+        comboRate: '雙擊機率(%)', vampPct: '吸血機率(%)',
+        crushDr: '重擊減免', physDrGated: '特殊物理減免', healPct: '治癒量(%)', heal: '治癒加成', healBase: '治癒基數', healDice: '治癒骰數',
+        extraDmg: '泛用額外傷害', extraHit: '泛用額外命中',
+        meleeDmg: '近距離額外傷害', meleeHit: '近距離命中', meleeHaste: '近戰攻速加成',
+        rangedDmg: '遠距離額外傷害', rangedHit: '遠距離命中', mdmg: '魔法傷害',
+        atkSpdPct: '攻擊速度提升(%)', atkSpd: '攻擊速度(固定)', moveSpeedPct: '移動速度提升(%)',
+        fullHpMult: '滿血傷害倍率', fullHpMultTriple: '滿血追加倍率', heavyMult: '重擊傷害倍率',
+        weakHitBonus: '弱點命中加成', pierceChance: '穿透機率(%)',
+        lifesteal: '吸血', vamp: '吸血', drain: '吸收生命/魔力', potionBonus: '藥水恢復量(%)',
+        expBonus: '經驗值加成(%)', goldBonus: '金幣加成(%)',
+        mpRPerEn: '強化回魔(每階)', extraMpPerEn: '強化加魔(每階)', mpROverSafe: '超安定回魔',
+        mpOnHitAmt: '命中回魔量', dmgMult: '總傷害倍率', multiDmg: '多段傷害次數',
+        teamDmgReducePct: '隊伍減傷(%)',
+        abnormalResist: '異常狀態抵抗(%)', sleepResist: '抗睡眠(%)',
+        poisonResist: '抗中毒(%)', paralyzeResist: '抗麻痺(%)',
+        slowResist: '抗緩速(%)', poisonHealMult: '毒素吸收倍率'
+    };
+    let hasAdvStats = Object.keys(advMap).some(k => item[k]);
+    if (hasAdvStats) {
+        let advItems = [];
+        for(let k in advMap) {
+            if(item[k]) advItems.push(`<div class="flex justify-between"><span>${advMap[k]}:</span> <span class="text-emerald-200">+${item[k]}</span></div>`);
+        }
+        advStatsHtml = `
+            <div class="mt-2.5 border border-emerald-900/40 rounded bg-emerald-950/20 p-2 shadow-inner">
+                <div class="text-[11px] text-emerald-400 font-bold mb-1.5 flex items-center border-b border-emerald-900/50 pb-1"><i class="fa-solid fa-gauge-high mr-1.5"></i>進階戰鬥數值</div>
+                <div class="grid grid-cols-2 gap-y-1 gap-x-2 text-[11px] text-emerald-300">
+                    ${advItems.join('')}
                 </div>
             </div>
         `;
@@ -859,8 +915,41 @@ function createItemCard(item) {
     if (item.immHold) effArr.push("免疫木乃伊");
     if (item.vanderStunHit) effArr.push("衝暈命中+1");
     if (item.dragonStrike) effArr.push("龍的一擊");
-    if (item.pierceChance) effArr.push(`穿透(${item.pierceChance}%)`);
     if (item.rapidfire) effArr.push(`連射`);
+    if (item.hasteStrike) effArr.push(`加速突擊(消耗加速爆發)`);
+    if (item.noConsume) effArr.push(`不會消耗`);
+    if (item.relic) effArr.push(`遺物`);
+    if (item.procInstakill || item.instakill) effArr.push(`機率即死`);
+    if (item.procBonusDmg) effArr.push(`機率額外傷害`);
+    if (item.procDmgReduce) effArr.push(`機率減傷`);
+    if (item.procBurn) effArr.push(`附加灼燒`);
+    if (item.procPoisonRate) effArr.push(`附加中毒(機率)`);
+    if (item.onHitEleDmg) effArr.push(`附加屬性傷害`);
+    if (item.counterBarrierX2) effArr.push(`反擊屏障強化`);
+    if (item.weakExpose) effArr.push(`弱點曝光`);
+    if (item.redSpecter) effArr.push(`紅惡靈逆襲`);
+    if (item.blueSpecter) effArr.push(`藍惡靈奪魔`);
+    if (item.shatter) effArr.push(`粉碎`);
+    if (item.onDmgHeal) effArr.push(`受擊機率回血`);
+    if (item.immStun) effArr.push(`免疫暈眩`);
+    if (item.immSleep) effArr.push(`免疫睡眠`);
+    if (item.immBurn) effArr.push(`免疫灼燒`);
+    if (item.allLures) effArr.push(`持有全部誘捕狀態`);
+    if (item.relicDropX2) effArr.push(`遺物掉落率兩倍`);
+    if (item.dotCrit) effArr.push(`持續傷害(DoT)可爆擊`);
+    if (item.giantBonus) effArr.push(`對巨型怪物加成`);
+    if (item.highestAttrPlus) effArr.push(`最高能力值額外加成`);
+    if (item.showMobEle) effArr.push(`顯示怪物屬性弱點`);
+    if (item.equipHaste) effArr.push(`裝備自帶加速`);
+    if (item.darkPoison) effArr.push(`暗毒複合特效`);
+    if (item.noBleed) effArr.push(`不觸發出血`);
+    if (item.mpOnHit) effArr.push(`命中恢復MP`);
+    if (item.ele) effArr.push(`武器屬性: ${{fire:'火',water:'水',earth:'地',wind:'風'}[item.ele] || item.ele}`);
+    if (item.raceBonus && item.raceBonus.race) effArr.push(`對「${item.raceBonus.race}」族傷害×${item.raceBonus.mult || ''}`);
+    if (item.raceFlat && item.raceFlat.race) effArr.push(`對「${item.raceFlat.race}」族固定額外傷害+${item.raceFlat.add || ''}`);
+    if (item.strawCurse) effArr.push(`稻草詛咒(機率施加疊加詛咒)`);
+    if (item.grantSkills) effArr.push(`賦予特殊技能`);
+    if (item.loadFreeRegen) effArr.push(`負重不影響HP恢復`);
 
     if (effArr.length > 0) {
         effectsHtml = `
@@ -931,6 +1020,7 @@ function createItemCard(item) {
                 ${baseStatsHtml}
                 ${mpSpecialHtml}
                 ${petStatsHtml}
+                ${advStatsHtml}
                 ${effectsHtml}
             </div>
             
@@ -999,6 +1089,52 @@ function appendNextPageItems() {
 /**
  * 重新渲染卡片網格（分頁 + 無限捲動版，避免一次性渲染大量 DOM）
  */
+function matchItemSubType(item, type, subType) {
+    if (subType === 'all') return true;
+    if (type === 'wpn') {
+        if (subType === '1h') return !item.w2h && !item.isBow && !item.isArrow && !/箭$/.test(item.n || '');
+        else if (subType === '2h') return !!item.w2h && !item.isBow && !item.isArrow && !/箭$/.test(item.n || '');
+        else if (subType === 'ranged') return !!item.isBow || !!item.isArrow || !!item.ranged || /箭$/.test(item.n || '');
+        else if (subType === 'arrow') return !!item.isArrow || /箭$/.test(item.n || '');
+        else {
+            let n = item.n || '';
+            let isKiringku = !!item.qigu;
+            let isChainsword = !!item.chainsword;
+            let isClaw = n.includes('鋼爪');
+            let isDual = n.includes('雙刀');
+            let isCrossbow = item.isBow && /十字弓|弩/.test(n);
+            let isBow = item.isBow && !isCrossbow;
+            let isWand = item.isWand || /魔杖|法杖|水晶球/.test(n) || (/杖/.test(n) && !/權杖/.test(n));
+            let isSpear = /矛|槍|戟/.test(n);
+            let isBlunt = /斧|鎚|錘|槌|棒|棍|鐮/.test(n);
+            let isDagger = /匕首|小刀|之刺/.test(n);
+            
+            if (subType === 'kiringku') return isKiringku;
+            else if (subType === 'chainsword') return isChainsword;
+            else if (subType === 'claw') return isClaw;
+            else if (subType === 'dual') return isDual;
+            else if (subType === 'crossbow') return isCrossbow;
+            else if (subType === 'bow') return isBow;
+            else if (subType === 'wand') return isWand;
+            else if (subType === 'spear') return isSpear && !isWand; // 避免某些衝突
+            else if (subType === 'blunt') return isBlunt && !isWand;
+            else if (subType === 'dagger') return isDagger && !isWand;
+            else if (subType === 'sword') return !isKiringku && !isChainsword && !isClaw && !isDual && !item.isBow && !item.isArrow && !isWand && !isSpear && !isBlunt && !isDagger;
+        }
+    } else if (type === 'arm' || type === 'acc') {
+        if (subType === 'pet') {
+            return item.slot === 'petwpn' || item.slot === 'petarm' || item.slot === 'pet';
+        } else {
+            return item.slot === subType;
+        }
+    } else if (type === 'etc') {
+        const isMat = item.id.startsWith('mat_') || (item.d && item.d.includes('製作材料'));
+        if (subType === 'mat') return isMat;
+        else if (subType === 'other') return !isMat;
+    }
+    return false;
+}
+
 function renderItems() {
     if (!itemsGrid) return;
     if (currentFilterType === 'set') { renderSets(); return; }
@@ -1009,6 +1145,15 @@ function renderItems() {
             matchType = true;
         } else if (currentFilterType === 'relic') {
             matchType = !!item.relic;
+            if (matchType && currentFilterSubType !== 'all') {
+                const targetType = currentFilterSubType; // 'wpn', 'arm', 'acc'
+                const isTargetType = item.type === targetType
+                    || (targetType === 'acc' && (item.slot === 'petwpn' || item.slot === 'petarm' || item.slot === 'pet'));
+                matchType = isTargetType;
+                if (matchType && currentFilterSubSubType !== 'all') {
+                    matchType = matchItemSubType(item, targetType, currentFilterSubSubType);
+                }
+            }
         } else {
             const isTargetType = item.type === currentFilterType
                 || (currentFilterType === 'etc' && item.type === 'misc')
@@ -1016,47 +1161,7 @@ function renderItems() {
             if (isTargetType && !item.relic) {
                 matchType = true;
                 if (currentFilterSubType !== 'all') {
-                    if (currentFilterType === 'wpn') {
-                        if (currentFilterSubType === '1h') matchType = !item.w2h && !item.isBow && !item.isArrow && !/箭$/.test(item.n || '');
-                        else if (currentFilterSubType === '2h') matchType = !!item.w2h && !item.isBow && !item.isArrow && !/箭$/.test(item.n || '');
-                        else if (currentFilterSubType === 'ranged') matchType = !!item.isBow || !!item.isArrow || !!item.ranged || /箭$/.test(item.n || '');
-                        else if (currentFilterSubType === 'arrow') matchType = !!item.isArrow || /箭$/.test(item.n || '');
-                        else {
-                            let n = item.n || '';
-                            let isKiringku = !!item.qigu;
-                            let isChainsword = !!item.chainsword;
-                            let isClaw = n.includes('鋼爪');
-                            let isDual = n.includes('雙刀');
-                            let isCrossbow = item.isBow && /十字弓|弩/.test(n);
-                            let isBow = item.isBow && !isCrossbow;
-                            let isWand = item.isWand || /魔杖|法杖|水晶球/.test(n) || (/杖/.test(n) && !/權杖/.test(n));
-                            let isSpear = /矛|槍|戟/.test(n);
-                            let isBlunt = /斧|鎚|錘|槌|棒|棍|鐮/.test(n);
-                            let isDagger = /匕首|小刀|之刺/.test(n);
-                            
-                            if (currentFilterSubType === 'kiringku') matchType = isKiringku;
-                            else if (currentFilterSubType === 'chainsword') matchType = isChainsword;
-                            else if (currentFilterSubType === 'claw') matchType = isClaw;
-                            else if (currentFilterSubType === 'dual') matchType = isDual;
-                            else if (currentFilterSubType === 'crossbow') matchType = isCrossbow;
-                            else if (currentFilterSubType === 'bow') matchType = isBow;
-                            else if (currentFilterSubType === 'wand') matchType = isWand;
-                            else if (currentFilterSubType === 'spear') matchType = isSpear && !isWand; // 避免某些衝突
-                            else if (currentFilterSubType === 'blunt') matchType = isBlunt && !isWand;
-                            else if (currentFilterSubType === 'dagger') matchType = isDagger && !isWand;
-                            else if (currentFilterSubType === 'sword') matchType = !isKiringku && !isChainsword && !isClaw && !isDual && !item.isBow && !item.isArrow && !isWand && !isSpear && !isBlunt && !isDagger;
-                        }
-                    } else if (currentFilterType === 'arm' || currentFilterType === 'acc') {
-                        if (currentFilterSubType === 'pet') {
-                            matchType = item.slot === 'petwpn' || item.slot === 'petarm' || item.slot === 'pet';
-                        } else {
-                            matchType = item.slot === currentFilterSubType;
-                        }
-                    } else if (currentFilterType === 'etc') {
-                        const isMat = item.id.startsWith('mat_') || (item.d && item.d.includes('製作材料'));
-                        if (currentFilterSubType === 'mat') matchType = isMat;
-                        else if (currentFilterSubType === 'other') matchType = !isMat;
-                    }
+                    matchType = matchItemSubType(item, currentFilterType, currentFilterSubType);
                 }
             }
         }
@@ -1221,17 +1326,23 @@ function renderSets() {
 
 // 渲染子分類按鈕
 const subFiltersContainer = document.getElementById('item-sub-filters');
+const subSubFiltersContainer = document.getElementById('item-sub-sub-filters');
 
 function renderSubFilters() {
     if (!subFiltersContainer) return;
     
     const options = subFilterOptions[currentFilterType];
     
-    // 只有當前分類有子分類，且不是 'all' 或 'relic' 時才顯示
-    if (!options || currentFilterType === 'all' || currentFilterType === 'relic') {
+    // 只有當前分類有子分類，且不是 'all' 時才顯示
+    if (!options || currentFilterType === 'all') {
         subFiltersContainer.classList.add('hidden');
         subFiltersContainer.innerHTML = '';
         currentFilterSubType = 'all';
+        if (subSubFiltersContainer) {
+            subSubFiltersContainer.classList.add('hidden');
+            subSubFiltersContainer.innerHTML = '';
+            currentFilterSubSubType = 'all';
+        }
         return;
     }
     
@@ -1251,10 +1362,46 @@ function renderSubFilters() {
     subFilterBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             currentFilterSubType = e.target.getAttribute('data-subtype');
+            currentFilterSubSubType = 'all'; // 切換子分類時重設次級子分類
             renderSubFilters(); // 重新渲染以更新 active 樣式
             renderItems();
         });
     });
+
+    // 處理次級子分類 (只在 relic 下的 wpn, arm, acc 有)
+    if (subSubFiltersContainer) {
+        if (currentFilterType === 'relic' && currentFilterSubType !== 'all') {
+            const subOptions = subFilterOptions[currentFilterSubType];
+            if (subOptions) {
+                subSubFiltersContainer.classList.remove('hidden');
+                subSubFiltersContainer.innerHTML = subOptions.map(opt => `
+                    <button data-subsubtype="${opt.id}" class="px-3 py-1 rounded-md text-xs font-medium transition-colors border ${
+                        currentFilterSubSubType === opt.id 
+                        ? 'bg-primary-600 text-white border-primary-500 shadow-sm' 
+                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700 border-gray-700'
+                    } sub-sub-filter-btn">
+                        ${opt.name}
+                    </button>
+                `).join('');
+                
+                // 綁定次級子分類按鈕事件
+                const subSubFilterBtns = subSubFiltersContainer.querySelectorAll('.sub-sub-filter-btn');
+                subSubFilterBtns.forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        currentFilterSubSubType = e.target.getAttribute('data-subsubtype');
+                        renderSubFilters();
+                        renderItems();
+                    });
+                });
+            } else {
+                subSubFiltersContainer.classList.add('hidden');
+                subSubFiltersContainer.innerHTML = '';
+            }
+        } else {
+            subSubFiltersContainer.classList.add('hidden');
+            subSubFiltersContainer.innerHTML = '';
+        }
+    }
 }
 
 // 主分類按鈕事件
@@ -1272,6 +1419,7 @@ filterBtns.forEach(btn => {
         // 更新過濾狀態並渲染
         currentFilterType = e.target.getAttribute('data-type');
         currentFilterSubType = 'all'; // 切換主分類時，重設子分類
+        currentFilterSubSubType = 'all';
         renderSubFilters();
         renderItems();
     });
