@@ -429,10 +429,10 @@
                         </tbody>
                     </table>
                     <div class="mt-4 pt-3 border-t border-gray-800 text-gray-300">
-                        <div class="text-white mb-1">【50 級數據推演 (未計入階級與攻速乘數)】</div>
+                        <div class="text-white mb-1">【50 級數據推演 (包含全域寵物增傷設定：物理 1.2倍 / 魔法 1.1倍)】</div>
                         <ul class="list-disc ml-4 space-y-2">
-                            <li><span class="text-red-400">近戰型 50級：</span>普攻基底高達 <b>29</b> (3+50*0.52)，技能基底僅 <b>27.5</b>。<br>➡ <span class="text-gray-400">優勢在於刀刀見骨的物理普攻，咬怪非常痛，且防禦(AC)與減傷(DR)成長極高。</span></li>
-                            <li><span class="text-blue-400">魔法型 50級：</span>普攻基底僅 <b>14.5</b> (1+50*0.27)，但魔法技能基底高達 <b>42.5</b> (50*0.85)！<br>➡ <span class="text-gray-400">優勢在於魔法爆發，普攻形同抓癢。魔法防禦(MR)極高，但物理防禦(AC/DR)極其脆弱。</span></li>
+                            <li><span class="text-red-400">近戰型 50級：</span>普攻基底高達 <b>34.8</b> (29 × 1.2)，技能基底僅 <b>30.2</b> (27.5 × 1.1)。<br>➡ <span class="text-gray-400">優勢在於刀刀見骨的物理普攻，咬怪非常痛，且防禦(AC)與減傷(DR)成長極高。</span></li>
+                            <li><span class="text-blue-400">魔法型 50級：</span>普攻基底僅 <b>17.4</b> (14.5 × 1.2)，但魔法技能基底高達 <b>46.7</b> (42.5 × 1.1)！<br>➡ <span class="text-gray-400">優勢在於魔法爆發，普攻形同抓癢。魔法防禦(MR)極高，但物理防禦(AC/DR)極其脆弱。</span></li>
                         </ul>
                     </div>
                 </div>
