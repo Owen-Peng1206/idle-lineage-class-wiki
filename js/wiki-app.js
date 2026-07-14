@@ -211,7 +211,10 @@ const effNamesMap = {
     'magicstrike': '魔擊',
     'magicburst': '魔爆',
     'mp_drain': '吸收魔力',
-    'dice_death': '死神之骰'
+    'dice_death': '死神之骰',
+    'moonburst': '月光爆裂',
+    'haste': '自我加速',
+    'immStone': '免疫石化'
 };
 
 function getItemEffectsHtml(item) {
