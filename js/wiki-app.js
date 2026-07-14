@@ -1314,7 +1314,32 @@ function renderSets() {
     
     for (const key in newSetsMap) {
         const setObj = newSetsMap[key];
-        if (!setObj.name) setObj.name = key + ' 套裝';
+        
+        // 尋找是否在舊版 DB.sets 已經有定義此套裝 (透過比對包含的道具)
+        const existingSet = allSets.find(s => s.items.some(i => setObj.items.some(si => si.id === i.id)));
+        
+        if (existingSet) {
+            // 若已存在，則將新找到的同套裝道具合併進去，並略過新增此 setObj
+            setObj.items.forEach(newItem => {
+                if (!existingSet.items.find(i => i.id === newItem.id)) {
+                    existingSet.items.push(newItem);
+                }
+            });
+            continue;
+        }
+
+        const setTranslationMap = {
+            'bluepirate': '藍海賊',
+            'emperor': '真．冥皇',
+            'frost': '寒冰',
+            'icequeen_charm': '冰之女王魅力',
+            'orin': '歐林與西瑪'
+        };
+
+        if (!setObj.name) {
+            const translated = setTranslationMap[key];
+            setObj.name = (translated || key) + ' 套裝';
+        }
         if (!setObj.effectDesc) setObj.effectDesc = '請見個別裝備說明';
         
         // 避免重複加入
