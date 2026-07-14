@@ -549,6 +549,7 @@ function renderMonsters() {
                             if (mob.mag && mob.mag.skn) magics.push(mob.mag.skn);
                             if (mob.mag2 && mob.mag2.skn) magics.push(mob.mag2.skn);
                             if (mob.mag3 && mob.mag3.skn) magics.push(mob.mag3.skn);
+                            if (mob.mag4 && mob.mag4.skn) magics.push(mob.mag4.skn);
                             if (magics.length > 0) {
                                 return '<div class="text-[11px] text-amber-400 bg-amber-900/20 px-2 py-1 rounded border border-amber-900/50"><i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>魔法: ' + magics.join(', ') + '</div>';
                             }
