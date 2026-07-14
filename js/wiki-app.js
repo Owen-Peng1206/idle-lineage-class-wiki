@@ -1257,8 +1257,74 @@ function renderItems() {
 /**
  * 渲染套裝列表
  */
-function renderSets() {
+async function renderSets() {
     if (!itemsGrid) return;
+    
+    // 動態解析主程式，提取真實套裝效果，避免手動更新
+    if (!window.realSetEffectMap) {
+        window.realSetEffectMap = {};
+        window.setTranslationMap = {};
+        try {
+            const res = await fetch('./idle-lineage-class/js/02-stats-recompute.js');
+            const text = await res.text();
+            const lines = text.split('\n');
+            for (const line of lines) {
+                if (line.includes('setCheck[') && line.includes('//')) {
+                    const setMatch = line.match(/setCheck\['([^']+)'\]/);
+                    if (!setMatch) continue;
+                    const setKey = setMatch[1];
+                    
+                    const commentPart = line.substring(line.indexOf('//') + 2).trim();
+                    const nameMatch = commentPart.match(/([^：:\s(]+)套裝/);
+                    const effectMatch = commentPart.match(/：\s*(.+)$/);
+                    
+                    if (nameMatch) {
+                        const parts = nameMatch[1].split(' ');
+                        const finalName = parts.pop().trim();
+                        if (finalName) window.setTranslationMap[setKey] = finalName;
+                    }
+                    if (effectMatch) {
+                        let eff = effectMatch[1].trim();
+                        // 移除程式實作相關的註解
+                        eff = eff.replace(/（[^）]+(?:已於|提前|管線|皆加)[^）]+）/g, '').trim();
+                        window.realSetEffectMap[setKey] = eff;
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Failed to fetch dynamic set data (likely running locally on file:// protocol). Using hardcoded fallback.', e);
+            
+            window.setTranslationMap = {
+                'bluepirate': '藍海賊',
+                'emperor': '真．冥皇',
+                'frost': '寒冰',
+                'icequeen_charm': '冰之女王魅力',
+                'orin': '歐林與西瑪'
+            };
+            
+            window.realSetEffectMap = {
+                'leather': 'AC-3',
+                'bone': 'AC-2、HP+10',
+                'dk': 'AC-4、變身真‧死亡騎士',
+                'silver': 'AC-3',
+                'oasis': 'AC-3',
+                'gnome': 'AC-1、HP+5',
+                'mage': 'MP+50、MP自然恢復+1',
+                'kurt': 'AC-4、變身真‧克特',
+                'steel': 'AC-2、傷害減免+2',
+                'mr': 'MR+5',
+                'guard': 'AC-1',
+                'kinglord': 'HP/MP+30、HP/MP自然恢復+10、魅力+3',
+                'demon': 'AC-2、HP自然恢復+5、變身惡魔',
+                'darkelf': 'AC-3、HP自然恢復-2、MP自然恢復-7、變身高等黑暗精靈 (遠距傷害/命中+5、攻速+30%)',
+                'orin': 'AC-5、HP+50',
+                'icequeen_charm': 'AC-5、HP+100、MP自然恢復+4、水屬抗性+20',
+                'frost': 'AC-5、HP+100、HP自然恢復+8、MP自然恢復+4、MR+15、水屬抗性+20',
+                'bluepirate': 'AC-1、HP+10',
+                'emperor': '防禦-20、HP+100、MP+20、HP自然恢復+10、攻速額外+30%、近/遠額外傷害+5'
+            };
+        }
+    }
     
     const keyword = currentSearchQuery.toLowerCase();
     const allSets = [];
@@ -1312,6 +1378,28 @@ function renderSets() {
         }
     });
     
+    const realSetEffectMap = {
+        'leather': 'AC-3',
+        'bone': 'AC-2、HP+10',
+        'dk': 'AC-4、變身真‧死亡騎士',
+        'silver': 'AC-3',
+        'oasis': 'AC-3',
+        'gnome': 'AC-1、HP+5',
+        'mage': 'MP+50、MP自然恢復+1',
+        'kurt': 'AC-4、變身真‧克特',
+        'steel': 'AC-2、傷害減免+2',
+        'mr': 'MR+5',
+        'guard': 'AC-1',
+        'kinglord': 'HP/MP+30、HP/MP自然恢復+10、魅力+3',
+        'demon': 'AC-2、HP自然恢復+5、變身惡魔',
+        'darkelf': 'AC-3、HP自然恢復-2、MP自然恢復-7、變身高等黑暗精靈 (遠距傷害/命中+5、攻速+30%)',
+        'orin': 'AC-5、HP+50',
+        'icequeen_charm': 'AC-5、HP+100、MP自然恢復+4、水屬抗性+20',
+        'frost': 'AC-5、HP+100、HP自然恢復+8、MP自然恢復+4、MR+15、水屬抗性+20',
+        'bluepirate': 'AC-1、HP+10',
+        'emperor': '防禦-20、HP+100、MP+20、HP自然恢復+10、攻速額外+30%、近/遠額外傷害+5'
+    };
+
     for (const key in newSetsMap) {
         const setObj = newSetsMap[key];
         
@@ -1328,25 +1416,40 @@ function renderSets() {
             continue;
         }
 
-        const setTranslationMap = {
-            'bluepirate': '藍海賊',
-            'emperor': '真．冥皇',
-            'frost': '寒冰',
-            'icequeen_charm': '冰之女王魅力',
-            'orin': '歐林與西瑪'
-        };
-
         if (!setObj.name) {
-            const translated = setTranslationMap[key];
+            const translated = window.setTranslationMap[key];
             setObj.name = (translated || key) + ' 套裝';
         }
-        if (!setObj.effectDesc) setObj.effectDesc = '請見個別裝備說明';
+        
+        // 套用真實的套裝效果（優先使用我們動態提取的字典）
+        if (window.realSetEffectMap[key]) {
+            setObj.effectDesc = window.realSetEffectMap[key];
+        } else if (!setObj.effectDesc || setObj.effectDesc === '請見個別裝備說明') {
+            setObj.effectDesc = '請見個別裝備說明';
+        }
         
         // 避免重複加入
         if (!allSets.find(s => s.name === setObj.name)) {
             allSets.push(setObj);
         }
     }
+    
+    // 另外替所有已加入的 DB.sets 補上真實效果（如果字典裡有對應的）
+    // DB.sets 的 key 是 set_0 ~ set_13，這裡手動對應一下：
+    const SET_CODE_MAP = {
+        'set_0': 'leather', 'set_1': 'oasis', 'set_2': 'gnome', 'set_3': 'silver',
+        'set_4': 'bone', 'set_5': 'steel', 'set_6': 'mage', 'set_7': 'dk',
+        'set_8': 'kurt', 'set_9': 'mr', 'set_10': 'guard', 'set_11': 'kinglord',
+        'set_12': 'demon', 'set_13': 'darkelf'
+    };
+    allSets.forEach(s => {
+        if (s.id && SET_CODE_MAP[s.id]) {
+            const code = SET_CODE_MAP[s.id];
+            if (window.realSetEffectMap[code]) {
+                s.effectDesc = window.realSetEffectMap[code];
+            }
+        }
+    });
     
     // 搜尋過濾
     const filteredSets = allSets.filter(set => {
