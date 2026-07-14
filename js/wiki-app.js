@@ -1022,7 +1022,7 @@ function createItemCard(item) {
     if (item.highestAttrPlus) effArr.push(`最高能力值額外加成`);
     if (item.showMobEle) effArr.push(`顯示怪物屬性弱點`);
     if (item.equipHaste) effArr.push(`裝備自帶加速`);
-    if (item.darkPoison) effArr.push(`暗毒複合特效`);
+    if (item.darkPoison) effArr.push(`一般攻擊命中 50% 機率使目標中毒：每秒該次攻擊 60% 傷害、持續 5 秒、最多 1 層（取較高傷害並刷新；劇毒精通→100%、每秒 200%）`);
     if (item.noBleed) effArr.push(`不觸發出血`);
     if (item.mpOnHit) effArr.push(`命中恢復MP`);
     if (item.ele) effArr.push(`武器屬性: ${{fire:'火',water:'水',earth:'地',wind:'風'}[item.ele] || item.ele}`);
