@@ -389,7 +389,7 @@
                 <a href="#section-physmag" onclick="event.preventDefault(); document.getElementById('section-physmag').scrollIntoView({behavior: 'smooth'})" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700 transition-colors cursor-pointer"><i class="fa-solid fa-scale-balanced mr-1 text-cyan-400"></i>近戰 vs 魔法差異</a>
                 <a href="#section-apmhit" onclick="event.preventDefault(); document.getElementById('section-apmhit').scrollIntoView({behavior: 'smooth'})" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700 transition-colors cursor-pointer"><i class="fa-solid fa-stopwatch mr-1 text-yellow-400"></i>攻速與命中機制</a>
                 <a href="#section-survivaldmg" onclick="event.preventDefault(); document.getElementById('section-survivaldmg').scrollIntoView({behavior: 'smooth'})" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700 transition-colors cursor-pointer"><i class="fa-solid fa-fire mr-1 text-red-500"></i>生存換輸出與階級增傷</a>
-                <a href="#section-royal" onclick="event.preventDefault(); document.getElementById('section-royal').scrollIntoView({behavior: 'smooth'})" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700 transition-colors cursor-pointer"><i class="fa-solid fa-crown mr-1 text-primary-400"></i>王族專精</a>
+                <a href="#section-royal" onclick="event.preventDefault(); document.getElementById('section-royal').scrollIntoView({behavior: 'smooth'})" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700 transition-colors cursor-pointer"><i class="fa-solid fa-crown mr-1 text-primary-400"></i>王族夥伴精通</a>
                 <a href="#section-relic" onclick="event.preventDefault(); document.getElementById('section-relic').scrollIntoView({behavior: 'smooth'})" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700 transition-colors cursor-pointer"><i class="fa-solid fa-khanda mr-1 text-red-400"></i>專屬遺物裝備</a>
                 <a href="#section-class" onclick="event.preventDefault(); document.getElementById('section-class').scrollIntoView({behavior: 'smooth'})" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700 transition-colors cursor-pointer"><i class="fa-solid fa-people-arrows mr-1 text-emerald-400"></i>職業搭配建議</a>
             </div>
@@ -497,13 +497,14 @@
             </div>
 
             <div id="section-royal" class="mb-8 border-t border-gray-800 pt-8 scroll-mt-20">
-                <h3 class="text-lg font-bold text-primary-400 mb-4 flex items-center"><i class="fa-solid fa-crown mr-2"></i>王族的統御力 (皇家寵物專精)</h3>
-                <p class="mb-3">王族職業具備特殊的專精天賦，在帶領寵物時具有絕對的優勢：</p>
+                <h3 class="text-lg font-bold text-primary-400 mb-4 flex items-center"><i class="fa-solid fa-crown mr-2"></i>王族的統御力 (夥伴精通)</h3>
+                <p class="mb-3">王族職業在「職業精通」中選擇「夥伴精通」後，在帶領寵物時具有絕對的毀滅性與生存優勢：</p>
                 <div class="bg-gray-900/60 border border-gray-700 p-4 rounded-lg ml-2 border-l-4 border-l-yellow-500">
-                    <div class="font-bold text-yellow-400 mb-1">天賦：皇家統御</div>
-                    <ul class="list-disc list-inside text-xs space-y-1">
-                        <li>一般職業寵物吃魅力加成係數為 10%，而 <b class="text-white">王族係數為 12%</b>。</li>
-                        <li>王族可以為寵物額外提供「魔法傷害加成」，數值等於王族的魅力值。對於<span class="text-blue-400">魔法型</span>寵物效益極大。</li>
+                    <div class="font-bold text-yellow-400 mb-1">精通：夥伴精通</div>
+                    <ul class="list-disc list-inside text-xs space-y-2">
+                        <li><b class="text-white">火力與精準爆發：</b> 出戰寵物的最終傷害與命中皆直接 <b class="text-red-400">提升 50%（×1.5倍）</b>，包含普攻與魔法技能。</li>
+                        <li><b class="text-white">自帶聖結界：</b> 寵物受到的傷害 <b class="text-blue-400">減少 30%</b>（等同自帶聖結界防護，但持續傷害不受此減免）。</li>
+                        <li class="text-gray-400">註：寵物依然會正常受到魅力屬性（10%）的加成；但此精通專屬寵物，傭兵不受影響。</li>
                     </ul>
                 </div>
             </div>
@@ -536,7 +537,7 @@
                 <div class="space-y-4">
                     <div class="p-3 bg-gray-900/50 rounded border-l-2 border-yellow-500">
                         <span class="font-bold text-yellow-400">王族 / 法師 (高魅力配置)</span>
-                        <p class="text-xs text-gray-400 mt-1">這兩個職業較容易將魅力點高，可攜帶多隻寵物。推薦帶<b class="text-white">「魔法型」</b>寵物（如 高等貓、高等暴走兔）或是<b class="text-white">「黃金龍」</b>，配合「馴獸師的訓狗棒」與高魅力的魔法加成，讓寵物成為主要火力輸出。</p>
+                        <p class="text-xs text-gray-400 mt-1">這兩個職業較容易將魅力點高，可攜帶多隻寵物。法師可搭配「馴獸師的訓狗棒」與高魅力的魔法加成；而王族點出<b class="text-yellow-300">「夥伴精通」</b>後，寵物傷害與命中直接暴增 50% 且自帶聖結界減傷，帶任何高輸出寵物（如 高等熊、高等貓、黃金龍）都能成為極端恐怖的戰力。</p>
                     </div>
                     <div class="p-3 bg-gray-900/50 rounded border-l-2 border-blue-500">
                         <span class="font-bold text-blue-400">騎士 / 戰士 (前排坦克)</span>
