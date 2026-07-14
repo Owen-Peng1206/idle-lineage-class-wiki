@@ -878,8 +878,21 @@ function createItemCard(item) {
     let hasAdvStats = Object.keys(advMap).some(k => item[k]);
     if (hasAdvStats) {
         let advItems = [];
+        const getSkillName = id => (typeof DB !== 'undefined' && DB.skills && DB.skills[id] && DB.skills[id].n) || '技能';
         for(let k in advMap) {
-            if(item[k]) advItems.push(`<div class="flex justify-between"><span>${advMap[k]}:</span> <span class="text-emerald-200">+${item[k]}</span></div>`);
+            if(item[k]) {
+                if (typeof item[k] === 'object' && !Array.isArray(item[k])) {
+                    let descArr = [];
+                    for (let skId in item[k]) {
+                        descArr.push(`${getSkillName(skId)} x${item[k][skId]}`);
+                    }
+                    advItems.push(`<div class="flex justify-between col-span-2"><span>${advMap[k]}:</span> <span class="text-emerald-200 text-right leading-tight break-keep ml-2">${descArr.join(', ')}</span></div>`);
+                } else {
+                    let prefix = '+';
+                    if (k.toLowerCase().includes('mult') && typeof item[k] === 'number') prefix = 'x';
+                    advItems.push(`<div class="flex justify-between"><span>${advMap[k]}:</span> <span class="text-emerald-200">${prefix}${item[k]}</span></div>`);
+                }
+            }
         }
         advStatsHtml = `
             <div class="mt-2.5 border border-emerald-900/40 rounded bg-emerald-950/20 p-2 shadow-inner">
