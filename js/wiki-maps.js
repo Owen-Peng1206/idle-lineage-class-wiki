@@ -355,15 +355,38 @@ function getMonsterDropsHtml(monsterId) {
     const mob = DB.mobs[monsterId];
     const dropKey = mob ? mob.n : monsterId;
 
-    if (typeof MOB_DROPS === 'undefined' || !MOB_DROPS[dropKey]) {
+    const dropTables = [];
+    if (typeof MOB_DROPS !== 'undefined') dropTables.push(MOB_DROPS);
+    if (typeof DARK_WEAPON_DROPS !== 'undefined') dropTables.push(DARK_WEAPON_DROPS);
+    if (typeof DRAGON_DROPS !== 'undefined') dropTables.push(DRAGON_DROPS);
+    if (typeof WARRIOR_DROPS !== 'undefined') dropTables.push(WARRIOR_DROPS);
+    if (typeof MEM_DROPS !== 'undefined') dropTables.push(MEM_DROPS);
+    if (typeof DARK_CRYSTAL_DROPS !== 'undefined') dropTables.push(DARK_CRYSTAL_DROPS);
+
+    let allDrops = [];
+    dropTables.forEach(table => {
+        if (table[dropKey]) {
+            allDrops = allDrops.concat(table[dropKey]);
+        }
+    });
+
+    if (allDrops.length === 0) {
         return '<div class="col-span-full text-gray-600 text-xs italic">無掉落資料</div>';
     }
     
-    const drops = MOB_DROPS[dropKey];
-    if (drops.length === 0) return '<div class="col-span-full text-gray-600 text-xs italic">無掉落資料</div>';
+    // 合併同物品機率（取最高）
+    const mergedDrops = [];
+    allDrops.forEach(d => {
+        const existing = mergedDrops.find(md => md[0] === d[0]);
+        if (existing) {
+            existing[1] = Math.max(existing[1], d[1]);
+        } else {
+            mergedDrops.push([d[0], d[1]]);
+        }
+    });
     
     // 依機率排序 (低到高)
-    const sortedDrops = [...drops].sort((a, b) => a[1] - b[1]);
+    const sortedDrops = mergedDrops.sort((a, b) => a[1] - b[1]);
     
     return sortedDrops.map(drop => {
         const itemId = drop[0];

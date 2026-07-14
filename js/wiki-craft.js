@@ -136,25 +136,41 @@ function _buildCraftDropIndex() {
         }
     }
 
-    // 3. 遍歷 MOB_DROPS（key = 怪物名稱）建立 itemId → sources 索引
+    // 3. 遍歷各掉落表（key = 怪物名稱）建立 itemId → sources 索引
     const idx = {};
-    for (const [mobName, drops] of Object.entries(MOB_DROPS)) {
-        // 找到對應的怪物 ID 列表
-        const mobIds = nameToIds[mobName] || [];
+    const dropTables = [];
+    if (typeof MOB_DROPS !== 'undefined') dropTables.push(MOB_DROPS);
+    if (typeof DARK_WEAPON_DROPS !== 'undefined') dropTables.push(DARK_WEAPON_DROPS);
+    if (typeof DRAGON_DROPS !== 'undefined') dropTables.push(DRAGON_DROPS);
+    if (typeof WARRIOR_DROPS !== 'undefined') dropTables.push(WARRIOR_DROPS);
+    if (typeof MEM_DROPS !== 'undefined') dropTables.push(MEM_DROPS);
+    if (typeof DARK_CRYSTAL_DROPS !== 'undefined') dropTables.push(DARK_CRYSTAL_DROPS);
 
-        // 收集該怪物出現的所有地圖（合併多個同名怪物的地圖）
-        const maps = [];
-        for (const mid of mobIds) {
-            for (const mn of (mobIdToMapNames[mid] || [])) {
-                if (!maps.includes(mn)) maps.push(mn);
+    dropTables.forEach(table => {
+        for (const [mobName, drops] of Object.entries(table)) {
+            // 找到對應的怪物 ID 列表
+            const mobIds = nameToIds[mobName] || [];
+
+            // 收集該怪物出現的所有地圖（合併多個同名怪物的地圖）
+            const maps = [];
+            for (const mid of mobIds) {
+                for (const mn of (mobIdToMapNames[mid] || [])) {
+                    if (!maps.includes(mn)) maps.push(mn);
+                }
+            }
+
+            for (const [dropItemId, chance] of drops) {
+                if (!idx[dropItemId]) idx[dropItemId] = [];
+                // 避免同一怪物重複加入（取最高機率）
+                const existing = idx[dropItemId].find(e => e.mobName === mobName);
+                if (existing) {
+                    existing.chance = Math.max(existing.chance, chance);
+                } else {
+                    idx[dropItemId].push({ mobName, chance, maps });
+                }
             }
         }
-
-        for (const [dropItemId, chance] of drops) {
-            if (!idx[dropItemId]) idx[dropItemId] = [];
-            idx[dropItemId].push({ mobName, chance, maps });
-        }
-    }
+    });
 
     // 4. 各物品的來源按機率由高到低排序
     for (const key of Object.keys(idx)) {
