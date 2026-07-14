@@ -747,7 +747,7 @@ function createItemCard(item) {
                     <div class="flex justify-between"><span>傷害力:</span> <span class="text-white">${item.dmgS || 0} / ${item.dmgL || 0}</span></div>
                     <div class="flex justify-between"><span>${hitText}:</span> <span class="text-white">${hitVal > 0 ? '+'+hitVal : hitVal}</span></div>
                     <div class="flex justify-between"><span>${dmgText}:</span> <span class="text-white">${dmgVal > 0 ? '+'+dmgVal : dmgVal}</span></div>
-                    ${item.mdmg ? `<div class="flex justify-between"><span>魔法傷害:</span> <span class="text-white">+${item.mdmg}</span></div>` : '<div></div>'}
+                    ${item.mdmg ? `<div class="flex justify-between"><span>魔法傷害:</span> <span class="text-white">${item.mdmg > 0 ? '+' : ''}${item.mdmg}</span></div>` : '<div></div>'}
                 </div>
                 <div class="text-[10px] text-gray-400 mt-1 border-t border-gray-800 pt-1.5 bg-gray-950/50 p-1.5 rounded flex items-center justify-between">
                     <span class="text-blue-300 font-medium"><i class="fa-solid fa-bolt mr-1"></i>基準攻擊速度:</span>
@@ -766,13 +766,13 @@ function createItemCard(item) {
                 <div class="text-[11px] text-blue-400 font-bold mb-1.5 flex items-center border-b border-gray-800 pb-1"><i class="fa-solid fa-shield-halved mr-1.5"></i>防禦與生存數值</div>
                 <div class="grid grid-cols-2 gap-y-1 gap-x-2 text-[11px] text-gray-300">
                     ${item.ac ? `<div class="flex justify-between"><span>防禦力(AC):</span> <span class="text-white">${item.ac < 0 ? item.ac : '-'+Math.abs(item.ac)}</span></div>` : ''}
-                    ${item.mr ? `<div class="flex justify-between"><span>魔法防禦(MR):</span> <span class="text-white">+${item.mr}</span></div>` : ''}
-                    ${item.dr ? `<div class="flex justify-between"><span>額外減傷:</span> <span class="text-white">+${item.dr}</span></div>` : ''}
-                    ${item.er ? `<div class="flex justify-between"><span>迴避率(ER):</span> <span class="text-white">+${item.er}</span></div>` : ''}
-                    ${item.resFire ? `<div class="flex justify-between"><span>火屬性抗性:</span> <span class="text-red-400">+${item.resFire}</span></div>` : ''}
-                    ${item.resWater ? `<div class="flex justify-between"><span>水屬性抗性:</span> <span class="text-blue-400">+${item.resWater}</span></div>` : ''}
-                    ${item.resEarth ? `<div class="flex justify-between"><span>地屬性抗性:</span> <span class="text-yellow-600">+${item.resEarth}</span></div>` : ''}
-                    ${item.resWind ? `<div class="flex justify-between"><span>風屬性抗性:</span> <span class="text-green-400">+${item.resWind}</span></div>` : ''}
+                    ${item.mr ? `<div class="flex justify-between"><span>魔法防禦(MR):</span> <span class="text-white">${item.mr > 0 ? '+' : ''}${item.mr}</span></div>` : ''}
+                    ${item.dr ? `<div class="flex justify-between"><span>額外減傷:</span> <span class="text-white">${item.dr > 0 ? '+' : ''}${item.dr}</span></div>` : ''}
+                    ${item.er ? `<div class="flex justify-between"><span>迴避率(ER):</span> <span class="text-white">${item.er > 0 ? '+' : ''}${item.er}</span></div>` : ''}
+                    ${item.resFire ? `<div class="flex justify-between"><span>火屬性抗性:</span> <span class="text-red-400">${item.resFire > 0 ? '+' : ''}${item.resFire}</span></div>` : ''}
+                    ${item.resWater ? `<div class="flex justify-between"><span>水屬性抗性:</span> <span class="text-blue-400">${item.resWater > 0 ? '+' : ''}${item.resWater}</span></div>` : ''}
+                    ${item.resEarth ? `<div class="flex justify-between"><span>地屬性抗性:</span> <span class="text-yellow-600">${item.resEarth > 0 ? '+' : ''}${item.resEarth}</span></div>` : ''}
+                    ${item.resWind ? `<div class="flex justify-between"><span>風屬性抗性:</span> <span class="text-green-400">${item.resWind > 0 ? '+' : ''}${item.resWind}</span></div>` : ''}
                 </div>
                 ${(item.slot === 'shield' && item.n && item.n.includes('臂甲')) ? `
                 <div class="text-[10px] text-gray-400 mt-1.5 border-t border-gray-800 pt-1.5 bg-gray-950/50 p-1.5 rounded">
@@ -791,20 +791,20 @@ function createItemCard(item) {
             <div class="mt-2.5 border border-purple-900/40 rounded bg-purple-950/20 p-2 shadow-inner">
                 <div class="text-[11px] text-purple-400 font-bold mb-1.5 flex items-center border-b border-purple-900/50 pb-1"><i class="fa-solid fa-user-plus mr-1.5"></i>基礎人物能力加成</div>
                 <div class="grid grid-cols-2 gap-y-1 gap-x-2 text-[11px] text-purple-300">
-                    ${item.str ? `<div class="flex justify-between"><span>力量(STR):</span> <span class="text-purple-200">+${item.str}</span></div>` : ''}
-                    ${item.dex ? `<div class="flex justify-between"><span>敏捷(DEX):</span> <span class="text-purple-200">+${item.dex}</span></div>` : ''}
-                    ${item.con ? `<div class="flex justify-between"><span>體質(CON):</span> <span class="text-purple-200">+${item.con}</span></div>` : ''}
-                    ${item.int ? `<div class="flex justify-between"><span>智力(INT):</span> <span class="text-purple-200">+${item.int}</span></div>` : ''}
-                    ${item.wis ? `<div class="flex justify-between"><span>精神(WIS):</span> <span class="text-purple-200">+${item.wis}</span></div>` : ''}
-                    ${item.cha ? `<div class="flex justify-between"><span>魅力(CHA):</span> <span class="text-purple-200">+${item.cha}</span></div>` : ''}
-                    ${item.hp ? `<div class="flex justify-between"><span>HP加成:</span> <span class="text-purple-200">+${item.hp}</span></div>` : ''}
-                    ${item.mp ? `<div class="flex justify-between"><span>MP加成:</span> <span class="text-purple-200">+${item.mp}</span></div>` : ''}
-                    ${item.mhp ? `<div class="flex justify-between"><span>HP上限:</span> <span class="text-purple-200">+${item.mhp}</span></div>` : ''}
-                    ${item.mmp ? `<div class="flex justify-between"><span>MP上限:</span> <span class="text-purple-200">+${item.mmp}</span></div>` : ''}
-                    ${item.hpR ? `<div class="flex justify-between"><span>HP恢復:</span> <span class="text-purple-200">+${item.hpR}</span></div>` : ''}
-                    ${item.regenHp ? `<div class="flex justify-between"><span>HP自然恢復:</span> <span class="text-purple-200">+${item.regenHp}</span></div>` : ''}
-                    ${item.mpR ? `<div class="flex justify-between"><span>MP恢復:</span> <span class="text-purple-200">+${item.mpR}</span></div>` : ''}
-                    ${item.weightCap ? `<div class="flex justify-between"><span>負重上限:</span> <span class="text-purple-200">+${item.weightCap}</span></div>` : ''}
+                    ${item.str ? `<div class="flex justify-between"><span>力量(STR):</span> <span class="text-purple-200">${item.str > 0 ? '+' : ''}${item.str}</span></div>` : ''}
+                    ${item.dex ? `<div class="flex justify-between"><span>敏捷(DEX):</span> <span class="text-purple-200">${item.dex > 0 ? '+' : ''}${item.dex}</span></div>` : ''}
+                    ${item.con ? `<div class="flex justify-between"><span>體質(CON):</span> <span class="text-purple-200">${item.con > 0 ? '+' : ''}${item.con}</span></div>` : ''}
+                    ${item.int ? `<div class="flex justify-between"><span>智力(INT):</span> <span class="text-purple-200">${item.int > 0 ? '+' : ''}${item.int}</span></div>` : ''}
+                    ${item.wis ? `<div class="flex justify-between"><span>精神(WIS):</span> <span class="text-purple-200">${item.wis > 0 ? '+' : ''}${item.wis}</span></div>` : ''}
+                    ${item.cha ? `<div class="flex justify-between"><span>魅力(CHA):</span> <span class="text-purple-200">${item.cha > 0 ? '+' : ''}${item.cha}</span></div>` : ''}
+                    ${item.hp ? `<div class="flex justify-between"><span>HP加成:</span> <span class="text-purple-200">${item.hp > 0 ? '+' : ''}${item.hp}</span></div>` : ''}
+                    ${item.mp ? `<div class="flex justify-between"><span>MP加成:</span> <span class="text-purple-200">${item.mp > 0 ? '+' : ''}${item.mp}</span></div>` : ''}
+                    ${item.mhp ? `<div class="flex justify-between"><span>HP上限:</span> <span class="text-purple-200">${item.mhp > 0 ? '+' : ''}${item.mhp}</span></div>` : ''}
+                    ${item.mmp ? `<div class="flex justify-between"><span>MP上限:</span> <span class="text-purple-200">${item.mmp > 0 ? '+' : ''}${item.mmp}</span></div>` : ''}
+                    ${item.hpR ? `<div class="flex justify-between"><span>HP恢復:</span> <span class="text-purple-200">${item.hpR > 0 ? '+' : ''}${item.hpR}</span></div>` : ''}
+                    ${item.regenHp ? `<div class="flex justify-between"><span>HP自然恢復:</span> <span class="text-purple-200">${item.regenHp > 0 ? '+' : ''}${item.regenHp}</span></div>` : ''}
+                    ${item.mpR ? `<div class="flex justify-between"><span>MP恢復:</span> <span class="text-purple-200">${item.mpR > 0 ? '+' : ''}${item.mpR}</span></div>` : ''}
+                    ${item.weightCap ? `<div class="flex justify-between"><span>負重上限:</span> <span class="text-purple-200">${item.weightCap > 0 ? '+' : ''}${item.weightCap}</span></div>` : ''}
                 </div>
             </div>
         `;
@@ -834,16 +834,16 @@ function createItemCard(item) {
             <div class="mt-2.5 border border-orange-900/40 rounded bg-orange-950/20 p-2 shadow-inner">
                 <div class="text-[11px] text-orange-400 font-bold mb-1.5 flex items-center border-b border-orange-900/50 pb-1"><i class="fa-solid fa-paw mr-1.5"></i>寵物專屬屬性加成</div>
                 <div class="grid grid-cols-2 gap-y-1 gap-x-2 text-[11px] text-orange-300">
-                    ${item.petDmg ? `<div class="flex justify-between"><span>寵物傷害:</span> <span class="text-orange-200">+${item.petDmg}</span></div>` : ''}
-                    ${item.petHit ? `<div class="flex justify-between"><span>寵物命中:</span> <span class="text-orange-200">+${item.petHit}</span></div>` : ''}
+                    ${item.petDmg ? `<div class="flex justify-between"><span>寵物傷害:</span> <span class="text-orange-200">${item.petDmg > 0 ? '+' : ''}${item.petDmg}</span></div>` : ''}
+                    ${item.petHit ? `<div class="flex justify-between"><span>寵物命中:</span> <span class="text-orange-200">${item.petHit > 0 ? '+' : ''}${item.petHit}</span></div>` : ''}
                     ${item.petAc ? `<div class="flex justify-between"><span>寵物防禦(AC):</span> <span class="text-orange-200">${item.petAc < 0 ? item.petAc : '-'+Math.abs(item.petAc)}</span></div>` : ''}
-                    ${item.petMr ? `<div class="flex justify-between"><span>寵物魔防:</span> <span class="text-orange-200">+${item.petMr}</span></div>` : ''}
-                    ${item.petInt ? `<div class="flex justify-between"><span>寵物智力:</span> <span class="text-orange-200">+${item.petInt}</span></div>` : ''}
-                    ${item.petWis ? `<div class="flex justify-between"><span>寵物精神:</span> <span class="text-orange-200">+${item.petWis}</span></div>` : ''}
-                    ${item.summonDmg ? `<div class="flex justify-between"><span>召喚物傷害:</span> <span class="text-orange-200">+${item.summonDmg}</span></div>` : ''}
-                    ${item.summonHit ? `<div class="flex justify-between"><span>召喚物命中:</span> <span class="text-orange-200">+${item.summonHit}</span></div>` : ''}
-                    ${item.petDmgAll ? `<div class="flex justify-between"><span>全體寵物傷害:</span> <span class="text-orange-200">+${item.petDmgAll}</span></div>` : ''}
-                    ${item.petHitAll ? `<div class="flex justify-between"><span>全體寵物命中:</span> <span class="text-orange-200">+${item.petHitAll}</span></div>` : ''}
+                    ${item.petMr ? `<div class="flex justify-between"><span>寵物魔防:</span> <span class="text-orange-200">${item.petMr > 0 ? '+' : ''}${item.petMr}</span></div>` : ''}
+                    ${item.petInt ? `<div class="flex justify-between"><span>寵物智力:</span> <span class="text-orange-200">${item.petInt > 0 ? '+' : ''}${item.petInt}</span></div>` : ''}
+                    ${item.petWis ? `<div class="flex justify-between"><span>寵物精神:</span> <span class="text-orange-200">${item.petWis > 0 ? '+' : ''}${item.petWis}</span></div>` : ''}
+                    ${item.summonDmg ? `<div class="flex justify-between"><span>召喚物傷害:</span> <span class="text-orange-200">${item.summonDmg > 0 ? '+' : ''}${item.summonDmg}</span></div>` : ''}
+                    ${item.summonHit ? `<div class="flex justify-between"><span>召喚物命中:</span> <span class="text-orange-200">${item.summonHit > 0 ? '+' : ''}${item.summonHit}</span></div>` : ''}
+                    ${item.petDmgAll ? `<div class="flex justify-between"><span>全體寵物傷害:</span> <span class="text-orange-200">${item.petDmgAll > 0 ? '+' : ''}${item.petDmgAll}</span></div>` : ''}
+                    ${item.petHitAll ? `<div class="flex justify-between"><span>全體寵物命中:</span> <span class="text-orange-200">${item.petHitAll > 0 ? '+' : ''}${item.petHitAll}</span></div>` : ''}
                     ${item.petSkillDmgMult ? `<div class="flex justify-between"><span>寵物技能傷害:</span> <span class="text-orange-200">x${item.petSkillDmgMult}</span></div>` : ''}
                 </div>
             </div>
