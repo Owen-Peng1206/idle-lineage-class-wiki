@@ -1218,6 +1218,12 @@ function matchItemSubType(item, type, subType) {
 
 function renderItems() {
     if (!itemsGrid) return;
+    
+    // 確保 wikiData.items 已載入（修正首次切換時可能因載入時序問題導致為空的狀況）
+    if (wikiData.items.length === 0 && typeof DB !== 'undefined' && DB.items) {
+        wikiData.items = convertObjToArray(DB.items);
+    }
+    
     if (currentFilterType === 'set') { renderSets(); return; }
 
     itemsFilteredCache = wikiData.items.filter(item => {
@@ -1801,6 +1807,11 @@ window.sortDropTable = sortDropTable;
 
 function renderDrops() {
     if (!dropTableBody) return;
+    
+    // 確保 wikiData.drops 已載入（修正首次切換時可能因載入時序問題導致為空的狀況）
+    if (wikiData.drops.length === 0 && typeof DB !== 'undefined' && DB.mobs) {
+        wikiData.drops = buildDropData();
+    }
     
     const keyword = currentDropSearchQuery.toLowerCase();
     let filteredDrops = wikiData.drops.filter(d => {
