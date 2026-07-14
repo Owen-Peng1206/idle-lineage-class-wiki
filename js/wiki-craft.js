@@ -47,6 +47,7 @@ const CRAFT_NPC_INFO = {
     npc_imp:          { name: '小惡魔',       location: '炎魔謁見所', title: '製作',        icon: 'fa-spider',           color: 'text-red-300' },
     npc_flame_smith:  { name: '炎魔鐵匠',     location: '炎魔謁見所', title: '製作',        icon: 'fa-hammer',           color: 'text-orange-500' },
     npc_flame_aide:   { name: '炎魔的輔佐官', location: '炎魔謁見所', title: '耳環製作',    icon: 'fa-earring',          color: 'text-pink-400' },
+    npc_atelier:      { name: '亞提利歐',     location: '長老會議廳', title: '製作',        icon: 'fa-hammer',           color: 'text-purple-400' },
 };
 
 // ==========================================
@@ -57,7 +58,7 @@ const TOWN_ORDER = [
     '奇岩', '海音', '歐瑞村莊', '亞丁',
     '傲慢之塔入口', '象牙塔', '威頓村',
     '希培利亞村莊', '貝希摩斯', '沉默洞穴',
-    '炎魔謁見所', '席琳神殿'
+    '炎魔謁見所', '席琳神殿', '長老會議廳'
 ];
 
 // ==========================================
