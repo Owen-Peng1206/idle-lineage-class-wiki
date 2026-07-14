@@ -8,6 +8,13 @@ function buildMagicData() {
     if (typeof DB === 'undefined' || !DB.skills) return [];
     
     return Object.entries(DB.skills).map(([key, value]) => {
+        // 針對一般魔法（具備法師學習條件）自動補足王族的學習等級需求
+        let reqRoy = value.reqRoy;
+        if (reqRoy === undefined && value.reqM !== undefined) {
+            if (value.tier === 1) reqRoy = 10;
+            else if (value.tier === 2) reqRoy = 20;
+        }
+
         return {
             id: key,
             name: value.n || key,
@@ -19,7 +26,7 @@ function buildMagicData() {
                 mage: value.reqM,
                 elf: value.reqE,
                 knight: value.reqK,
-                royal: value.reqRoy,
+                royal: reqRoy,
                 dark: value.reqD,
                 dragon: value.reqDk,
                 illusion: value.reqI,
