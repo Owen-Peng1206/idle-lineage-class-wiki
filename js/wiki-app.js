@@ -863,7 +863,7 @@ function createItemCard(item) {
         extraDmg: '泛用額外傷害', extraHit: '泛用額外命中',
         meleeDmg: '近距離額外傷害', meleeHit: '近距離命中', meleeHaste: '近戰攻速加成',
         rangedDmg: '遠距離額外傷害', rangedHit: '遠距離命中', mdmg: '魔法傷害',
-        atkSpdPct: '攻擊速度提升(%)', atkSpd: '攻擊速度(固定)', moveSpeedPct: '移動速度提升(%)',
+        atkSpdPct: '攻擊速度提升(%)', atkSpd: '攻擊速度(固定)', moveSpeedPct: '移動速度提升(%)', heavyMult: '重擊傷害倍率', 
         fullHpMult: '滿血傷害倍率', fullHpMultTriple: '滿血追加倍率', heavyMult: '重擊傷害倍率',
         weakHitBonus: '弱點命中加成', pierceChance: '穿透機率(%)',
         lifesteal: '吸血', vamp: '吸血', drain: '吸收生命/魔力', potionBonus: '藥水恢復量(%)',
@@ -894,7 +894,11 @@ function createItemCard(item) {
     // 7. 裝備特效標籤 (Effects) - 粉紅色
     let effectsHtml = '';
     let effArr = [];
-    if (item.eff && effNamesMap[item.eff]) effArr.push(effNamesMap[item.eff]);
+    const eleName = e => ({ fire:'火', water:'水', wind:'風', earth:'地', none:'無' }[e] || e || '指定');
+    const skillName = id => (typeof DB !== 'undefined' && DB.skills && DB.skills[id] && DB.skills[id].n) || '技能';
+    const pctText = v => `${Math.round(v * 100)}%`;
+
+    if (item.eff && typeof effNamesMap !== 'undefined' && effNamesMap[item.eff]) effArr.push(effNamesMap[item.eff]);
     let magicObj2 = item.spellProc || item.meleeHitSpell;
     if (magicObj2) {
         let spellName = magicObj2.skn || '魔法';
@@ -902,21 +906,65 @@ function createItemCard(item) {
     }
     let procSkillId2 = item.procSkill || item.procStatusSkill;
     if (procSkillId2) {
-        let skillName = (typeof DB !== 'undefined' && DB.skills && DB.skills[procSkillId2]) ? DB.skills[procSkillId2].n : '技能';
-        effArr.push(`發動: ${skillName}`);
+        let skName = (typeof DB !== 'undefined' && DB.skills && DB.skills[procSkillId2]) ? DB.skills[procSkillId2].n : '技能';
+        effArr.push(`發動: ${skName}`);
     }
+
+    // 整合 relicPurposeLabels 的詳細描述
+    if (item.reqAvatar) effArr.push(`裝備限制（僅限${item.reqAvatar}）`);
+    if (item.armguard) effArr.push('臂甲（裝於副手，可與雙手武器並用）');
+    if (item.resNone) effArr.push(`無屬性魔法抗性+${item.resNone}%`);
+    if (item.mrPerWis) effArr.push(`精神轉魔防（每1點精神，MR+${item.mrPerWis}）`);
+    if (item.type === 'wpn' && item.mr) effArr.push(`魔防(MR)+${item.mr}`);
+    if (item.mcrit) effArr.push(`近距離爆擊率+${item.mcrit}%`);
+    if (item.mcritDmg) effArr.push(`近距離爆擊傷害+${item.mcritDmg}%`);
+    if (item.rcrit) effArr.push(`遠距離爆擊率+${item.rcrit}%`);
+    if (item.abnormalResist) effArr.push(`異常狀態抵抗+${item.abnormalResist}%`);
+    if (item.immStone) effArr.push('免疫石化');
+    if (item.immPoison) effArr.push('免疫中毒');
+    if (item.immParalyze) effArr.push('免疫麻痺');
+    if (item.immBurn) effArr.push('免疫灼燒');
+    if (item.immFreeze) effArr.push('免疫冰凍');
+    if (item.immSleep) effArr.push('免疫睡眠');
+    if (item.immSlow) effArr.push('免疫緩速');
+    if (item.immHold) effArr.push('免疫木乃伊');
+    if (item.immStun) effArr.push('免疫暈眩');
+    
+    if (item.atkSpdPct) effArr.push(`攻擊速度${item.atkSpdPct > 0 ? '+' : ''}${item.atkSpdPct}%`);
+    if (item.meleeHaste) effArr.push(`裝備近戰武器時攻速+${item.meleeHaste}%`);
+    if (item.polyAtkSpdPct) effArr.push(`變身時攻速+${item.polyAtkSpdPct}%`);
+    if (item.moveSpeedPct) effArr.push(`移動速度${item.moveSpeedPct > 0 ? '+' : ''}${item.moveSpeedPct}%`);
+    if (item.hitstunReduce) effArr.push(`受擊硬直縮短${(item.hitstunReduce / 10).toFixed(1)}秒`);
+    if (item.aggroHide) effArr.push('隱匿仇恨（較不容易成為敵人目標）');
+    if (item.aggroWeight) effArr.push(`${item.aggroWeight > 0 ? '提高' : '降低'}仇恨（${item.aggroWeight > 0 ? '更' : '較不'}容易被攻擊）`);
+
+    if (item.auraDmg) effArr.push(`傷害光環（每${((item.auraDmg.interval || 10) / 10).toFixed(1)}秒對全體敵人造成${item.auraDmg.dmg}點傷害）`);
+    if (item.thorns) effArr.push(`受擊反傷（反彈${item.thorns}點傷害）`);
+    if (item.dmgReflect) effArr.push(`傷害反射 ${item.dmgReflect}%（免疫該次一般攻擊並反射傷害）`);
+    if (item.hurtExplode) effArr.push(`受擊爆裂（自己與全體敵人受到${item.hurtExplode}點火焰魔法傷害）`);
+    if (item.hurtRapidfire) effArr.push('受擊反制（受到傷害時立即觸發一次連射）');
+    if (item.counterBarrierX2) effArr.push('反擊屏障強化（反擊傷害×2）');
+    if (item.crushDr) effArr.push(`重擊防護（受到重擊傷害-${item.crushDr}%）`);
+    if (item.physDrGated) effArr.push(`物理防護（一般攻擊傷害-${item.physDrGated}%，每3秒一次）`);
+    if (item.fireNullify) effArr.push('火焰化解（每10秒可免疫一次火屬性傷害）');
+    if (item.wearerEle) effArr.push(`${eleName(item.wearerEle)}之化身（自身轉為${eleName(item.wearerEle)}屬性，承受傷害套用屬性剋制）`);
+    if (item.stealth) effArr.push('常駐隱身（不主動吸引一般怪物）');
+
+    if (item.fullHpMult) effArr.push(`滿血狙擊（對滿血敵人一般攻擊傷害×${item.fullHpMult}）`);
+    if (item.fullHpMultTriple) effArr.push(`滿血三重矢（首箭傷害×${item.fullHpMultTriple}）`);
+    if (item.fullHpMpHalf) effArr.push('滿血施法（自身滿血時魔力消耗減半）');
+    if (item.lowHpPotionX2) effArr.push('瀕危急救（低HP時藥水恢復量×2）');
+    if (item.lowMpRegenBonus) effArr.push(`魔力枯竭回復（MP低於15%時，MP自然恢復+${item.lowMpRegenBonus}）`);
+    if (item.hotHealMult) effArr.push(`持續治癒強化（持續回復量×${item.hotHealMult}）`);
+    if (item.onDmgHeal) effArr.push(`受擊自癒（每${item.onDmgHealCd || 5}秒自動施放${skillName(item.onDmgHeal)}）`);
+    if (item.poisonHealMult) effArr.push(`毒素轉生（受到毒性持續傷害時，改為恢復其${pctText(item.poisonHealMult)}的HP）`);
+
+    // 其餘原本的特效標籤
     if (item.procPoison) effArr.push("毒素發動");
     if (item.ignHardSkin) effArr.push("貫穿硬皮");
     if (item.unBonus) effArr.push("不死系加成");
-    if (item.thorns) effArr.push(`反擊(${item.thorns})`);
     if (item.stunResist) effArr.push(`抗暈+${item.stunResist}`);
     if (item.freezeResist) effArr.push(`抗冰+${item.freezeResist}`);
-    if (item.immFreeze) effArr.push("免疫冰凍");
-    if (item.immPoison) effArr.push("免疫中毒");
-    if (item.immParalyze) effArr.push("免疫麻痺");
-    if (item.immStone) effArr.push("免疫石化");
-    if (item.immSlow) effArr.push("免疫緩速");
-    if (item.immHold) effArr.push("免疫木乃伊");
     if (item.vanderStunHit) effArr.push("衝暈命中+1");
     if (item.dragonStrike) effArr.push("龍的一擊");
     if (item.rapidfire) effArr.push(`連射`);
@@ -929,15 +977,10 @@ function createItemCard(item) {
     if (item.procBurn) effArr.push(`附加灼燒`);
     if (item.procPoisonRate) effArr.push(`附加中毒(機率)`);
     if (item.onHitEleDmg) effArr.push(`附加屬性傷害`);
-    if (item.counterBarrierX2) effArr.push(`反擊屏障強化`);
     if (item.weakExpose) effArr.push(`弱點曝光`);
     if (item.redSpecter) effArr.push(`紅惡靈逆襲`);
     if (item.blueSpecter) effArr.push(`藍惡靈奪魔`);
     if (item.shatter) effArr.push(`粉碎`);
-    if (item.onDmgHeal) effArr.push(`受擊機率回血`);
-    if (item.immStun) effArr.push(`免疫暈眩`);
-    if (item.immSleep) effArr.push(`免疫睡眠`);
-    if (item.immBurn) effArr.push(`免疫灼燒`);
     if (item.allLures) effArr.push(`持有全部誘捕狀態`);
     if (item.relicDropX2) effArr.push(`遺物掉落率兩倍`);
     if (item.dotCrit) effArr.push(`持續傷害(DoT)可爆擊`);
@@ -959,8 +1002,8 @@ function createItemCard(item) {
         effectsHtml = `
             <div class="mt-2.5 border border-pink-900/40 rounded bg-pink-950/20 p-2 shadow-inner">
                 <div class="text-[11px] text-pink-400 font-bold mb-1.5 flex items-center border-b border-pink-900/50 pb-1"><i class="fa-solid fa-sparkles mr-1.5"></i>裝備特效標籤</div>
-                <div class="text-[11px] text-pink-300 leading-relaxed font-medium">
-                    <span class="text-pink-500 mr-1">│</span>${effArr.join('、')}
+                <div class="text-[11px] text-pink-300 leading-relaxed font-medium space-y-1">
+                    ${effArr.map(e => `<div class="flex items-start"><span class="text-pink-500 mr-1 mt-[2px] text-[9px]"><i class="fa-solid fa-caret-right"></i></span><span>${e}</span></div>`).join('')}
                 </div>
             </div>
         `;
