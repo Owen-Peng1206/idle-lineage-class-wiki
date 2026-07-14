@@ -364,6 +364,11 @@ const classesData = [
                 "lv": "50+",
                 "name": "職業精通任務",
                 "desc": "完成任務後便會開啟「職業精通」之路，讓你能從專屬的四個精通分支中選擇一種「道」。<br><span class=\"text-xs text-gray-500\">接取條件:</span> 角色必須達到 50 級（含）以上。前往「威頓村」，尋找傳奇人物 NPC「漢」來對話並接取任務。<br><span class=\"text-xs text-gray-500\">任務目標:</span> 擊敗首領「飛龍」（所有職業共通目標）。擊敗後將從其殘骸中自動拾取「精通之證」（此道具為唯一性，無法存入倉庫或販售）。<br><span class=\"text-xs text-primary-400 font-semibold\">完成任務:</span> 帶著「精通之證」回到威頓村與「漢」對話繳交道具。<br><span class=\"text-xs text-gray-500\">精通更換機制:</span> 首次選擇免費。後續如果想要更換不同的精通分支，每次需支付固定費用：300 萬金幣 + 10 張王族搜索狀（不會隨次數遞增）。<br><span class=\"text-xs text-red-400 font-semibold\">⚠️ 切換副作用:</span> 切換時可能導致原有精通特權失效，例如：妖精若失去「劍術精通」，會自動卸下手中裝備的騎士專用武器；妖精若失去「精靈精通」，在場的屬性精靈將會自動消散收回；龍騎士若離開「覺醒精通」，系統會自動清除多餘的覺醒增益，只保留一種。"
+            },
+            {
+                "lv": "80+",
+                "name": "👑 吉爾塔斯流程攻略",
+                "desc": "各位同學，準備好挑戰傳說中的魔神了嗎？跟著導師的筆記一步步來：<br>① <span class=\"text-xs text-primary-400 font-semibold\">準備門票：</span>先去「拉斯塔巴德-格蘭肯神殿.長老室」打 1 本「死亡騎士之書」（1%機率）。<br>② <span class=\"text-xs text-primary-400 font-semibold\">挑戰吉爾塔斯：</span>帶著書去「拉斯塔巴德-長老會議廳」找真.冥皇丹特斯，進入「受詛咒的黑暗妖精聖殿」（每次扣1本）。<br>③ <span class=\"text-xs text-gray-500 font-semibold\">保留進度訣竅：</span>如果打不贏需要撤退，務必帶上「完整的召喚球」！這樣離開時只會扣1顆球，並將吉爾塔斯剩餘血量封印。沒球的話吉爾塔斯會滿血重置。<br>④ <span class=\"text-xs text-gray-500 font-semibold\">召喚球製作：</span>去「拉斯塔巴德-長老會議廳」找亞提利歐製作。材料為「召喚球之核」×1與「召喚球碎片」×4。材料可在「受詛咒的黑暗妖精聖殿」的小怪，或是「拉斯塔巴德-魔獸訓練場」的「地獄奴隸」身上打到。<br>⑤ <span class=\"text-xs text-red-400 font-semibold\">隱藏挑戰：</span>成功擊殺吉爾塔斯後必掉「吉爾塔斯的封印」。將它交給長老會議廳的真.冥皇丹特斯，就能進入隱藏BOSS房挑戰「真‧死亡騎士 冥皇丹特斯」！<br>⚠️ <span class=\"text-xs text-red-400 font-semibold\">導師組隊叮嚀：</span>吉爾塔斯是一場極高難度的戰鬥，極度考驗團隊抗性與應變能力，請務必與最可靠的盟友同行！"
             }
         ]
     }
