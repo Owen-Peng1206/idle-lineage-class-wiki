@@ -332,8 +332,8 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 text-xs">
                         <div class="bg-gray-950 p-3 rounded border border-red-900/50">
-                            <div class="text-red-400 font-bold mb-2 border-b border-gray-800 pb-1"><i class="fa-solid fa-heart mr-1"></i>血多俱樂部 (強烈推薦)</div>
-                            <p class="text-gray-400 mb-2">每次升級 HP 成長極高 (約 10~15)，後期能成為堅實的肉盾：</p>
+                            <div class="text-red-400 font-bold mb-2 border-b border-gray-800 pb-1"><i class="fa-solid fa-shield-halved mr-1"></i>血多重裝俱樂部 (肉盾擔當)</div>
+                            <p class="text-gray-400 mb-2">每次升級 HP 成長極高 (約 10~15)，後期能成為堅實的肉盾，但<b class="text-red-300">輸出會受生存平衡機制扣減 (最低 0.75 倍)</b>：</p>
                             <div class="text-white flex flex-wrap gap-1">
                                 <span class="bg-gray-800 px-2 py-1 rounded">虎男</span>
                                 <span class="bg-gray-800 px-2 py-1 rounded border border-amber-700/50 text-amber-300">淘氣龍</span>
@@ -345,8 +345,8 @@
                             </div>
                         </div>
                         <div class="bg-gray-950 p-3 rounded border border-blue-900/50">
-                            <div class="text-blue-400 font-bold mb-2 border-b border-gray-800 pb-1"><i class="fa-solid fa-heart-crack mr-1"></i>玻璃俱樂部 (需靠裝備與走位)</div>
-                            <p class="text-gray-400 mb-2">每次升級 HP 成長偏低 (約 3~8)，即使高達 50 級進化依然偏軟：</p>
+                            <div class="text-blue-400 font-bold mb-2 border-b border-gray-800 pb-1"><i class="fa-solid fa-bolt mr-1"></i>低血高傷俱樂部 (玻璃大砲)</div>
+                            <p class="text-gray-400 mb-2">每次升級 HP 成長偏低 (約 3~8)，雖然偏軟，但<b class="text-blue-300">系統賦予極高的「生存力換輸出」增傷補償 (最高 1.25 倍)</b>，是極致的火力來源：</p>
                             <div class="text-gray-400 flex flex-wrap gap-1">
                                 <span class="bg-gray-800 px-2 py-1 rounded">貓</span>
                                 <span class="bg-gray-800 px-2 py-1 rounded">杜賓狗</span>
@@ -388,6 +388,7 @@
             <div class="mb-6 flex flex-wrap gap-2 text-xs">
                 <a href="#section-physmag" onclick="event.preventDefault(); document.getElementById('section-physmag').scrollIntoView({behavior: 'smooth'})" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700 transition-colors cursor-pointer"><i class="fa-solid fa-scale-balanced mr-1 text-cyan-400"></i>近戰 vs 魔法差異</a>
                 <a href="#section-apmhit" onclick="event.preventDefault(); document.getElementById('section-apmhit').scrollIntoView({behavior: 'smooth'})" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700 transition-colors cursor-pointer"><i class="fa-solid fa-stopwatch mr-1 text-yellow-400"></i>攻速與命中機制</a>
+                <a href="#section-survivaldmg" onclick="event.preventDefault(); document.getElementById('section-survivaldmg').scrollIntoView({behavior: 'smooth'})" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700 transition-colors cursor-pointer"><i class="fa-solid fa-fire mr-1 text-red-500"></i>生存換輸出與階級增傷</a>
                 <a href="#section-royal" onclick="event.preventDefault(); document.getElementById('section-royal').scrollIntoView({behavior: 'smooth'})" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700 transition-colors cursor-pointer"><i class="fa-solid fa-crown mr-1 text-primary-400"></i>王族專精</a>
                 <a href="#section-relic" onclick="event.preventDefault(); document.getElementById('section-relic').scrollIntoView({behavior: 'smooth'})" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700 transition-colors cursor-pointer"><i class="fa-solid fa-khanda mr-1 text-red-400"></i>專屬遺物裝備</a>
                 <a href="#section-class" onclick="event.preventDefault(); document.getElementById('section-class').scrollIntoView({behavior: 'smooth'})" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-full border border-gray-700 transition-colors cursor-pointer"><i class="fa-solid fa-people-arrows mr-1 text-emerald-400"></i>職業搭配建議</a>
@@ -462,7 +463,36 @@
                     </div>
                 </div>
                 <div class="mt-3 bg-gray-950 p-3 border border-blue-900/40 rounded text-xs text-gray-400">
-                    <b class="text-blue-400">📝 關於魔法命中：</b> 魔法型寵物（如貓）天生「物理命中」極低（滿等僅約 24，而物理寵高達 33+），因此魔法寵物去「咬」後期怪基本上是 100% Miss 的，牠們完全依賴魔法技能（施法速度 CAPM 同樣有上述的傷害平衡機制）。
+                    <b class="text-blue-400">📝 關於魔法命中與全域補強：</b> 魔法型寵物（如貓）天生「物理命中」極低（滿等僅約 24，而物理寵高達 33+），因此魔法寵物去「咬」後期怪基本上是 100% Miss 的，牠們完全依賴魔法技能（施法速度 CAPM 同樣有上述的傷害平衡機制）。另外，目前版本<b class="text-white">全寵物獲得額外 +5 的基礎命中補強 (PET_HIT_TUNE)</b>，減少前期打怪頻繁 Miss 的問題。
+                </div>
+            </div>
+
+            <div id="section-survivaldmg" class="mb-8 border-t border-gray-800 pt-8 scroll-mt-20">
+                <h3 class="text-lg font-bold text-red-500 mb-4 flex items-center"><i class="fa-solid fa-fire mr-2"></i>生存力換輸出與階級增傷</h3>
+                <p class="mb-3 text-sm text-gray-300">
+                    <b class="text-white">「生存力換輸出 (Survival vs Damage)」</b>平衡與<b class="text-white">「階級增傷 (Tier Multiplier)」</b>機制，讓不同血量成長的寵物與不同階級的寵物有更明顯的定位區別，<b class="text-amber-300">這些倍率對普攻與額外技能皆有作用！</b>
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="bg-gray-900 p-4 rounded border border-gray-700">
+                        <div class="font-bold text-amber-400 mb-2 border-b border-gray-800 pb-1"><i class="fa-solid fa-heart-pulse mr-1"></i>生存力換輸出 (依血量成長)</div>
+                        <ul class="list-disc ml-4 space-y-2 text-gray-400">
+                            <li><b class="text-red-400">低血高傷：</b> 平均升級 HP 成長 ≦ 5，獲得高達 <b class="text-white text-base">1.25 倍</b> 的最終傷害加成。</li>
+                            <li><b class="text-orange-400">中低血量：</b> 平均升級 HP 成長 6~8，獲得 <b class="text-white">1.08 倍</b> 的傷害加成。</li>
+                            <li><b class="text-emerald-400">中高血量：</b> 平均升級 HP 成長 9~11，傷害扣減為 <b class="text-white">0.90 倍</b>。</li>
+                            <li><b class="text-blue-400">高血坦寵：</b> 平均升級 HP 成長 > 11，傷害大幅扣減至 <b class="text-white text-base">0.75 倍</b>，專職承傷。</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-900 p-4 rounded border border-gray-700">
+                        <div class="font-bold text-amber-400 mb-2 border-b border-gray-800 pb-1"><i class="fa-solid fa-arrow-up-right-dots mr-1"></i>階級增傷 (Tier Multiplier)</div>
+                        <ul class="list-disc ml-4 space-y-2 text-gray-400">
+                            <li><b class="text-gray-300">一般型態 (Tier 0)：</b> 獲得 <b class="text-white text-base">1.14 倍</b> 的基礎傷害加成。</li>
+                            <li><b class="text-emerald-400">高等型態 (Tier 1)：</b> 進化後火力大解放，獲得高達 <b class="text-white text-base">1.46 倍</b> 的傷害加成！</li>
+                            <li><b class="text-yellow-400">黃金龍 (Tier 2)：</b> 由於具備全遊戲唯一範圍魔法，<b class="text-white">維持原值 1.00 倍</b>。且其不參與新的生存力換輸出，而是保留了舊版血量補償 (<code class="text-[10px]">oldDurableMul</code>: 1.05 / 1.0 / 0.92 / 0.85)。</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-3 bg-gray-950 p-3 border border-red-900/40 rounded text-xs text-gray-400">
+                    <b class="text-red-400">🔥 極致火力試算：</b> 一隻低血量的高等寵物 (如：高等貓)，其最終傷害倍率會是 <b class="text-white">1.46 (階級) × 1.25 (生存換輸出) = 1.825 倍</b>，配合技能基底，將成為極端恐怖的玻璃大砲！相反，高等熊(血多)則是 <b class="text-white">1.46 × 0.75 = 1.095 倍</b>，偏向穩定坦怪。
                 </div>
             </div>
 
