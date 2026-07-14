@@ -868,7 +868,7 @@ function createItemCard(item) {
         weakHitBonus: '弱點命中加成', pierceChance: '穿透機率(%)',
         lifesteal: '吸血', vamp: '吸血', drain: '吸收生命/魔力', potionBonus: '藥水恢復量(%)',
         expBonus: '經驗值加成(%)', goldBonus: '金幣加成(%)',
-        mpRPerEn: '強化回魔(每階)', extraMpPerEn: '強化加魔(每階)', mpROverSafe: '超安定回魔',
+        mpRPerEn: 'MP自然恢復量(每階)', extraMpPerEn: '額外魔法點數(每階)', mpROverSafe: '突破安定值：每超過1階，MP自然恢復量',
         mpOnHitAmt: '命中回魔量', dmgMult: '總傷害倍率', multiDmg: '多段傷害次數',
         teamDmgReducePct: '隊伍減傷(%)',
         abnormalResist: '異常狀態抵抗(%)', sleepResist: '抗睡眠(%)',
