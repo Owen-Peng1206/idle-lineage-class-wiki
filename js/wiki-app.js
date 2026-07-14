@@ -715,6 +715,24 @@ function getItemIconPath(item) {
 }
 
 /**
+ * 取得套裝中文名稱
+ */
+function getSetTranslation(setId) {
+    if (window.setTranslationMap && window.setTranslationMap[setId]) {
+        return window.setTranslationMap[setId];
+    }
+    const fallbackMap = {
+        'leather': '皮', 'bone': '骷髏', 'dk': '死亡騎士', 'silver': '銀釘',
+        'oasis': '歐西斯', 'gnome': '侏儒', 'mage': '法師', 'kurt': '克特',
+        'steel': '鋼鐵', 'mr': '抗魔', 'guard': '守護', 'kinglord': '四大軍王',
+        'demon': '惡魔', 'darkelf': '黑暗妖精', 'orin': '歐林與西瑪',
+        'icequeen_charm': '冰之女王魅力', 'frost': '寒冰', 'bluepirate': '藍海賊',
+        'emperor': '真．冥皇'
+    };
+    return fallbackMap[setId] || setId;
+}
+
+/**
  * 渲染單個道具卡片 HTML
  */
 function createItemCard(item) {
@@ -723,7 +741,7 @@ function createItemCard(item) {
     const titleClass = isLegend ? 'text-gold-400 font-bold' : 'text-gray-200 font-semibold';
     
     // 1. 標題與特殊標籤區塊
-    let setEffectHtml = item.set ? `<div class="text-green-400 text-[11px] font-bold mt-1.5"><i class="fa-solid fa-layer-group mr-1"></i>${item.set} 套裝效果</div>` : '';
+    let setEffectHtml = item.set ? `<div class="text-green-400 text-[11px] font-bold mt-1.5"><i class="fa-solid fa-layer-group mr-1"></i>${getSetTranslation(item.set)} 套裝效果</div>` : '';
     const desc = item.d ? `<div class="text-[11px] text-gray-400 italic mt-2 leading-relaxed border-l-2 border-gray-700 pl-2 py-0.5">${item.d}</div>` : '';
 
     // 2. 武器專屬數值區
