@@ -276,9 +276,8 @@ function craftGetMaterialTooltipHtml(itemId) {
     if (topDrops.length > 0) {
         html += '<ul class="space-y-1.5">';
         topDrops.forEach(s => {
-            // 遊戲內機率值：有的是 0~100 範圍，有的是 0~1 範圍；依數值大小自動判斷
-            const rawChance   = s.chance;
-            const pct         = rawChance > 1 ? rawChance : rawChance * 100;
+            // 遊戲內機率值已經是百分比（例如 1 = 1%, 0.1 = 0.1%）
+            const pct         = s.chance;
             const decimals    = pct < 0.1 ? 3 : pct < 1 ? 2 : pct < 10 ? 1 : 0;
             const chancePct   = pct.toFixed(decimals) + '%';
             const mapsStr     = s.maps.length > 0 ? s.maps.slice(0, 3).join('、') : '未知地圖';
