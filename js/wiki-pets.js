@@ -503,7 +503,7 @@
                     <div class="font-bold text-yellow-400 mb-1">精通：夥伴精通</div>
                     <ul class="list-disc list-inside text-xs space-y-2">
                         <li><b class="text-white">火力與精準爆發：</b> 出戰寵物的最終傷害與命中皆直接 <b class="text-red-400">提升 50%（×1.5倍）</b>，包含普攻與魔法技能。</li>
-                        <li><b class="text-white">自帶聖結界：</b> 寵物受到的傷害 <b class="text-blue-400">減少 30%</b>（等同自帶聖結界防護，但持續傷害不受此減免）。</li>
+                        <li><b class="text-white">自帶聖結界：</b> 寵物受到的傷害 <b class="text-blue-400">減少 50%</b>（等同自帶聖結界防護，但持續傷害不受此減免）。</li>
                         <li class="text-gray-400">註：寵物依然會正常受到魅力屬性（10%）的加成；但此精通專屬寵物，傭兵不受影響。</li>
                     </ul>
                 </div>
