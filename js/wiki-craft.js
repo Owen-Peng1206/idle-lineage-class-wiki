@@ -217,11 +217,60 @@ function craftGetMaterialTooltipHtml(itemId) {
     // ── NPC 製作來源 ───────────────────────────────────────────────────────────
     const npcSources = (_craftNpcIndex && _craftNpcIndex[itemId]) ? _craftNpcIndex[itemId] : [];
 
-    // 若兩者皆無，不顯示 tooltip
-    if (dropSources.length === 0 && npcSources.length === 0) return '';
+    // ── 特殊道具硬編碼來源 ────────────────────────────────────────────────────
+    let specialSourcesHtml = '';
+    if (itemId === 'sherine_crystal') {
+        specialSourcesHtml = `
+            <ul class="space-y-1.5 mb-2">
+                <li class="flex flex-col gap-0.5">
+                    <div class="flex justify-between items-center text-[12px]">
+                        <span class="text-green-300 font-medium truncate max-w-[11rem]">席琳的世界 怪物掉落</span>
+                        <span class="text-green-400/80 font-mono shrink-0 ml-2 text-[10px]">極低機率</span>
+                    </div>
+                    <div class="text-[11px] text-gray-400 leading-tight">
+                        <i class="fa-solid fa-location-dot mr-1 opacity-60"></i>任何難度皆可掉落 (隨等級變動)
+                    </div>
+                </li>
+            </ul>
+        `;
+    } else if (itemId && itemId.startsWith('item_pride_pass_')) {
+        const tier = itemId.split('_').pop();
+        specialSourcesHtml = `
+            <ul class="space-y-1.5 mb-2">
+                <li class="flex flex-col gap-0.5">
+                    <div class="flex justify-between items-center text-[12px]">
+                        <span class="text-amber-300 font-medium truncate max-w-[11rem]">解除封印</span>
+                    </div>
+                    <div class="text-[11px] text-gray-400 leading-tight">
+                        <i class="fa-solid fa-box-open mr-1 opacity-60"></i>雙擊使用「封印的傲慢之塔傳送符(${tier}F)」獲得
+                    </div>
+                </li>
+            </ul>
+        `;
+    } else if (itemId === 'panacea_white') {
+        specialSourcesHtml = `
+            <ul class="space-y-1.5 mb-2">
+                <li class="flex flex-col gap-0.5">
+                    <div class="flex justify-between items-center text-[12px]">
+                        <span class="text-slate-100 font-medium truncate max-w-[11rem]">重置配點回收</span>
+                    </div>
+                    <div class="text-[11px] text-gray-400 leading-tight">
+                        <i class="fa-solid fa-recycle mr-1 opacity-60"></i>使用「回憶蠟燭」重置能力值時，回收已使用的萬能藥獲得
+                    </div>
+                </li>
+            </ul>
+        `;
+    }
+
+    // 若皆無來源，不顯示 tooltip
+    if (dropSources.length === 0 && npcSources.length === 0 && !specialSourcesHtml) return '';
 
     let html = '<div class="font-bold text-white mb-2 border-b border-gray-700 pb-1 text-sm flex items-center gap-2">'
              + '<i class="fa-solid fa-magnifying-glass-location text-primary-400"></i>取得來源</div>';
+
+    if (specialSourcesHtml) {
+        html += specialSourcesHtml;
+    }
 
     // ── 渲染掉落清單 ──────────────────────────────────────────────────────────
     if (topDrops.length > 0) {
