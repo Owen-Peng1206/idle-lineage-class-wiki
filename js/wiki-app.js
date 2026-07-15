@@ -79,7 +79,13 @@ const subFilterOptions = {
         { id: 'all', name: '全部遺物' },
         { id: 'wpn', name: '武器' },
         { id: 'arm', name: '防具' },
-        { id: 'acc', name: '飾品' }
+        { id: 'acc', name: '飾品' },
+        { id: 'pet', name: '寵物' }
+    ],
+    pet: [
+        { id: 'all', name: '全部寵物裝備' },
+        { id: 'petwpn', name: '寵物武器' },
+        { id: 'petarm', name: '寵物防具' }
     ]
 };
 
@@ -1255,6 +1261,10 @@ function matchItemSubType(item, type, subType) {
         } else {
             return item.slot === subType;
         }
+    } else if (type === 'pet') {
+        if (subType === 'petwpn') return item.slot === 'petwpn';
+        if (subType === 'petarm') return item.slot === 'petarm';
+        return item.slot === 'petwpn' || item.slot === 'petarm' || item.slot === 'pet';
     } else if (type === 'etc') {
         const isMat = item.id.startsWith('mat_') || (item.d && item.d.includes('製作材料'));
         if (subType === 'mat') return isMat;
@@ -1280,9 +1290,10 @@ function renderItems() {
         } else if (currentFilterType === 'relic') {
             matchType = !!item.relic;
             if (matchType && currentFilterSubType !== 'all') {
-                const targetType = currentFilterSubType; // 'wpn', 'arm', 'acc'
+                const targetType = currentFilterSubType; // 'wpn', 'arm', 'acc', 'pet'
                 const isTargetType = item.type === targetType
-                    || (targetType === 'acc' && (item.slot === 'petwpn' || item.slot === 'petarm' || item.slot === 'pet'));
+                    || (targetType === 'acc' && (item.slot === 'petwpn' || item.slot === 'petarm' || item.slot === 'pet'))
+                    || (targetType === 'pet' && (item.slot === 'petwpn' || item.slot === 'petarm' || item.slot === 'pet'));
                 matchType = isTargetType;
                 if (matchType && currentFilterSubSubType !== 'all') {
                     matchType = matchItemSubType(item, targetType, currentFilterSubSubType);
