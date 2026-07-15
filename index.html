@@ -16,10 +16,23 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Prevent _origEnforce execution -->
+    <!-- Prevent _origEnforce banner execution:
+         00-data.js 第 3318 行會執行 `var _origAuthCache = null;` 覆蓋掉簡單賦值。
+         改用 Object.defineProperty 使 _origAuthCache 的 getter 永遠回傳 true、
+         setter 為空函數（忽略任何寫入），讓 _origAuthorizedHost() 永遠判定為已授權。 -->
     <script>
-        window._origAuthCache = true;
-        window._origEnforce = function() {}; // 將其替換為空函數，確保即使被呼叫也不會發生作用
+        (function() {
+            try {
+                Object.defineProperty(window, '_origAuthCache', {
+                    get: function() { return true; },
+                    set: function() { /* 忽略所有寫入，包含 00-data.js 的 var _origAuthCache = null */ },
+                    configurable: false,
+                    enumerable: false
+                });
+            } catch(e) {
+                window._origAuthCache = true; // fallback
+            }
+        })();
     </script>
     
     <!-- Tailwind Configuration -->
