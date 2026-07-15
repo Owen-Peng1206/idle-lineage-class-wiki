@@ -367,8 +367,8 @@ const classesData = [
             },
             {
                 "lv": "80+",
-                "name": "👑 吉爾塔斯流程攻略",
-                "desc": "各位同學，準備好挑戰傳說中的魔神了嗎？跟著導師的筆記一步步來：<br>① <span class=\"text-xs text-primary-400 font-semibold\">準備門票：</span>先去「拉斯塔巴德-格蘭肯神殿.長老室」打 1 本「死亡騎士之書」（1%機率）。<br>② <span class=\"text-xs text-primary-400 font-semibold\">挑戰吉爾塔斯：</span>帶著書去「拉斯塔巴德-長老會議廳」找真.冥皇丹特斯，進入「受詛咒的黑暗妖精聖殿」（每次扣1本）。<br>③ <span class=\"text-xs text-gray-500 font-semibold\">保留進度訣竅：</span>如果打不贏需要撤退，務必帶上「完整的召喚球」！這樣離開時只會扣1顆球，並將吉爾塔斯剩餘血量封印。沒球的話吉爾塔斯會滿血重置。<br>④ <span class=\"text-xs text-gray-500 font-semibold\">召喚球製作：</span>去「拉斯塔巴德-長老會議廳」找亞提利歐製作。材料為「召喚球之核」×1與「召喚球碎片」×4。材料可在「受詛咒的黑暗妖精聖殿」的小怪，或是「拉斯塔巴德-魔獸訓練場」的「地獄奴隸」身上打到。<br>⑤ <span class=\"text-xs text-red-400 font-semibold\">隱藏挑戰：</span>成功擊殺吉爾塔斯後必掉「吉爾塔斯的封印」。將它交給長老會議廳的真.冥皇丹特斯，就能進入隱藏BOSS房挑戰「真‧死亡騎士 冥皇丹特斯」！<br>⚠️ <span class=\"text-xs text-red-400 font-semibold\">導師組隊叮嚀：</span>吉爾塔斯是一場極高難度的戰鬥，極度考驗團隊抗性與應變能力，請務必與最可靠的盟友同行！"
+                "name": "👑 吉爾塔斯/真‧死亡騎士 冥皇丹特斯",
+                "desc": "各位同學，準備好挑戰傳說中的魔神了嗎？跟著導師的筆記一步步來：<br>① <span class=\"text-xs text-primary-400 font-semibold\">準備門票：</span>先去「拉斯塔巴德-格蘭肯神殿.長老室」打 1 本「死亡騎士之書」（1%機率）。<br>② <span class=\"text-xs text-primary-400 font-semibold\">挑戰吉爾塔斯：</span>帶著書去「拉斯塔巴德-長老會議廳」找真.冥皇丹特斯，進入「受詛咒的黑暗妖精聖殿」（每次扣1本「死亡騎士之書」）。<br>③ <span class=\"text-xs text-gray-500 font-semibold\">保留進度訣竅：</span>如果打不贏需要撤退(快速鍵Ctrl+C)，務必帶上「完整的召喚球」！這樣離開時只會扣1顆球，並將吉爾塔斯剩餘血量封印。沒球的話吉爾塔斯會滿血重置。<br>④ <span class=\"text-xs text-gray-500 font-semibold\">「完整的召喚球」製作：</span>去「拉斯塔巴德-長老會議廳」找亞提利歐製作。材料為「召喚球之核」×1與「召喚球碎片」×4。材料可在「受詛咒的黑暗妖精聖殿」的小怪身上打到。<br>⑤ <span class=\"text-xs text-red-400 font-semibold\">隱藏挑戰：</span>成功擊殺吉爾塔斯後必掉「吉爾塔斯的封印」。將它交給長老會議廳的真.冥皇丹特斯，就能進入隱藏BOSS房挑戰「真‧死亡騎士 冥皇丹特斯」！在廳中擊敗冥皇丹特斯後，牠每次復活會再消耗 1 個「吉爾塔斯的封印」；身上沒有時將被逐出，<br>⚠️ <span class=\"text-xs text-red-400 font-semibold\">導師組隊叮嚀：</span>吉爾塔斯是一場極高難度的戰鬥，極度考驗團隊抗性與應變能力，請務必與最可靠的盟友同行！"
             }
         ]
     }
