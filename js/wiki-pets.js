@@ -516,18 +516,30 @@
                     <div class="bg-gray-900 p-3 rounded border border-gray-700">
                         <div class="text-yellow-400 font-bold mb-1">喚獸師的訓練鞭 (武器)</div>
                         <div class="text-gray-400">提供召喚物傷害+3、命中+6，且 <b class="text-white">寵物傷害+6、寵物命中+3</b>。</div>
+                        <div class="mt-2 pt-2 border-t border-gray-800 text-[11px] text-gray-400">
+                            掉落：<b class="text-red-300">喚獸師</b> <span class="text-gray-500">(大洞穴隱遁者村莊地區、魔獸訓練場)</span>
+                        </div>
                     </div>
                     <div class="bg-gray-900 p-3 rounded border border-gray-700">
                         <div class="text-yellow-400 font-bold mb-1">食人妖精王的尖刺項圈 (腰帶)</div>
                         <div class="text-gray-400"><b class="text-white">寵物傷害+3、寵物命中+3</b>。</div>
+                        <div class="mt-2 pt-2 border-t border-gray-800 text-[11px] text-gray-400">
+                            掉落：<b class="text-red-300">食人妖精王</b> <span class="text-gray-500">(風木地監、古魯丁地監、沙漠地監)</span>
+                        </div>
                     </div>
                     <div class="bg-gray-900 p-3 rounded border border-gray-700">
                         <div class="text-yellow-400 font-bold mb-1">海賊的統御之戒 (戒指)</div>
                         <div class="text-gray-400">提供 <b class="text-white">寵物傷害+10</b>、召喚物傷害+10，極端暴力。</div>
+                        <div class="mt-2 pt-2 border-t border-gray-800 text-[11px] text-gray-400">
+                            掉落：<b class="text-red-300">海賊骷髏首領</b> <span class="text-gray-500">(海賊島地監)</span>
+                        </div>
                     </div>
                     <div class="bg-gray-900 p-3 rounded border border-gray-700">
                         <div class="text-yellow-400 font-bold mb-1">馴獸師的訓狗棒 (盾牌)</div>
                         <div class="text-gray-400">防禦+5，提供 <b class="text-white">寵物技能傷害 x 1.5倍</b>！對魔法型、特殊型寵物如虎男、浣熊等是核心神裝。</div>
+                        <div class="mt-2 pt-2 border-t border-gray-800 text-[11px] text-gray-400">
+                            掉落：<b class="text-red-300">馴獸師</b> <span class="text-gray-500">(大洞穴隱遁者村莊地區)</span>
+                        </div>
                     </div>
                 </div>
             </div>
