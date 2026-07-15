@@ -16,6 +16,12 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Prevent _origEnforce execution -->
+    <script>
+        window._origAuthCache = true;
+        window._origEnforce = function() {}; // 將其替換為空函數，確保即使被呼叫也不會發生作用
+    </script>
+    
     <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
@@ -935,6 +941,9 @@
 
                 coreReady = true;
                 WikiProgress.set(80);
+
+                // 替換掉 00-data.js 中的 _origEnforce 函數，避免後續觸發
+                window._origEnforce = function() {};
 
                 // Core 完成，觸發全域事件
                 document.dispatchEvent(new CustomEvent('wikiDataLoaded'));
