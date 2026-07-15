@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Wiki Classes & Quests Logic
  * 負責職業介紹與任務的渲染
  */
@@ -184,13 +184,13 @@ const classesData = [
         "quests": [
             {
                 "lv": 15,
-                "name": "影子手套",
-                "desc": "潛伏在暗處的刺客啊，去沉默洞穴找倫得接取你的第一個刺殺任務吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 帶回 1 份死亡誓約來證明你的身手。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 前往奇岩周邊，從那些作惡多端的強盜身上奪取(1%)。動靜要小，下手要快！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 倫得會交給你影子手套，這會讓你的雙手更靈活，更適合暗殺。"
-            },
+                "name": "影子面具",
+                "desc": "想在暗影中更好地隱藏自己？去沉默洞穴找康導師。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 他指定的目標是位在銀騎士村周邊的妖魔法師的妖魔長老首級 1 顆。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 那些會施法的妖魔法師就是你的目標(1%)。用你引以為傲的爆發力，在他們詠唱完畢前解決他們！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 康會為你戴上影子面具，讓你在黑暗中更加難以捉摸。"
+            },            
             {
                 "lv": 30,
-                "name": "影子面具",
-                "desc": "想在暗影中更好地隱藏自己？去沉默洞穴找康導師。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 他指定的目標是妖魔長老首級 1 顆。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 那些會施法的妖魔法師就是你的目標(1%)。用你引以為傲的爆發力，在他們詠唱完畢前解決他們！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 康會為你戴上影子面具，讓你在黑暗中更加難以捉摸。"
+                "name": "影子手套",
+                "desc": "潛伏在暗處的刺客啊，去沉默洞穴找倫得接取你的第一個刺殺任務吧。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 帶回 1 份死亡誓約來證明你的身手。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 前往奇岩周邊，從那些作惡多端的強盜身上奪取(1%)。動靜要小，下手要快！<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵:</span> 倫得會交給你影子手套，這會讓你的雙手更靈活，更適合暗殺。"
             },
             {
                 "lv": 45,
@@ -200,7 +200,7 @@ const classesData = [
             {
                 "lv": 50,
                 "name": "黑暗妖精 50 級試煉",
-                "desc": "晉升 50 級的暗殺者，布魯迪卡有更危險的任務要交給你。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 你必須奪得 1 把混沌鑰匙。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 潛入拉斯塔巴德周邊，從黑暗棲林者手中搶下它(1%)。這是一條充滿危機的道路，小心行事。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵與延伸:</span> 成功後你將解鎖「魔族神殿」。若能從墮落的司祭身上搜刮到墮落鑰匙，就能換取恐怖的傳說武器「死亡之指」！"
+                "desc": "晉升 50 級的暗殺者，布魯迪卡有更危險的任務要交給你。<br><span class=\"text-xs text-gray-500\">材料準備:</span> 你必須奪得 1 把混沌鑰匙。<br><span class=\"text-xs text-gray-500\">獲取訣竅:</span> 潛入大洞穴隱遁者村莊地區，從黑暗棲林者手中搶下它(1%)。這是一條充滿危機的道路，小心行事。<br><span class=\"text-xs text-primary-400 font-semibold\">過關獎勵與延伸:</span> 成功後你將解鎖「魔族神殿」。若能從墮落的司祭身上搜刮到墮落鑰匙，就能換取恐怖的傳說武器「死亡之指」！"
             }
         ]
     },

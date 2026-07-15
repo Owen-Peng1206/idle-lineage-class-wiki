@@ -23,7 +23,7 @@ const mapNameTranslations = {
     "pirate_dungeon": "海賊島地監",
     "silent_outer": "沉默洞穴外圍",
     "elf_grave": "精靈墓穴",
-    "hidden_cave": "隱藏的巨龍谷",
+    "hidden_cave": "大洞穴隱遁者村莊地區",
     "giant_tomb": "巨人之墓",
     "demon_temple": "魔族神殿",
     "shadow_temple": "暗影神殿",
