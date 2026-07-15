@@ -434,6 +434,7 @@ const WikiCollections = (() => {
                             <img src="${imgUrl}" class="w-6 h-6 object-contain bg-gray-800 rounded border border-gray-600" onerror="this.onerror=null;this.src='https://placehold.co/64x64/1e293b/334155?text=%3F';">
                             ${item.n}
                         </div>
+                        ${item.relicRole ? `<div class="text-[11px] text-sky-300 font-bold mb-1.5 leading-tight bg-sky-900/20 border-l-2 border-sky-700 pl-1.5 py-0.5"><i class="fa-solid fa-crosshairs mr-1"></i>${item.relicRole}</div>` : ''}
                         ${item.d ? `<div class="text-[11px] text-gray-400 mb-2 leading-tight">${item.d}</div>` : ''}
                         ${getItemSourceHtml(item.id)}
                     </div>`;

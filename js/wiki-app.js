@@ -771,6 +771,7 @@ function createItemCard(item) {
     
     // 1. 標題與特殊標籤區塊
     let setEffectHtml = item.set ? `<div class="text-green-400 text-[11px] font-bold mt-1.5"><i class="fa-solid fa-layer-group mr-1"></i>${getSetTranslation(item.set)} 套裝效果</div>` : '';
+    const relicRoleHtml = item.relicRole ? `<div class="text-[11px] text-sky-300 font-bold mt-2 leading-relaxed border-l-2 border-sky-700 pl-2 py-0.5 bg-sky-900/20"><i class="fa-solid fa-crosshairs mr-1"></i>${item.relicRole}</div>` : '';
     const desc = item.d ? `<div class="text-[11px] text-gray-400 italic mt-2 leading-relaxed border-l-2 border-gray-700 pl-2 py-0.5">${item.d}</div>` : '';
 
     // 2. 武器專屬數值區
@@ -1166,6 +1167,7 @@ function createItemCard(item) {
             </div>
             
             ${setEffectHtml}
+            ${relicRoleHtml}
             ${desc}
             
             <div class="flex-1 flex flex-col mb-3">
