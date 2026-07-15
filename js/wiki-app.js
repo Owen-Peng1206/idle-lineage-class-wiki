@@ -894,7 +894,9 @@ function createItemCard(item) {
         teamDmgReducePct: '隊伍減傷(%)',
         abnormalResist: '異常狀態抵抗(%)', sleepResist: '抗睡眠(%)',
         poisonResist: '抗中毒(%)', paralyzeResist: '抗麻痺(%)',
-        slowResist: '抗緩速(%)', poisonHealMult: '毒素吸收倍率'
+        slowResist: '抗緩速(%)', poisonHealMult: '毒素吸收倍率',
+        hpRegenFaster:'HP恢復間隔縮短秒數', noEvade: '無法迴避'
+
     };
     let hasAdvStats = Object.keys(advMap).some(k => item[k]);
     if (hasAdvStats) {
