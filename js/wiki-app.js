@@ -841,7 +841,7 @@ function createItemCard(item) {
                 <div class="text-[10px] text-cyan-300 space-y-1 ml-1">
                     ${item.id === 'wpn_mana_wand' || item.mpDrain ? `<div class="flex items-start"><i class="fa-solid fa-caret-right mt-[3px] mr-1 text-cyan-500"></i><span>命中恢復MP: 命中時恢復一定量 MP (隨強化等級動態變化)</span></div>` : ''}
                     ${item.id === 'wpn_crystal_wand' ? `<div class="flex items-start"><i class="fa-solid fa-caret-right mt-[3px] mr-1 text-cyan-500"></i><span>MP自然恢復升級: 超過安定值將帶來額外回魔量</span></div>` : ''}
-                    ${item.extraMp ? `<div class="flex items-start"><i class="fa-solid fa-caret-right mt-[3px] mr-1 text-cyan-500"></i><span>強化額外加成: 強化時會額外給予加成數值</span></div>` : ''}
+                    ${item.extraMp ? `<div class="flex items-start"><i class="fa-solid fa-caret-right mt-[3px] mr-1 text-cyan-500"></i><span>額外魔法點數加成: ${item.extraMp > 0 ? '+' : ''}${item.extraMp}</span></div>` : ''}
                 </div>
             </div>
         `;
@@ -874,11 +874,11 @@ function createItemCard(item) {
     // 6.5 進階戰鬥數值 (綠色)
     let advStatsHtml = '';
     let advMap = {
-        meleeCrit: '近戰爆擊率(%)', meleeCritDmg: '近戰爆擊傷害(%)',
-        rangedCrit: '遠程爆擊率(%)', rangedCritDmg: '遠程爆擊傷害(%)',
+        meleeCrit: '武器近距離爆擊率加成(%)', meleeCritDmg: '武器近距離爆擊傷害(%)',
+        rangedCrit: '武器遠距離爆擊率(%)', rangedCritDmg: '武器遠程爆擊傷害(%)',
         magicCrit: '魔法爆擊率(%)', magicCritDmg: '魔法爆擊傷害(%)',
-        mcrit: '近戰爆擊率(%)', rcrit: '遠程爆擊率(%)',
-        mcritDmg: '近戰爆擊傷害(%)', magicHit: '魔法命中',
+        mcrit: '近距離爆擊率(%)', rcrit: '遠距離爆擊率(%)',rcritdmg: '遠距離爆擊傷害(%)',
+        mcritDmg: '近距離爆擊率傷害(%)', magicHit: '魔法命中',
         atkDoubleChance: '雙重攻擊機率(%)', dmgReflect: '傷害反射', painReflect: '反彈痛苦',
         resNone: '無屬性抗性(%)', magicDrNonEle: '無屬性魔法減免', stormInterval: '風暴間隔縮短',
         dragonStrike: '屠龍額外傷害', skillAddDmg: '技能額外傷害', skillDmgMult: '技能傷害倍率',
@@ -957,17 +957,17 @@ function createItemCard(item) {
     if (item.mrPerWis) effArr.push(`精神轉魔防（每1點精神，MR+${item.mrPerWis}）`);
     if (item.type === 'wpn' && item.mr) effArr.push(`魔防(MR)+${item.mr}`);
     
-    let meleeCritVal = item.meleeCrit || item.mcrit;
-    if (meleeCritVal) effArr.push(`近距離爆擊率+${meleeCritVal}%`);
-    let meleeCritDmgVal = item.meleeCritDmg || item.mcritDmg;
-    if (meleeCritDmgVal) effArr.push(`近距離爆擊傷害+${meleeCritDmgVal}%`);
+    if (item.meleeCrit) effArr.push(`近距離爆擊率+${item.meleeCrit}%`);
+    if (item.meleeCritDmg) effArr.push(`近距離爆擊傷害+${item.meleeCritDmg}%`);
     
     let rangedCritVal = item.rangedCrit || item.rcrit;
     if (rangedCritVal) effArr.push(`遠距離爆擊率+${rangedCritVal}%`);
     if (item.rangedCritDmg) effArr.push(`遠距離爆擊傷害+${item.rangedCritDmg}%`);
     
-    if (item.magicCrit) effArr.push(`魔法爆擊率+${item.magicCrit}%`);
-    if (item.magicCritDmg) effArr.push(`魔法爆擊傷害+${item.magicCritDmg}%`);
+    let magicCritVal = item.magicCrit || item.mcrit;
+    if (magicCritVal) effArr.push(`魔法爆擊率+${magicCritVal}%`);
+    let magicCritDmgVal = item.magicCritDmg || item.mcritDmg;
+    if (magicCritDmgVal) effArr.push(`魔法爆擊傷害+${magicCritDmgVal}%`);
     
     if (item.mpReduce) effArr.push(`MP消耗減免 ${item.mpReduce}`);
     if (item.equipExtraAtk) effArr.push(`一般攻擊次數+${item.equipExtraAtk}`);

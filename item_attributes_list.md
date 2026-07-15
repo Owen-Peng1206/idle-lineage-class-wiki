@@ -24,8 +24,8 @@
 * **`magicDmg` / `mdmg`**: 魔法傷害加成。
 * **`magicHit`**: 魔法命中加成。
 * **`extraDmg` / `extraHit`**: 泛用額外傷害 / 泛用額外命中。
-* **`mcrit` / `mcritDmg`**: 魔法爆擊率 / 魔法爆擊額外傷害。
-* **`rcrit`**: 遠程爆擊率。
+* **`mcrit` / `mcritDmg`**: 近距離爆擊率 / 近距離爆擊傷害。
+* **`rcrit`**: 遠程爆擊率。rcritdmg: '遠距離爆擊傷害(%)
 * **`atkSpd` / `atkSpdPct`**: 攻擊速度 / 攻擊速度百分比提升。
 * **`meleeHaste`**: 近戰攻擊速度提升 (加速機制)。
 * **`pierceChance`**: 攻擊穿透機率 (無視部分防禦)。
