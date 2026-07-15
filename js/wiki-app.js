@@ -255,7 +255,7 @@ function getItemEffectsHtml(item) {
         let spellName = magicObj1.skn || '魔法';
         effects.push(`<span class="bg-indigo-900/40 text-indigo-300 text-[11px] px-2 py-1 rounded border border-indigo-700/50"><i class="fa-solid fa-bolt mr-1"></i>發動: ${spellName}</span>`);
     }
-    let procSkillId1 = item.procSkill || item.procStatusSkill;
+    let procSkillId1 = item.procSkill || (item.procStatusSkill && item.procStatusSkill.skId);
     if (procSkillId1) {
         let skillName = (typeof DB !== 'undefined' && DB.skills && DB.skills[procSkillId1]) ? DB.skills[procSkillId1].n : '技能';
         effects.push(`<span class="bg-indigo-900/40 text-indigo-300 text-[11px] px-2 py-1 rounded border border-indigo-700/50"><i class="fa-solid fa-fire mr-1"></i>發動: ${skillName}</span>`);
@@ -771,7 +771,6 @@ function createItemCard(item) {
     
     // 1. 標題與特殊標籤區塊
     let setEffectHtml = item.set ? `<div class="text-green-400 text-[11px] font-bold mt-1.5"><i class="fa-solid fa-layer-group mr-1"></i>${getSetTranslation(item.set)} 套裝效果</div>` : '';
-    const relicRoleHtml = item.relicRole ? `<div class="text-[11px] text-sky-300 font-bold mt-2 leading-relaxed border-l-2 border-sky-700 pl-2 py-0.5 bg-sky-900/20"><i class="fa-solid fa-crosshairs mr-1"></i>${item.relicRole}</div>` : '';
     const desc = item.d ? `<div class="text-[11px] text-gray-400 italic mt-2 leading-relaxed border-l-2 border-gray-700 pl-2 py-0.5">${item.d}</div>` : '';
 
     // 2. 武器專屬數值區
@@ -880,7 +879,7 @@ function createItemCard(item) {
     if (hasPetStats) {
         petStatsHtml = `
             <div class="mt-2.5 border border-orange-900/40 rounded bg-orange-950/20 p-2 shadow-inner">
-                <div class="text-[11px] text-orange-400 font-bold mb-1.5 flex items-center border-b border-orange-900/50 pb-1"><i class="fa-solid fa-paw mr-1.5"></i>寵物專屬屬性加成</div>
+                <div class="text-[11px] text-orange-400 font-bold mb-1.5 flex items-center border-b border-orange-900/50 pb-1"><i class="fa-solid fa-paw mr-1.5"></i>寵物/召喚 專屬屬性加成</div>
                 <div class="grid grid-cols-2 gap-y-1 gap-x-2 text-[11px] text-orange-300">
                     ${item.petDmg ? `<div class="flex justify-between"><span>寵物傷害:</span> <span class="text-orange-200">${item.petDmg > 0 ? '+' : ''}${item.petDmg}</span></div>` : ''}
                     ${item.petHit ? `<div class="flex justify-between"><span>寵物命中:</span> <span class="text-orange-200">${item.petHit > 0 ? '+' : ''}${item.petHit}</span></div>` : ''}
@@ -969,7 +968,7 @@ function createItemCard(item) {
         let spellName = magicObj2.skn || '魔法';
         effArr.push(`發動: ${spellName}`);
     }
-    let procSkillId2 = item.procSkill || item.procStatusSkill;
+    let procSkillId2 = item.procSkill || (item.procStatusSkill && item.procStatusSkill.skId);
     if (procSkillId2) {
         let skName = (typeof DB !== 'undefined' && DB.skills && DB.skills[procSkillId2]) ? DB.skills[procSkillId2].n : '技能';
         effArr.push(`發動: ${skName}`);
@@ -1086,7 +1085,7 @@ function createItemCard(item) {
     if (item.dragonStrike) effArr.push("龍的一擊");
     if (item.rapidfire) effArr.push(`連射`);
     if (item.noConsume) effArr.push(`不會消耗`);
-    if (item.relic) effArr.push(`遺物`);
+    // if (item.relic) effArr.push(`遺物`);
     if (item.procInstakill || item.instakill) effArr.push(`機率即死`);
     if (item.procBonusDmg) effArr.push(`機率額外傷害`);
     if (item.procDmgReduce) effArr.push(`機率減傷`);
@@ -1167,7 +1166,6 @@ function createItemCard(item) {
             </div>
             
             ${setEffectHtml}
-            ${relicRoleHtml}
             ${desc}
             
             <div class="flex-1 flex flex-col mb-3">
