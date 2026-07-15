@@ -171,7 +171,7 @@
                             <tr>
                                 <td class="p-2 font-semibold text-pink-300">漂浮之眼肉<br><span class="text-xs text-gray-500 font-normal">(一般誘捕)</span></td>
                                 <td class="p-2 text-gray-400">漂浮之眼<br><span class="text-xs text-gray-500">(說話之島、風木、地監)</span></td>
-                                <td class="p-2">狼, 牧羊犬, 杜賓狗, 哈士奇, 熊, 貓, 浣熊, 聖伯納犬, 狐狸, 小獵犬, 柯利</td>
+                                <td class="p-2">狼, 牧羊犬, 杜賓狗,<br> 哈士奇, 熊, 貓, 浣熊,<br> 聖伯納犬, 狐狸, 小獵犬, 柯利</td>
                                 <td class="p-2 text-gray-400 text-xs">
                                     <b class="text-gray-300">狼/牧羊犬/杜賓狗:</b> 各大村莊周邊、海賊島<br>
                                     <b class="text-gray-300">哈士奇/熊/狐狸:</b> 歐瑞周邊<br>
