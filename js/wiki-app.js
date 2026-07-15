@@ -879,26 +879,24 @@ function createItemCard(item) {
         magicCrit: '魔法爆擊率(%)', magicCritDmg: '魔法爆擊傷害(%)',
         mcrit: '近距離爆擊率(%)', rcrit: '遠距離爆擊率(%)',rcritdmg: '遠距離爆擊傷害(%)',
         mcritDmg: '近距離爆擊率傷害(%)', magicHit: '魔法命中',
-        atkDoubleChance: '雙重攻擊機率(%)', dmgReflect: '傷害反射', painReflect: '反彈痛苦',
-        resNone: '無屬性抗性(%)', magicDrNonEle: '無屬性魔法減免', stormInterval: '風暴間隔縮短',
+        atkDoubleChance: '雙重攻擊機率(%)', painReflect: '反彈痛苦',
+        magicDrNonEle: '無屬性魔法減免', stormInterval: '風暴間隔縮短',
         dragonStrike: '屠龍額外傷害', skillAddDmg: '技能額外傷害', skillDmgMult: '技能傷害倍率',
         comboRate: '雙擊機率(%)', vampPct: '吸血機率(%)',
-        crushDr: '重擊減免', physDrGated: '特殊物理減免', healPct: '治癒量(%)', heal: '治癒加成', healBase: '治癒基數', healDice: '治癒骰數',
-        extraDmg: '泛用額外傷害', extraHit: '泛用額外命中', equipExtraAtk: '裝備額外攻擊次數',
-        meleeDmg: '近距離額外傷害', meleeHit: '近距離命中', meleeHaste: '近戰攻速加成',
+        healPct: '治癒量(%)', heal: '治癒加成', healBase: '治癒基數', healDice: '治癒骰數',
+        extraDmg: '泛用額外傷害', extraHit: '泛用額外命中',
+        meleeDmg: '近距離額外傷害', meleeHit: '近距離命中', 
         rangedDmg: '遠距離額外傷害', rangedHit: '遠距離命中', mdmg: '魔法傷害',
-        atkSpdPct: '攻擊速度提升(%)', atkSpd: '攻擊速度(固定)', moveSpeedPct: '移動速度提升(%)', heavyMult: '重擊傷害倍率', 
-        fullHpMult: '滿血傷害倍率', fullHpMultTriple: '滿血追加倍率',
-        weakHitBonus: '弱點命中加成', pierceChance: '穿透機率(%)',
+        atkSpd: '攻擊速度(固定)',
+        pierceChance: '穿透機率(%)',
         lifesteal: '吸血', vamp: '吸血', drain: '吸收生命/魔力', potionBonus: '藥水恢復量(%)',
         expBonus: '經驗值加成(%)', goldBonus: '金幣加成(%)',
         mpRPerEn: 'MP自然恢復量(每階)', extraMpPerEn: '額外魔法點數(每階)', mpROverSafe: '突破安定值：每超過1階，MP自然恢復量',
         mpOnHitAmt: '命中回魔量', dmgMult: '總傷害倍率', multiDmg: '多段傷害次數',
         teamDmgReducePct: '隊伍減傷(%)',
-        abnormalResist: '異常狀態抵抗(%)', sleepResist: '抗睡眠(%)',
+        sleepResist: '抗睡眠(%)',
         poisonResist: '抗中毒(%)', paralyzeResist: '抗麻痺(%)',
-        slowResist: '抗緩速(%)', poisonHealMult: '毒素吸收倍率',
-        hpRegenFaster:'HP恢復間隔縮短秒數', noEvade: '無法迴避', mpReduce: 'MP消耗減免'
+        slowResist: '抗緩速(%)'
 
     };
     let hasAdvStats = Object.keys(advMap).some(k => item[k]);
@@ -951,24 +949,16 @@ function createItemCard(item) {
     }
 
     // 整合 relicPurposeLabels 的詳細描述
-    if (item.reqAvatar) effArr.push(`裝備限制（僅限${item.reqAvatar}）`);
+    if (item.relicRole) effArr.push(`用途定位（${item.relicRole}）`);
+    if (item.reqAvatar) effArr.push(`裝備限制（僅限${item.reqAvatar}；其他角色無法裝備）`);
+    if (item.petDmgReduce) effArr.push(`寵物護甲（裝備的寵物受到傷害-${Math.round(item.petDmgReduce * 100)}%）`);
+    if (item.petBleed) effArr.push('寵物出血（一般攻擊命中疊加8秒出血；每層每秒造成該次傷害20%，最多5層）');
     if (item.armguard) effArr.push('臂甲（裝於副手，可與雙手武器並用）');
-    if (item.resNone) effArr.push(`無屬性抗性+${item.resNone}%`);
-    if (item.mrPerWis) effArr.push(`精神轉魔防（每1點精神，MR+${item.mrPerWis}）`);
+    if (item.resNone) effArr.push(`無屬性魔法抗性+${item.resNone}%`);
+    if (item.mrPerWis) effArr.push(`精神屏障（每1點最終精神，MR+${item.mrPerWis}）`);
     if (item.type === 'wpn' && item.mr) effArr.push(`魔防(MR)+${item.mr}`);
     
-    if (item.meleeCrit) effArr.push(`近距離爆擊率+${item.meleeCrit}%`);
-    if (item.meleeCritDmg) effArr.push(`近距離爆擊傷害+${item.meleeCritDmg}%`);
-    
-    let rangedCritVal = item.rangedCrit || item.rcrit;
-    if (rangedCritVal) effArr.push(`遠距離爆擊率+${rangedCritVal}%`);
-    if (item.rangedCritDmg) effArr.push(`遠距離爆擊傷害+${item.rangedCritDmg}%`);
-    
-    let magicCritVal = item.magicCrit || item.mcrit;
-    if (magicCritVal) effArr.push(`魔法爆擊率+${magicCritVal}%`);
-    let magicCritDmgVal = item.magicCritDmg || item.mcritDmg;
-    if (magicCritDmgVal) effArr.push(`魔法爆擊傷害+${magicCritDmgVal}%`);
-    
+
     if (item.mpReduce) effArr.push(`MP消耗減免 ${item.mpReduce}`);
     if (item.equipExtraAtk) effArr.push(`一般攻擊次數+${item.equipExtraAtk}`);
 
@@ -982,8 +972,13 @@ function createItemCard(item) {
     if (item.immSlow) effArr.push('免疫緩速');
     if (item.immHold) effArr.push('免疫木乃伊');
     if (item.immStun) effArr.push('免疫暈眩');
-    
+
     if (item.atkSpdPct) effArr.push(`攻擊速度${item.atkSpdPct > 0 ? '+' : ''}${item.atkSpdPct}%`);
+    if (item.hpRegenFaster) effArr.push(`快速再生（HP自然恢復間隔縮短${item.hpRegenFaster}秒）`);
+    if (item.fireballBurst) effArr.push('爆裂火球（將已學會的「燃燒的火球」升級為威力更強的「爆裂的火球」）');
+    if (item.noEvade) effArr.push('沉重代價（無法進行一般迴避；暗隱術的必定迴避不受影響）');
+    if (item.summonCtrl) effArr.push('召喚控制（可指定召喚物；28～48級召喚上限由5隻提高至6隻）');
+    if (item.autoReviveScroll) effArr.push('巨靈守護（傭兵或寵物死亡時立即消耗1張復活卷軸使其復活）');
     if (item.meleeHaste) effArr.push(`裝備近戰武器時攻速+${item.meleeHaste}%`);
     if (item.polyAtkSpdPct) effArr.push(`變身時攻速+${item.polyAtkSpdPct}%`);
     if (item.moveSpeedPct) effArr.push(`移動速度${item.moveSpeedPct > 0 ? '+' : ''}${item.moveSpeedPct}%`);
@@ -995,7 +990,7 @@ function createItemCard(item) {
     if (item.thorns) effArr.push(`受擊反傷（反彈${item.thorns}點傷害）`);
     if (item.dmgReflect) effArr.push(`傷害反射 ${item.dmgReflect}%（免疫該次一般攻擊並反射傷害）`);
     if (item.hurtExplode) effArr.push(`受擊爆裂（自己與全體敵人受到${item.hurtExplode}點火焰魔法傷害）`);
-    if (item.hurtRapidfire) effArr.push('受擊反制（受到傷害時立即觸發一次連射）');
+    if (item.hurtRapidfire) effArr.push('受擊反制（受到傷害時立即觸發一次連射；經典模式亦生效）');
     if (item.counterBarrierX2) effArr.push('反擊屏障強化（反擊傷害×2）');
     if (item.crushDr) effArr.push(`重擊防護（受到重擊傷害-${item.crushDr}%）`);
     if (item.physDrGated) effArr.push(`物理防護（一般攻擊傷害-${item.physDrGated}%，每3秒一次）`);
@@ -1011,6 +1006,48 @@ function createItemCard(item) {
     if (item.hotHealMult) effArr.push(`持續治癒強化（持續回復量×${item.hotHealMult}）`);
     if (item.onDmgHeal) effArr.push(`受擊自癒（每${item.onDmgHealCd || 5}秒自動施放${skillName(item.onDmgHeal)}）`);
     if (item.poisonHealMult) effArr.push(`毒素轉生（受到毒性持續傷害時，改為恢復其${pctText(item.poisonHealMult)}的HP）`);
+    if (item.poisonMult) effArr.push(`劇毒增幅（附加劇毒傷害×${item.poisonMult}）`);
+
+    if (item.dotCrit) effArr.push('持續傷害爆擊（我方中毒、出血等持續傷害可爆擊）');
+    if (item.eleWpnMult) effArr.push(`${eleName(item.eleWpnMult.ele)}武器強化（對應屬性一般攻擊傷害×${item.eleWpnMult.mult}）`);
+    if (item.hardSkinMult) effArr.push(`破甲專攻（攻擊有硬皮的敵人傷害×${item.hardSkinMult}）`);
+    if (item.softMult) effArr.push(`柔軟專攻（攻擊無硬皮的敵人傷害×${item.softMult}）`);
+    if (item.hardWear) effArr.push(`碎甲（命中時額外削減${item.hardWear}點硬皮）`);
+    if (item.heavyRatePct) effArr.push(`重擊率額外+${item.heavyRatePct}%`);
+    if (item.heavyMult) effArr.push(`重擊威力（重擊傷害×${item.heavyMult}）`);
+    if (item.missGrazeRate) effArr.push(`擦傷補正（未命中時${item.missGrazeRate}%改判為擦傷，造成50%傷害且不會爆擊）`);
+    if (item.hitEchoMagic) effArr.push(`元素爆破 ${item.hitEchoMagic.rate}%（命中後追加等同本次一般攻擊傷害的${eleName(item.hitEchoMagic.ele)}屬性魔法傷害）`);
+    if (item.onHitWet) effArr.push('潮濕（命中後持續10秒；下一次風屬性傷害×2並解除）');
+    if (item.onHitCastSkill) effArr.push(`命中施法（每${item.onHitCastSkill.cdSec || 5}秒觸發${skillName(item.onHitCastSkill.skId)}）`);
+    if (item.onHitEleVuln) effArr.push(`元素弱點（命中使目標受到的${eleName(item.onHitEleVuln)}屬性傷害提高）`);
+    if (item.windSpellProcRate) effArr.push(`風魔法共振 ${item.windSpellProcRate}%（主動施放風屬性傷害魔法時追加龍捲風）`);
+    if (item.hasteStrike) effArr.push('加速突擊（加速時命中與傷害+30；命中後失去加速）');
+    if (item.selfBreakProc) effArr.push(`易碎爆發（3%造成1.5倍傷害，但自身傷害降低${item.selfBreakProc.dur || 5}秒）`);
+    if (item.stoneInstakill) effArr.push('石化斬殺（命中石化中的非首領敵人時即死）');
+    if (item.instakillFull) effArr.push(`滿血斬殺 ${pctText(item.instakillFull)}（命中滿血非首領敵人時即死）`);
+    if (item.strawCurse) effArr.push(`稻草詛咒 ${item.strawCurse.rate}%（命中時附加${item.strawCurse.stacks || 3}層追加傷害）`);
+    if (item.procFireSkillRate) effArr.push(`火焰法術 ${item.procFireSkillRate}%（攻擊時隨機施放火屬性傷害魔法）`);
+    if (item.procHealFlat) effArr.push(`命中治癒 ${item.procHealFlat.rate}%（恢復${item.procHealFlat.hp}點HP）`);
+    if (item.rapidMax) effArr.push('最大連射（連射發動時，固定射出目前可用的最大額外箭數）');
+    if (item.bonespike) effArr.push('骨刺爆裂（連射額外箭命中累積骨刺，最多10層；下一次一般攻擊命中引爆，每層20點固定傷害）');
+    if (item.critDmgLowHp) effArr.push(`背水爆擊（HP低於${item.critDmgLowHp.hp}時，近距離爆擊傷害+${item.critDmgLowHp.add}%）`);
+    if (item.castOnHurt) effArr.push(`護身反擊 ${item.castOnHurt.rate}%（玩家受到物理或魔法傷害時，免費施放目前設定的自動攻擊傷害法術）`);
+
+    if (item.lvDmgDiv || item.lvHitDiv) effArr.push(`等級成長（每${item.lvDmgDiv || item.lvHitDiv}級，傷害與命中提高）`);
+    if (item.highestAttrPlus) effArr.push('主屬性強化（目前最高的六維屬性+1；並列皆增加）');
+    if (item.swordStr) effArr.push(`握劍強化（主手裝備單手劍或雙手劍時，力量+${item.swordStr}）`);
+    if (item.raceBonus) effArr.push(`${item.raceBonus.race}剋星（對${item.raceBonus.race}傷害×${item.raceBonus.mult}）`);
+    if (item.raceFlat) effArr.push(`${item.raceFlat.race}剋星（對${item.raceFlat.race}額外傷害+${item.raceFlat.add}）`);
+    if (item.giantBonus) effArr.push('巨人剋星（攻擊巨人額外造成1D20傷害）');
+    if (item.weakHitBonus) effArr.push(`弱點洞察（屬性剋制時額外傷害+${item.weakHitBonus}）`);
+
+    if (item.partnerHit) {
+        let names = Object.keys(item.partnerHit).map(n => `${n}命中+${item.partnerHit[n]}`);
+        if (names.length) effArr.push(`夥伴強化（${names.join('、')}）`);
+    }
+    if (item.trackBoost) effArr.push('追蹤強化（指定怪物出現率由50%提高至70%）');
+    if (item.showMobEle) effArr.push('元素洞察（顯示敵人的屬性）');
+    if (item.relicDropX2) effArr.push('遺物尋寶（遺物掉落判定次數×2）');
 
     // 其餘原本的特效標籤
     if (item.procPoison) effArr.push("毒素發動");
@@ -1021,7 +1058,6 @@ function createItemCard(item) {
     if (item.vanderStunHit) effArr.push("衝暈命中+1");
     if (item.dragonStrike) effArr.push("龍的一擊");
     if (item.rapidfire) effArr.push(`連射`);
-    if (item.hasteStrike) effArr.push(`加速突擊(消耗加速爆發)`);
     if (item.noConsume) effArr.push(`不會消耗`);
     if (item.relic) effArr.push(`遺物`);
     if (item.procInstakill || item.instakill) effArr.push(`機率即死`);
@@ -1035,19 +1071,11 @@ function createItemCard(item) {
     if (item.blueSpecter) effArr.push(`藍惡靈奪魔`);
     if (item.shatter) effArr.push(`粉碎`);
     if (item.allLures) effArr.push(`持有全部誘捕狀態`);
-    if (item.relicDropX2) effArr.push(`遺物掉落率兩倍`);
-    if (item.dotCrit) effArr.push(`持續傷害(DoT)可爆擊`);
-    if (item.giantBonus) effArr.push(`對巨型怪物加成`);
-    if (item.highestAttrPlus) effArr.push(`最高能力值額外加成`);
-    if (item.showMobEle) effArr.push(`顯示怪物屬性弱點`);
     if (item.equipHaste) effArr.push(`裝備自帶加速`);
     if (item.darkPoison) effArr.push(`一般攻擊命中 50% 機率使目標中毒：每秒該次攻擊 60% 傷害、持續 5 秒、最多 1 層（取較高傷害並刷新；劇毒精通→100%、每秒 200%）`);
     if (item.noBleed) effArr.push(`不觸發出血`);
     if (item.mpOnHit) effArr.push(`命中恢復MP`);
     if (item.ele) effArr.push(`武器屬性: ${{fire:'火',water:'水',earth:'地',wind:'風'}[item.ele] || item.ele}`);
-    if (item.raceBonus && item.raceBonus.race) effArr.push(`對「${item.raceBonus.race}」族傷害×${item.raceBonus.mult || ''}`);
-    if (item.raceFlat && item.raceFlat.race) effArr.push(`對「${item.raceFlat.race}」族固定額外傷害+${item.raceFlat.add || ''}`);
-    if (item.strawCurse) effArr.push(`稻草詛咒(機率施加疊加詛咒)`);
     if (item.grantSkills) effArr.push(`賦予特殊技能`);
     if (item.loadFreeRegen) effArr.push(`負重不影響HP恢復`);
 
