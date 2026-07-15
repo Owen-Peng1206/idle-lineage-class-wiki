@@ -77,15 +77,35 @@ const subFilterOptions = {
     ],
     relic: [
         { id: 'all', name: '全部遺物' },
-        { id: 'wpn', name: '武器' },
-        { id: 'arm', name: '防具' },
-        { id: 'acc', name: '飾品' },
-        { id: 'pet', name: '寵物' }
-    ],
-    pet: [
-        { id: 'all', name: '全部寵物裝備' },
-        { id: 'petwpn', name: '寵物武器' },
-        { id: 'petarm', name: '寵物防具' }
+        { id: 'dagger', name: '匕首' },
+        { id: 'sword1', name: '單手劍' },
+        { id: 'sword2', name: '雙手劍' },
+        { id: 'katana', name: '武士刀' },
+        { id: 'blunt1', name: '單手鈍器' },
+        { id: 'blunt2', name: '雙手鈍器' },
+        { id: 'spear', name: '矛' },
+        { id: 'claw', name: '鋼爪' },
+        { id: 'dual', name: '雙刀' },
+        { id: 'chainsword', name: '鎖鏈劍' },
+        { id: 'bow', name: '弓' },
+        { id: 'xbow', name: '十字弓' },
+        { id: 'wand', name: '魔杖' },
+        { id: 'qigu', name: '奇古獸' },
+        { id: 'helm', name: '頭盔' },
+        { id: 'armor', name: '盔甲' },
+        { id: 'shin', name: '脛甲' },
+        { id: 'tshirt', name: '內衣' },
+        { id: 'cloak', name: '斗篷' },
+        { id: 'boots', name: '長靴' },
+        { id: 'gloves', name: '手套' },
+        { id: 'shield', name: '盾牌' },
+        { id: 'armguard', name: '臂甲' },
+        { id: 'amulet', name: '項鍊' },
+        { id: 'ring', name: '戒指' },
+        { id: 'belt', name: '腰帶' },
+        { id: 'ear', name: '耳環' },
+        { id: 'pet', name: '寵物裝備' }
+
     ]
 };
 
@@ -1241,7 +1261,7 @@ function matchItemSubType(item, type, subType) {
             let isWand = item.isWand || /魔杖|法杖|水晶球/.test(n) || (/杖/.test(n) && !/權杖/.test(n));
             let isSpear = /矛|槍|戟/.test(n);
             let isBlunt = /斧|鎚|錘|槌|棒|棍|鐮/.test(n);
-            let isDagger = /匕首|小刀|之刺/.test(n);
+            let isDagger = /匕首|小刀|之刺|尾刺|毒牙|犬齒|指甲|千刃牙|鱗片|刺針|刺劍/.test(n);
             
             if (subType === 'kiringku') return isKiringku;
             else if (subType === 'chainsword') return isChainsword;
@@ -1273,6 +1293,82 @@ function matchItemSubType(item, type, subType) {
     return false;
 }
 
+const RELIC_WEAPON_TAGS = {
+    relic_goblin_blade:['單手劍'], relic_gremlin_club:['單手鈍器'], relic_husky_bone:['單手鈍器'], relic_doberman_fang:['匕首'],
+    relic_gladiator_scimitar:['單手劍'], relic_icefield_pick:['單手鈍器'], relic_werewolf_mace:['單手鈍器'], relic_orc_nail:['匕首'], relic_pan_staff:['矛'], relic_elastic_rib:['雙刀'],
+    relic_golem_fist:['雙手鈍器'], relic_orc_cleaver:['單手劍'], relic_strong_femur:['單手鈍器'], relic_forgotten_spear:['矛'], relic_spider_claw:['鋼爪'], relic_hobgoblin_grinder:['單手劍'], relic_orc_butcher:['單手劍'], relic_orc_pole:['矛'], relic_sparta_grudge:['雙刀'], relic_shark_teeth:['匕首'],
+    relic_guard_spear:['矛'], relic_crab_claw:['鋼爪'], relic_venom_fang:['雙手劍'], relic_ratman_skewer:['矛'], relic_lizardman_cleaver:['矛'],
+    relic_ohm_maul:['雙手鈍器'], relic_parrot_beak:['雙手劍'], relic_pirate_scimitar:['單手劍'], relic_scorpion_sting:['匕首'], relic_harvey_claw:['單手劍'], relic_guard_pike:['矛'], relic_ogi_greataxe:['雙手鈍器'],
+    relic_darkthief_claw:['鋼爪'], relic_fighter_axe:['雙手鈍器'],
+    relic_darkelf_grindblade:['單手劍','武士刀'],
+    relic_wisp_remnant:['單手劍','武士刀'], relic_summoner_whip:['單手鈍器'], relic_griffin_claw:['鋼爪'], relic_croc_fang:['雙手劍'], relic_icestone_maul:['雙手鈍器'],
+    relic_mutant_lamia_scale:['匕首'], relic_thorn_needle:['匕首'], relic_giant_toothpick:['雙手劍'], relic_veteran_greatsword:['雙手劍'], relic_giant_throwstone:['雙手鈍器'], relic_armor_spareblade:['雙刀'],
+    relic_aruba_haste:['單手鈍器'], relic_ashwarrior_flamesword:['單手劍'], relic_deadgeneral_greatsword:['雙手劍'], relic_darkscorpion_pincers:['雙刀'],
+    relic_medusa_stinger:['單手鈍器'], relic_silent_venom:['矛'],
+    relic_axetaurus_brutalaxe:['雙手鈍器'],
+    relic_lizard_tongue:['矛'], relic_killerbee_sting:['匕首'], relic_ancient_spider_claw:['單手劍','武士刀'], relic_guardian_greatsword:['雙手劍'],
+    relic_eto_whip:['矛'], relic_serpent_fang:['矛'], relic_kaira_fang:['匕首'], relic_mud_idol:['雙手鈍器'], relic_teo_hammer:['單手鈍器'],
+    relic_executor_axe:['單手鈍器'], relic_healer_wand:['單手鈍器'], relic_minotaur_flail:['單手鈍器'],
+    relic_executor_skewer:['矛'], relic_weathered_obelisk:['雙手鈍器'], relic_shadow_stinger:['匕首'], relic_soulreaper_dual:['雙刀'],
+    relic_ghoul_fang:['單手劍'], relic_sparto_shard:['單手劍'], relic_pirate_dual:['雙刀'], relic_lava_fists:['單手鈍器']
+};
+
+function getRelicCatKey(item) {
+    if (!item) return null;
+    let d = item;
+    let id = item.id;
+    if (d.type === 'wpn') {
+        if (d.isArrow) return null;
+        if (d.isBow) return /十字弓|弩/.test(d.n || '') ? 'xbow' : 'bow';
+        if (d.qigu) return 'qigu';
+        if (d.chainsword) return 'chainsword';
+        
+        const isWandWeapon = !!(d && d.type === 'wpn' && (d.isWand || /魔杖|法杖/.test(d.n || '') || (/杖/.test(d.n || '') && !/權杖/.test(d.n || ''))));
+        const WAND_LIGHTARROW_IDS = ['relic_amp_staff', 'relic_elder_thunder', 'relic_cerberus_wand', 'relic_evillizard_eye', 'relic_lightbeam_wand', 'relic_warlock_grimoire'];
+        if (isWandWeapon || WAND_LIGHTARROW_IDS.includes(id)) return 'wand';
+        
+        let tags = RELIC_WEAPON_TAGS[id] || [];
+        if (tags.includes('武士刀')) return 'katana';
+        if (tags.includes('雙刀')) return 'dual';
+        if (tags.includes('鋼爪')) return 'claw';
+        if (tags.includes('匕首')) return 'dagger';
+        if (tags.includes('雙手劍')) return 'sword2';
+        if (tags.includes('單手劍')) return 'sword1';
+        if (tags.includes('雙手鈍器')) return 'blunt2';
+        if (tags.includes('單手鈍器')) return 'blunt1';
+        if (tags.includes('矛')) return 'spear';
+
+        if (/水晶球/.test(d.n || '')) return 'wand';
+        if (d.eff === 'pierce') return 'spear';
+        if (d.eff === 'cleave') return 'sword2';
+        if (d.eff === 'crush') return d.w2h ? 'blunt2' : 'blunt1';
+        return null;
+    }
+    if (d.type === 'arm') {
+        if (d.armguard) return 'armguard';
+        if (d.slot === 'helm') return 'helm';
+        if (d.slot === 'armor') return 'armor';
+        if (d.slot === 'shin') return 'shin';
+        if (d.slot === 'tshirt') return 'tshirt';
+        if (d.slot === 'cloak') return 'cloak';
+        if (d.slot === 'boots') return 'boots';
+        if (d.slot === 'gloves') return 'gloves';
+        if (d.slot === 'shield') return 'shield';
+        if (d.slot === 'petarm') return 'pet';
+        return null;
+    }
+    if (d.type === 'acc') {
+        if (d.slot === 'amulet') return 'amulet';
+        if (d.slot === 'ring') return 'ring';
+        if (d.slot === 'belt') return 'belt';
+        if (d.slot === 'ear1' || d.slot === 'ear2' || d.slot === 'ear') return 'ear';
+        if (d.slot === 'pet' || d.slot === 'petwpn') return 'pet';
+        if (d.slot === 'doll') return 'doll';
+        return null;
+    }
+    return null;
+}
+
 function renderItems() {
     if (!itemsGrid) return;
     
@@ -1290,14 +1386,7 @@ function renderItems() {
         } else if (currentFilterType === 'relic') {
             matchType = !!item.relic;
             if (matchType && currentFilterSubType !== 'all') {
-                const targetType = currentFilterSubType; // 'wpn', 'arm', 'acc', 'pet'
-                const isTargetType = item.type === targetType
-                    || (targetType === 'acc' && (item.slot === 'petwpn' || item.slot === 'petarm' || item.slot === 'pet'))
-                    || (targetType === 'pet' && (item.slot === 'petwpn' || item.slot === 'petarm' || item.slot === 'pet'));
-                matchType = isTargetType;
-                if (matchType && currentFilterSubSubType !== 'all') {
-                    matchType = matchItemSubType(item, targetType, currentFilterSubSubType);
-                }
+                matchType = (currentFilterSubType === getRelicCatKey(item));
             }
         } else {
             const isTargetType = item.type === currentFilterType
