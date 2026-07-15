@@ -874,18 +874,21 @@ function createItemCard(item) {
     // 6.5 進階戰鬥數值 (綠色)
     let advStatsHtml = '';
     let advMap = {
-        mcrit: '魔法爆擊率(%)', rcrit: '遠程爆擊率(%)',
-        mcritDmg: '魔法爆擊傷害', magicHit: '魔法命中',
+        meleeCrit: '近戰爆擊率(%)', meleeCritDmg: '近戰爆擊傷害(%)',
+        rangedCrit: '遠程爆擊率(%)', rangedCritDmg: '遠程爆擊傷害(%)',
+        magicCrit: '魔法爆擊率(%)', magicCritDmg: '魔法爆擊傷害(%)',
+        mcrit: '近戰爆擊率(%)', rcrit: '遠程爆擊率(%)',
+        mcritDmg: '近戰爆擊傷害(%)', magicHit: '魔法命中',
         atkDoubleChance: '雙重攻擊機率(%)', dmgReflect: '傷害反射', painReflect: '反彈痛苦',
-        magicDrNonEle: '無屬性魔法減免', stormInterval: '風暴間隔縮短',
+        resNone: '無屬性抗性(%)', magicDrNonEle: '無屬性魔法減免', stormInterval: '風暴間隔縮短',
         dragonStrike: '屠龍額外傷害', skillAddDmg: '技能額外傷害', skillDmgMult: '技能傷害倍率',
         comboRate: '雙擊機率(%)', vampPct: '吸血機率(%)',
         crushDr: '重擊減免', physDrGated: '特殊物理減免', healPct: '治癒量(%)', heal: '治癒加成', healBase: '治癒基數', healDice: '治癒骰數',
-        extraDmg: '泛用額外傷害', extraHit: '泛用額外命中',
+        extraDmg: '泛用額外傷害', extraHit: '泛用額外命中', equipExtraAtk: '裝備額外攻擊次數',
         meleeDmg: '近距離額外傷害', meleeHit: '近距離命中', meleeHaste: '近戰攻速加成',
         rangedDmg: '遠距離額外傷害', rangedHit: '遠距離命中', mdmg: '魔法傷害',
         atkSpdPct: '攻擊速度提升(%)', atkSpd: '攻擊速度(固定)', moveSpeedPct: '移動速度提升(%)', heavyMult: '重擊傷害倍率', 
-        fullHpMult: '滿血傷害倍率', fullHpMultTriple: '滿血追加倍率', heavyMult: '重擊傷害倍率',
+        fullHpMult: '滿血傷害倍率', fullHpMultTriple: '滿血追加倍率',
         weakHitBonus: '弱點命中加成', pierceChance: '穿透機率(%)',
         lifesteal: '吸血', vamp: '吸血', drain: '吸收生命/魔力', potionBonus: '藥水恢復量(%)',
         expBonus: '經驗值加成(%)', goldBonus: '金幣加成(%)',
@@ -895,7 +898,7 @@ function createItemCard(item) {
         abnormalResist: '異常狀態抵抗(%)', sleepResist: '抗睡眠(%)',
         poisonResist: '抗中毒(%)', paralyzeResist: '抗麻痺(%)',
         slowResist: '抗緩速(%)', poisonHealMult: '毒素吸收倍率',
-        hpRegenFaster:'HP恢復間隔縮短秒數', noEvade: '無法迴避'
+        hpRegenFaster:'HP恢復間隔縮短秒數', noEvade: '無法迴避', mpReduce: 'MP消耗減免'
 
     };
     let hasAdvStats = Object.keys(advMap).some(k => item[k]);
@@ -950,12 +953,25 @@ function createItemCard(item) {
     // 整合 relicPurposeLabels 的詳細描述
     if (item.reqAvatar) effArr.push(`裝備限制（僅限${item.reqAvatar}）`);
     if (item.armguard) effArr.push('臂甲（裝於副手，可與雙手武器並用）');
-    if (item.resNone) effArr.push(`無屬性魔法抗性+${item.resNone}%`);
+    if (item.resNone) effArr.push(`無屬性抗性+${item.resNone}%`);
     if (item.mrPerWis) effArr.push(`精神轉魔防（每1點精神，MR+${item.mrPerWis}）`);
     if (item.type === 'wpn' && item.mr) effArr.push(`魔防(MR)+${item.mr}`);
-    if (item.mcrit) effArr.push(`近距離爆擊率+${item.mcrit}%`);
-    if (item.mcritDmg) effArr.push(`近距離爆擊傷害+${item.mcritDmg}%`);
-    if (item.rcrit) effArr.push(`遠距離爆擊率+${item.rcrit}%`);
+    
+    let meleeCritVal = item.meleeCrit || item.mcrit;
+    if (meleeCritVal) effArr.push(`近距離爆擊率+${meleeCritVal}%`);
+    let meleeCritDmgVal = item.meleeCritDmg || item.mcritDmg;
+    if (meleeCritDmgVal) effArr.push(`近距離爆擊傷害+${meleeCritDmgVal}%`);
+    
+    let rangedCritVal = item.rangedCrit || item.rcrit;
+    if (rangedCritVal) effArr.push(`遠距離爆擊率+${rangedCritVal}%`);
+    if (item.rangedCritDmg) effArr.push(`遠距離爆擊傷害+${item.rangedCritDmg}%`);
+    
+    if (item.magicCrit) effArr.push(`魔法爆擊率+${item.magicCrit}%`);
+    if (item.magicCritDmg) effArr.push(`魔法爆擊傷害+${item.magicCritDmg}%`);
+    
+    if (item.mpReduce) effArr.push(`MP消耗減免 ${item.mpReduce}`);
+    if (item.equipExtraAtk) effArr.push(`一般攻擊次數+${item.equipExtraAtk}`);
+
     if (item.abnormalResist) effArr.push(`異常狀態抵抗+${item.abnormalResist}%`);
     if (item.immStone) effArr.push('免疫石化');
     if (item.immPoison) effArr.push('免疫中毒');
