@@ -910,6 +910,7 @@ function createItemCard(item) {
                     advItems.push(`<div class="flex justify-between col-span-2"><span>${advMap[k]}:</span> <span class="text-emerald-200 text-right leading-tight break-keep ml-2">${descArr.join(', ')}</span></div>`);
                 } else {
                     let prefix = '+';
+                    if (String(item[k]).startsWith('-')) prefix = '';
                     if (k.toLowerCase().includes('mult') && typeof item[k] === 'number') prefix = 'x';
                     advItems.push(`<div class="flex justify-between"><span>${advMap[k]}:</span> <span class="text-emerald-200">${prefix}${item[k]}</span></div>`);
                 }
