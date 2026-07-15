@@ -541,6 +541,34 @@
                             掉落：<b class="text-red-300">馴獸師</b> <span class="text-gray-500">(大洞穴隱遁者村莊地區)</span>
                         </div>
                     </div>
+                    <div class="bg-gray-900 p-3 rounded border border-gray-700">
+                        <div class="text-yellow-400 font-bold mb-1">牧神的放牧棍 (武器)</div>
+                        <div class="text-gray-400">提供 <b class="text-white">寵物傷害+3</b>。</div>
+                        <div class="mt-2 pt-2 border-t border-gray-800 text-[11px] text-gray-400">
+                            掉落：<b class="text-red-300">污染的潘</b> <span class="text-gray-500">(妖精森林周邊、眠龍洞穴)</span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 p-3 rounded border border-gray-700">
+                        <div class="text-yellow-400 font-bold mb-1">馴獸師的飼料袋 (戒指)</div>
+                        <div class="text-gray-400">裝備時視為 <b class="text-white">持有全部寵物誘捕狀態</b>。</div>
+                        <div class="mt-2 pt-2 border-t border-gray-800 text-[11px] text-gray-400">
+                            掉落：<b class="text-red-300">拉斯塔巴德馴獸師</b> <span class="text-gray-500">(魔獸訓練場)</span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 p-3 rounded border border-gray-700">
+                        <div class="text-yellow-400 font-bold mb-1">馴獸師手做寵物專用盔甲 (寵物專用盔甲)</div>
+                        <div class="text-gray-400">提供寵物防禦+5，且 <b class="text-white">寵物受到的傷害減少 20%</b>。</div>
+                        <div class="mt-2 pt-2 border-t border-gray-800 text-[11px] text-gray-400">
+                            掉落：<b class="text-red-300">受詛咒的馴獸師</b> <span class="text-gray-500">(魔獸訓練場)</span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 p-3 rounded border border-gray-700">
+                        <div class="text-yellow-400 font-bold mb-1">仿製小惡魔尖牙套 (寵物專用武器)</div>
+                        <div class="text-gray-400">提供 <b class="text-white">寵物傷害+3、寵物命中+9</b>，一般攻擊命中時會造成出血。</div>
+                        <div class="mt-2 pt-2 border-t border-gray-800 text-[11px] text-gray-400">
+                            掉落：<b class="text-red-300">小惡魔</b> <span class="text-gray-500">(傲慢之塔 21F~30F)</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
