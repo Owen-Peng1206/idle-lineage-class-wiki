@@ -21,6 +21,7 @@ const WikiCollections = (() => {
         { key: 'dual',       name: '雙刀',     group: '武器', bonus: '傷害減免 +1' }, { key: 'chainsword', name: '鎖鏈劍',   group: '武器', bonus: 'HP +5' },
         { key: 'bow',        name: '弓',       group: '武器', bonus: 'ER +1' }, { key: 'xbow',       name: '十字弓',   group: '武器', bonus: 'MR +1' },
         { key: 'wand',       name: '魔杖',     group: '武器', bonus: 'MP自動恢復量 +1' }, { key: 'qigu',       name: '奇古獸',   group: '武器', bonus: 'MP +5' },
+        { key: 'quiver',     name: '箭筒',     group: '武器', bonus: '' }, { key: 'wpn_other',  name: '其他武器', group: '武器', bonus: '' },
         { key: 'helm',     name: '頭盔',   group: '防具', bonus: '傷害減免 +1' }, { key: 'armor',    name: '盔甲',   group: '防具', bonus: 'AC -1' },
         { key: 'shin',     name: '脛甲',   group: '防具', bonus: '傷害減免 +1' }, { key: 'tshirt',   name: '內衣',   group: '防具', bonus: '' },
         { key: 'cloak',    name: '斗篷',   group: '防具', bonus: 'MR +1' }, { key: 'boots',    name: '長靴',   group: '防具', bonus: 'ER +1' },
@@ -40,24 +41,7 @@ const WikiCollections = (() => {
     const CARD_STAT_LABEL = { mhp: 'HP', mmp: 'MP', mpR: 'MP自動恢復量', hpR: 'HP自動恢復量', dr: '傷害減免', weight: '負重上限', extraMp: '額外魔法點數', extraDmg: '額外傷害', extraHit: '額外命中', mr: 'MR', resFire: '火屬性抗性', resWater: '水屬性抗性', resWind: '風屬性抗性', resEarth: '地屬性抗性' };
     const CARD_TIERS = [{ sfx: '普', col: 'text-slate-300' }, { sfx: '銀', col: 'text-slate-100' }, { sfx: '金', col: 'text-yellow-400' }];
 
-    const CARD_REGIONS = [
-        { key: 'silverknight', name: '銀騎士村',   stat: 'mhp',      vals: [3, 5, 10],  maps: ['silver_knight', 'training'] },
-        { key: 'fairyforest',  name: '妖精森林',   stat: 'mmp',      vals: [3, 5, 10],  maps: ['zone_01', 'zone_15', 'zone_16', 'zone_17'] },
-        { key: 'talkingisland',name: '說話之島',   stat: 'mpR',      vals: [1, 2, 3],   maps: ['talking_island_port', 'talking_island', 'zone_13', 'zone_14'] },
-        { key: 'burningwillow',name: '燃柳',       stat: 'hpR',      vals: [1, 2, 3],   maps: ['elf_forest', 'pirate_wild', 'pirate_dungeon', 'elf_grave', 'hidden_cave'] },
-        { key: 'gludin',       name: '古魯丁',     stat: 'dr',       vals: [1, 2, 3],   maps: ['gludio', 'zone_06', 'zone_07', 'zone_08', 'zone_09', 'zone_10', 'zone_11', 'zone_12'] },
-        { key: 'kent',         name: '肯特',       stat: 'mhp',      vals: [3, 5, 10],  maps: ['kent'] },
-        { key: 'windwood',     name: '風木',       stat: 'weight',   vals: [10, 30, 50],maps: ['windwood_dungeon', 'windwood', 'desert', 'zone_22', 'zone_23', 'zone_24', 'zone_25', 'zone_32', 'zone_33', 'hidden_antqueen'] },
-        { key: 'heine',        name: '海音',       stat: 'extraMp',  vals: [1, 2, 3],   maps: ['heine', 'mirror_forest', 'zone_34', 'zone_35', 'zone_36', 'eva_kingdom', 'fafurion_lair'] },
-        { key: 'giran',        name: '奇岩',       stat: 'weight',   vals: [10, 20, 30],maps: ['giran', 'zone_18', 'zone_19', 'zone_20', 'zone_21'] },
-        { key: 'dragonvalley', name: '龍之谷',     stat: 'extraDmg', vals: [1, 2, 3],   maps: ['dragon_valley', 'zone_26', 'zone_27', 'zone_28', 'zone_29', 'zone_30', 'zone_31', 'antaras_lair', 'silent_outer'] },
-        { key: 'witon',        name: '威頓',       stat: 'resFire',  vals: [1, 2, 3],   maps: ['fire_dragon', 'valakas_lair'] },
-        { key: 'oren',         name: '歐瑞',       stat: 'resWater', vals: [1, 2, 3],   maps: ['zone_02', 'zone_03', 'zone_04', 'zone_05', 'zone_37', 'zone_38', 'zone_39', 'zone_40', 'zone_41', 'hidden_lab_nolife', 'hidden_lab_darkmagic', 'hidden_seal_spirit', 'hidden_seal_monster', 'hidden_seal_demon', 'crystal_cave1', 'crystal_cave2', 'crystal_cave3', 'shadow_temple'] },
-        { key: 'aden',         name: '亞丁',       stat: 'resWind',  vals: [1, 2, 3],   maps: ['twilight_mt', 'dream_island'] },
-        { key: 'tower',        name: '傲慢之塔',   stat: 'extraHit', vals: [1, 2, 3],   maps: '__pride__' },
-        { key: 'rastabad',     name: '拉斯塔巴德', stat: 'mr',       vals: [1, 3, 5],   maps: ['rastabad_cave1', 'rastabad_cave2', 'rastabad_cave3', 'rastabad_gate', 'giant_tomb', 'demon_temple', 'rastabad_beast', 'dark_magic_lab', 'necro_training', 'elder_room', 'king_baranka_room', 'law_king_room', 'necro_king_room', 'assassin_king_room'] },
-        { key: 'rift',         name: '時空裂痕',   stat: 'resEarth', vals: [1, 2, 3],   maps: ['thebes_desert', 'thebes_pyramid', 'thebes_temple', 'tikal_area', 'tikal_deep', 'tikal_altar'] }
-    ];
+
 
     const WEAPON_TAGS = {
         wpn_katana: ['單手劍','武士刀'], wpn_siruge: ['單手劍','武士刀'], wpn_golden_scepter: ['單手劍','武士刀'],
@@ -108,14 +92,17 @@ const WikiCollections = (() => {
         wpn_kukulkan_spear:['矛'], relic_eto_whip:['矛'], relic_serpent_fang:['矛'], relic_kaira_fang:['匕首'], relic_mud_idol:['雙手鈍器'], relic_teo_hammer:['單手鈍器'],
         relic_executor_axe:['單手鈍器'], relic_healer_wand:['單手鈍器'], relic_minotaur_flail:['單手鈍器'],
         relic_executor_skewer:['矛'], relic_weathered_obelisk:['雙手鈍器'], relic_shadow_stinger:['匕首'], relic_soulreaper_dual:['雙刀'],
-        relic_ghoul_fang:['單手劍'], relic_sparto_shard:['單手劍'], relic_pirate_dual:['雙刀'], relic_lava_fists:['單手鈍器']
+        relic_ghoul_fang:['單手劍'], relic_sparto_shard:['單手劍'], relic_pirate_dual:['雙刀'], relic_lava_fists:['單手鈍器'],
+        relic_fireking_blast:['雙手劍'], relic_waterking_caress:['鋼爪'],
+        relic_cerberus_pin:['鋼爪'], relic_dark_metal_club:['單手鈍器'], relic_ash_fist:['單手鈍器'], relic_ant_pincer:['單手劍','武士刀'], relic_reaper_scythe:['雙手劍'],
+        relic_mage_dagger:['匕首']
     };
 
     // 分類判定邏輯
     function equipCatKey(id, d) {
         if (!d) return null;
         if (d.type === 'wpn') {
-            if (d.isArrow) return null; // wiki 版無 quiver
+            if (d.isArrow) return d.relic ? 'quiver' : null;
             if (d.isBow) return /十字弓|弩/.test(d.n || '') ? 'xbow' : 'bow';
             if (d.qigu) return 'qigu';
             if (d.chainsword) return 'chainsword';
@@ -142,7 +129,7 @@ const WikiCollections = (() => {
             if (d.eff === 'cleave') return 'sword2';
             if (d.eff === 'crush') return d.w2h ? 'blunt2' : 'blunt1';
             
-            return null;
+            return 'wpn_other';
         }
         if (d.type === 'arm') {
             if (d.armguard) return 'armguard';
@@ -386,10 +373,23 @@ const WikiCollections = (() => {
                 if (state.currentType === 'monster') {
                     // 怪物卡片樣式 (寬度 136px)
                     // 優先使用 idle_0.png，若無則退回舊靜態圖檔，再無則退回 placeholder
-                    let imgUrl = `idle-lineage-class/assets/anim/${item.name}/idle_0.png`;
-                    let fallbackSrc = `idle-lineage-class/assets/icons/monsters/${item.name}.png`;
                     let placeholderSrc = `https://placehold.co/64x64/1e293b/334155?text=%3F`;
-                    let fallbackChain = `this.onerror=function(){this.onerror=null;this.src='${placeholderSrc}';};this.src='${fallbackSrc}';`;
+                    let imgUrl = `idle-lineage-class/assets/anim/${item.name}/idle_0.png`;
+                    let fallbackChain = `this.onerror=function(){this.onerror=null;this.src='${placeholderSrc}';};this.src='idle-lineage-class/assets/icons/monsters/${item.name}.png';`;
+                    
+                    if (typeof mobStillImg === 'function') {
+                        let mi = mobStillImg(item.name, undefined, false);
+                        let fixPath = p => p.startsWith('assets/') ? 'idle-lineage-class/' + p : p;
+                        imgUrl = fixPath(mi.src);
+                        let fbs = (mi.fb || []).map(fixPath).concat([placeholderSrc]);
+                        if (fbs.length > 0) {
+                            let fnStr = `this.onerror=null;this.src='${fbs[fbs.length-1]}';`;
+                            for (let i = fbs.length - 2; i >= 0; i--) {
+                                fnStr = `this.onerror=function(){${fnStr}};this.src='${fbs[i]}';`;
+                            }
+                            fallbackChain = fnStr;
+                        }
+                    }
 
                     let regionName = '未知地區';
                     let rDef = CARD_REGIONS.find(r => r.key === state.currentSubCat);

@@ -91,6 +91,8 @@ const subFilterOptions = {
         { id: 'xbow', name: '十字弓' },
         { id: 'wand', name: '魔杖' },
         { id: 'qigu', name: '奇古獸' },
+        { id: 'quiver', name: '箭筒' },
+        { id: 'wpn_other', name: '其他武器' },
         { id: 'helm', name: '頭盔' },
         { id: 'armor', name: '盔甲' },
         { id: 'shin', name: '脛甲' },
@@ -1310,7 +1312,10 @@ const RELIC_WEAPON_TAGS = {
     relic_eto_whip:['矛'], relic_serpent_fang:['矛'], relic_kaira_fang:['匕首'], relic_mud_idol:['雙手鈍器'], relic_teo_hammer:['單手鈍器'],
     relic_executor_axe:['單手鈍器'], relic_healer_wand:['單手鈍器'], relic_minotaur_flail:['單手鈍器'],
     relic_executor_skewer:['矛'], relic_weathered_obelisk:['雙手鈍器'], relic_shadow_stinger:['匕首'], relic_soulreaper_dual:['雙刀'],
-    relic_ghoul_fang:['單手劍'], relic_sparto_shard:['單手劍'], relic_pirate_dual:['雙刀'], relic_lava_fists:['單手鈍器']
+    relic_ghoul_fang:['單手劍'], relic_sparto_shard:['單手劍'], relic_pirate_dual:['雙刀'], relic_lava_fists:['單手鈍器'],
+    relic_fireking_blast:['雙手劍'], relic_waterking_caress:['鋼爪'],
+    relic_cerberus_pin:['鋼爪'], relic_dark_metal_club:['單手鈍器'], relic_ash_fist:['單手鈍器'], relic_ant_pincer:['單手劍','武士刀'], relic_reaper_scythe:['雙手劍'],
+    relic_mage_dagger:['匕首']
 };
 
 function getRelicCatKey(item) {
@@ -1318,7 +1323,7 @@ function getRelicCatKey(item) {
     let d = item;
     let id = item.id;
     if (d.type === 'wpn') {
-        if (d.isArrow) return null;
+        if (d.isArrow) return d.relic ? 'quiver' : null;
         if (d.isBow) return /十字弓|弩/.test(d.n || '') ? 'xbow' : 'bow';
         if (d.qigu) return 'qigu';
         if (d.chainsword) return 'chainsword';
@@ -1342,7 +1347,7 @@ function getRelicCatKey(item) {
         if (d.eff === 'pierce') return 'spear';
         if (d.eff === 'cleave') return 'sword2';
         if (d.eff === 'crush') return d.w2h ? 'blunt2' : 'blunt1';
-        return null;
+        return 'wpn_other';
     }
     if (d.type === 'arm') {
         if (d.armguard) return 'armguard';
