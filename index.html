@@ -290,35 +290,35 @@
                         你可以在左側導覽列切換不同的圖鑑，或是使用進階的<span class="text-gold-400 font-semibold">「掉落雙向查詢系統」</span>來尋找你需要的裝備與怪物。
                     </p>
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-6 w-full">
-                        <button onclick="switchTab('tab-classes')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-gray-500 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                        <button onclick="wikiSwitchTab('tab-classes')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-gray-500 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
                             <i class="fa-solid fa-users text-2xl mb-3 text-gray-400 group-hover:text-white transition-colors"></i>
                             <span class="text-sm font-medium text-gray-300 group-hover:text-white">職業與任務</span>
                         </button>
-                        <button onclick="switchTab('tab-magics')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-gray-500 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                        <button onclick="wikiSwitchTab('tab-magics')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-gray-500 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
                             <i class="fa-solid fa-book-journal-whills text-2xl mb-3 text-gray-400 group-hover:text-white transition-colors"></i>
                             <span class="text-sm font-medium text-gray-300 group-hover:text-white">魔法圖鑑</span>
                         </button>
-                        <button onclick="switchTab('tab-items')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-gray-500 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                        <button onclick="wikiSwitchTab('tab-items')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-gray-500 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
                             <i class="fa-solid fa-khanda text-2xl mb-3 text-gray-400 group-hover:text-white transition-colors"></i>
                             <span class="text-sm font-medium text-gray-300 group-hover:text-white">道具裝備</span>
                         </button>
-                        <button onclick="switchTab('tab-monsters')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-gray-500 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                        <button onclick="wikiSwitchTab('tab-monsters')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-gray-500 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
                             <i class="fa-solid fa-spaghetti-monster-flying text-2xl mb-3 text-gray-400 group-hover:text-white transition-colors"></i>
                             <span class="text-sm font-medium text-gray-300 group-hover:text-white">怪物地圖</span>
                         </button>
-                        <button onclick="switchTab('tab-craft')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-amber-400/50 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                        <button onclick="wikiSwitchTab('tab-craft')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-amber-400/50 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
                             <i class="fa-solid fa-hammer text-2xl mb-3 text-amber-400/70 group-hover:text-amber-400 transition-colors"></i>
                             <span class="text-sm font-medium text-gray-300 group-hover:text-white">製作菜單</span>
                         </button>
-                        <button onclick="switchTab('tab-collections')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-pink-400/50 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                        <button onclick="wikiSwitchTab('tab-collections')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-pink-400/50 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
                             <i class="fa-solid fa-swatchbook text-2xl mb-3 text-pink-400/70 group-hover:text-pink-400 transition-colors"></i>
                             <span class="text-sm font-medium text-gray-300 group-hover:text-white">收藏圖鑑</span>
                         </button>
-                        <button onclick="switchTab('tab-pets')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-emerald-400/50 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
+                        <button onclick="wikiSwitchTab('tab-pets')" class="flex flex-col items-center justify-center p-4 bg-gray-800/50 hover:bg-gray-700 border border-gray-700 hover:border-emerald-400/50 rounded-xl transition-all duration-300 hover:-translate-y-1 group">
                             <i class="fa-solid fa-paw text-2xl mb-3 text-emerald-400/70 group-hover:text-emerald-400 transition-colors"></i>
                             <span class="text-sm font-medium text-gray-300 group-hover:text-white">寵物圖鑑</span>
                         </button>
-                        <button onclick="switchTab('tab-drops')" class="flex flex-col items-center justify-center p-4 bg-primary-900/20 hover:bg-primary-900/40 border border-primary-500/30 hover:border-primary-500/80 rounded-xl transition-all duration-300 hover:-translate-y-1 group shadow-[0_0_15px_rgba(37,99,235,0.05)] hover:shadow-[0_0_15px_rgba(37,99,235,0.2)]">
+                        <button onclick="wikiSwitchTab('tab-drops')" class="flex flex-col items-center justify-center p-4 bg-primary-900/20 hover:bg-primary-900/40 border border-primary-500/30 hover:border-primary-500/80 rounded-xl transition-all duration-300 hover:-translate-y-1 group shadow-[0_0_15px_rgba(37,99,235,0.05)] hover:shadow-[0_0_15px_rgba(37,99,235,0.2)]">
                             <i class="fa-solid fa-magnifying-glass-chart text-2xl mb-3 text-primary-400 group-hover:text-primary-300 transition-colors"></i>
                             <span class="text-sm font-medium text-gray-300 group-hover:text-white">掉落查詢</span>
                         </button>
@@ -671,7 +671,7 @@
         const sections = document.querySelectorAll('.content-section');
         const pageTitle = document.getElementById('current-page-title');
 
-        function switchTab(targetId) {
+        function wikiSwitchTab(targetId) {
             let newTitle = '';
             // 更新按鈕狀態
             tabBtns.forEach(btn => {
@@ -710,7 +710,7 @@
         // 綁定點擊事件
         tabBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                switchTab(btn.getAttribute('data-target'));
+                wikiSwitchTab(btn.getAttribute('data-target'));
                 // 在手機版時，點擊選單後自動收合側邊欄
                 if (window.innerWidth < 768) {
                     const sidebar = document.getElementById('sidebar');
@@ -784,13 +784,14 @@
         // ==========================================
         // 腳本載入器
         // ==========================================
+        const scriptPromises = new Map();
+
         function loadScript(src) {
-            return new Promise((resolve) => {
-                // 避免重複載入
-                if (document.querySelector(`script[src="${src}"]`)) {
-                    resolve();
-                    return;
-                }
+            if (scriptPromises.has(src)) {
+                return scriptPromises.get(src);
+            }
+
+            const p = new Promise((resolve) => {
                 const s = document.createElement('script');
                 s.src = src;
                 s.onload = resolve;
@@ -800,6 +801,9 @@
                 };
                 document.body.appendChild(s);
             });
+
+            scriptPromises.set(src, p);
+            return p;
         }
 
         async function loadScriptsSequentially(scripts, onProgress) {
@@ -914,9 +918,9 @@
         }
 
         // ==========================================
-        // 攔截 switchTab，加入按需載入邏輯
+        // 攔截 wikiSwitchTab，加入按需載入邏輯
         // ==========================================
-        // 在 switchTab 事件後觸發按需載入（搭配 tabChanged 事件系統）
+        // 在 wikiSwitchTab 事件後觸發按需載入（搭配 tabChanged 事件系統）
         document.addEventListener('wikiTabSwitch', (e) => {
             const tabId = e.detail;
             if (tabId === 'tab-home') return; // 首頁無需載入
