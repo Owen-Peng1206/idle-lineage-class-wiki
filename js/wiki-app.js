@@ -7,6 +7,142 @@
 // 1. 資料處理與轉換 (Data Management)
 // ==========================================
 
+const CRAFT_NPC_INFO = {
+    npc_moli:         { name: '茉莉',         location: '銀騎士村',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
+    npc_finn:         { name: '芬',           location: '銀騎士村',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
+    npc_joel:         { name: '喬爾',         location: '銀騎士村',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
+    npc_falin:        { name: '法林',         location: '說話之島',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
+    npc_ryan:         { name: '萊恩',         location: '說話之島',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
+    npc_ladal:        { name: '拉達爾',       location: '說話之島',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
+    npc_rabiani:      { name: '拉比安尼',     location: '說話之島',   title: '製作',        icon: 'fa-book',             color: 'text-yellow-300' },
+    npc_nalien:       { name: '那翰',         location: '妖精森林',   title: '製作',        icon: 'fa-music',            color: 'text-green-400' },
+    npc_narupa:       { name: '娜魯帕',       location: '妖精森林',   title: '製作',        icon: 'fa-leaf',             color: 'text-green-400' },
+    npc_elfqueen:     { name: '精靈女皇',     location: '妖精森林',   title: '製作',        icon: 'fa-crown',            color: 'text-emerald-300' },
+    npc_elf:          { name: '精靈',         location: '妖精森林',   title: '製作',        icon: 'fa-leaf',             color: 'text-green-300' },
+    npc_ent:          { name: '安特',         location: '妖精森林',   title: '製作',        icon: 'fa-tree',             color: 'text-green-600' },
+    npc_pan:          { name: '潘',           location: '妖精森林',   title: '製作',        icon: 'fa-fire-flame-curved',color: 'text-orange-400' },
+    npc_rekne:        { name: '芮克妮',       location: '妖精森林',   title: '製作',        icon: 'fa-spider',           color: 'text-purple-400' },
+    npc_brabo:        { name: '布拉伯',       location: '妖精森林',   title: '製作',        icon: 'fa-sword',            color: 'text-blue-400' },
+    npc_robinson:     { name: '羅賓孫',       location: '妖精森林',   title: '製作',        icon: 'fa-bow-arrow',        color: 'text-red-400' },
+    npc_moliya:       { name: '莫麗雅',       location: '奇岩',       title: '製作',        icon: 'fa-hat-wizard',       color: 'text-purple-400' },
+    npc_hector:       { name: '海克特',       location: '奇岩',       title: '製作',        icon: 'fa-hammer',           color: 'text-slate-400' },
+    npc_herbert:      { name: '哈巴特',       location: '奇岩',       title: '製作',        icon: 'fa-scissors',         color: 'text-pink-400' },
+    npc_lentis:       { name: '倫提斯',       location: '奇岩',       title: '製作',        icon: 'fa-ring',             color: 'text-cyan-400' },
+    npc_sebas:        { name: '賽巴斯',       location: '奇岩',       title: '寶石加工',    icon: 'fa-gem',              color: 'text-sky-400' },
+    npc_lumiel:       { name: '琉米埃爾',     location: '海音',       title: '製作',        icon: 'fa-star',             color: 'text-blue-300' },
+    npc_ibelbin:      { name: '伊貝爾賓',     location: '歐瑞村莊',   title: '製作',        icon: 'fa-khanda',           color: 'text-red-400' },
+    npc_david:        { name: '大衛',         location: '歐瑞村莊',   title: '寶石加工',    icon: 'fa-gem',              color: 'text-cyan-300' },
+    npc_upni:         { name: '烏普尼',       location: '亞丁',       title: '製作',        icon: 'fa-scroll',           color: 'text-yellow-400' },
+    npc_norse:        { name: '諾斯',         location: '亞丁',       title: '寵物裝備製作',icon: 'fa-paw',              color: 'text-orange-300' },
+    npc_bamut:        { name: '巴姆特',       location: '傲慢之塔入口',title: '製作',       icon: 'fa-cloak',            color: 'text-violet-400' },
+    npc_tas:          { name: '塔斯',         location: '象牙塔',     title: '製作',        icon: 'fa-flask',            color: 'text-lime-400' },
+    npc_dytite:       { name: '迪泰特',       location: '象牙塔',     title: '解除封印',    icon: 'fa-unlock',           color: 'text-indigo-400' },
+    npc_mystic_mage:  { name: '神秘的魔法師', location: '象牙塔',     title: '魔杖改造',    icon: 'fa-wand-sparkles',    color: 'text-violet-400' },
+    npc_keluya:       { name: '客盧亞',       location: '威頓村',     title: '製作',        icon: 'fa-hammer',           color: 'text-amber-300' },
+    npc_zeus_golem:   { name: '宙斯之熔岩高崙',location:'威頓村',    title: '製作',        icon: 'fa-mountain-sun',     color: 'text-orange-500' },
+    npc_bartel:       { name: '巴特爾',       location: '希培利亞村莊',title: '製作',       icon: 'fa-gem',              color: 'text-violet-300' },
+    npc_pir:          { name: '皮爾',         location: '貝希摩斯',   title: '製作',        icon: 'fa-fire',             color: 'text-red-500' },
+    npc_kupu:         { name: '庫普',         location: '沉默洞穴',   title: '製作',        icon: 'fa-hammer',           color: 'text-gray-400' },
+    npc_kororanz:     { name: '可羅蘭斯',     location: '沉默洞穴',   title: '製作',        icon: 'fa-book-skull',       color: 'text-slate-300' },
+    npc_flame_shadow: { name: '炎魔之影',     location: '炎魔謁見所', title: '製作',        icon: 'fa-fire',             color: 'text-red-400' },
+    npc_imp:          { name: '小惡魔',       location: '炎魔謁見所', title: '製作',        icon: 'fa-spider',           color: 'text-red-300' },
+    npc_flame_smith:  { name: '炎魔鐵匠',     location: '炎魔謁見所', title: '製作',        icon: 'fa-hammer',           color: 'text-orange-500' },
+    npc_flame_aide:   { name: '炎魔的輔佐官', location: '炎魔謁見所', title: '耳環製作',    icon: 'fa-earring',          color: 'text-pink-400' },
+    npc_atelier:      { name: '亞提利歐',     location: '長老會議廳', title: '製作',        icon: 'fa-hammer',           color: 'text-purple-400' },
+};
+
+const TOWN_ORDER = [
+    '銀騎士村', '說話之島', '妖精森林',
+    '奇岩', '海音', '歐瑞村莊', '亞丁',
+    '傲慢之塔入口', '象牙塔', '威頓村',
+    '希培利亞村莊', '貝希摩斯', '沉默洞穴',
+    '炎魔謁見所', '席琳神殿', '長老會議廳'
+];
+
+function injectSpecialWikiCrafts() {
+    if (typeof CRAFT_RECIPES === 'undefined') return;
+
+    const injectRecipes = (npcId, npcData, recipes) => {
+        if (!CRAFT_NPC_INFO[npcId]) CRAFT_NPC_INFO[npcId] = npcData;
+        if (!CRAFT_RECIPES[npcId]) CRAFT_RECIPES[npcId] = [];
+        recipes.forEach(r => {
+            if (!CRAFT_RECIPES[npcId].some(cr => cr.result === r.result)) {
+                CRAFT_RECIPES[npcId].push(r);
+            }
+        });
+    };
+
+    // 1. 尤麗婭 (歐林的日記本 / 黑暗哈汀的日記本)
+    const yuriaRecipes = [];
+    if (typeof YURIA_REWARDS !== 'undefined') {
+        YURIA_REWARDS.forEach(r => yuriaRecipes.push({ result: r.id, req: [{ id: 'item_olin_diary', cnt: 1 }] }));
+    }
+    if (typeof YURIA_HATIN_REWARDS !== 'undefined') {
+        YURIA_HATIN_REWARDS.forEach(r => yuriaRecipes.push({ result: r.id, req: [{ id: 'item_hatin_diary', cnt: 1 }] }));
+    }
+    if (yuriaRecipes.length > 0) injectRecipes('npc_yuria', { name: '尤麗婭', location: '說話之島', title: '任務兌換', icon: 'fa-book-skull', color: 'text-purple-400' }, yuriaRecipes);
+
+    // 2. 希米哲 (藍海賊遺物)
+    if (typeof SHIMIZHE_REWARDS !== 'undefined' && typeof SHIMIZHE_COST !== 'undefined') {
+        const shimizheRecipes = SHIMIZHE_REWARDS.map(rId => ({ result: rId, req: SHIMIZHE_COST.map(c => ({ id: c[0], cnt: c[1] })) }));
+        injectRecipes('npc_shimizhe', { name: '希米哲', location: '海賊島村莊', title: '任務兌換', icon: 'fa-skull-crossbones', color: 'text-blue-400' }, shimizheRecipes);
+    }
+
+    // 3. 雷德 (召喚控制戒指)
+    if (typeof RED_QUEST_REQS !== 'undefined') {
+        injectRecipes('npc_red', { name: '雷德', location: '特殊任務', title: '雷德的復仇', icon: 'fa-ring', color: 'text-red-400' }, [{ result: 'acc_summon_ctrl', req: RED_QUEST_REQS.map(c => ({ id: c[0], cnt: c[1] })) }]);
+    }
+
+    // 4. 50級試煉兌換
+    if (typeof TRIAL_50_CFG !== 'undefined') {
+        Object.values(TRIAL_50_CFG).forEach(cfg => {
+            const npcId = 'npc_trial50_' + cfg.npc;
+            const recipes = cfg.rewards.map(r => ({ result: r.id, req: [{ id: cfg.exMat, cnt: cfg.exMatCnt || 1 }] }));
+            injectRecipes(npcId, { name: cfg.npc, location: '50級試煉', title: '試煉兌換', icon: 'fa-scroll', color: 'text-amber-400' }, recipes);
+        });
+    }
+
+    // 5. 一般試煉任務 (TRIAL_Q)
+    if (typeof TRIAL_Q !== 'undefined') {
+        Object.values(TRIAL_Q).forEach(qData => {
+            const npcId = 'npc_trial_' + qData.npc;
+            const reqs = qData.reqs.map(c => ({ id: c[0], cnt: c[1] }));
+            const recipes = qData.rewards.map(rId => ({ result: rId, req: reqs }));
+            injectRecipes(npcId, { name: qData.npc, location: '各級別試煉', title: `試煉任務`, icon: 'fa-scroll', color: 'text-emerald-400' }, recipes);
+        });
+    }
+
+    // 6. 伊奧 (席琳遺骸兌換)
+    if (typeof SHERINE_REMAINS !== 'undefined') {
+        const ioRecipes = SHERINE_REMAINS.map(r => ({ result: r.id, req: [{ id: 'sherine_crystal', cnt: 1 }] }));
+        injectRecipes('npc_io', { name: '伊奧', location: '席琳神殿', title: '遺骸兌換', icon: 'fa-bone', color: 'text-purple-400' }, ioRecipes);
+    }
+
+    // 7. 神秘的魔法師 (鋼鐵瑪那魔杖・魔杖改造)
+    if (typeof MYSTICWAND_RECIPES !== 'undefined' && typeof MYSTICWAND_MATS !== 'undefined') {
+        const mysticWandRecipes = MYSTICWAND_RECIPES.map(r => ({
+            result: r.result,
+            req: [
+                ...MYSTICWAND_MATS.map(m => ({ id: m.id, cnt: m.cnt })),
+                { id: `_wand_src_${r.src}`, cnt: 1, _displayName: `+7以上 ${r.srcName} ×1`, _special: true, _tooltip: '需要 +7 強化值以上的來源魔杖（不繼承強化值／屬性至成品）', _icon: 'fa-wand-sparkles' }
+            ]
+        }));
+        injectRecipes('npc_mystic_mage', { name: '神秘的魔法師', location: '象牙塔', title: '魔杖改造', icon: 'fa-wand-sparkles', color: 'text-violet-400' }, mysticWandRecipes);
+    }
+
+    // 8. 宙斯之熔岩高崙 (滅魔裝備)
+    if (typeof SLAYER_RECIPES !== 'undefined' && typeof SLAYER_SRC_NAME !== 'undefined') {
+        const slayerRecipes = SLAYER_RECIPES.map(r => ({
+            result: r.result,
+            req: [
+                ...(r.mats || []).map(m => ({ id: m.id, cnt: m.cnt })),
+                { id: `_slayer_src`, cnt: 1, _displayName: `+7以上 ${SLAYER_SRC_NAME} ×1`, _special: true, _tooltip: '需要 +7 強化值以上的來源裝備（不繼承強化值／屬性至成品）', _icon: 'fa-shield-halved' }
+            ]
+        }));
+        injectRecipes('npc_zeus_golem', { name: '宙斯之熔岩高崙', location: '威頓村', title: '製作', icon: 'fa-mountain-sun', color: 'text-orange-500' }, slayerRecipes);
+    }
+}
+
 // 將原本以 Key-Value 存放的物件，轉換為陣列，並將原 key 保留在 id 中
 function convertObjToArray(obj) {
     if (!obj) return [];
@@ -499,7 +635,11 @@ const wikiMapNames = {
     "pride_f97": "傲慢之塔 97樓",
     "pride_f98": "傲慢之塔 98樓",
     "pride_f99": "傲慢之塔 99樓",
-    "pride_f100": "傲慢之塔 100樓"    
+    "pride_f100": "傲慢之塔 100樓",
+    "sunrise_castle": "日出之國城墎",
+    "sunrise_east": "日出之國東之地",
+    "sunrise_west": "日出之國西之地",
+    "sunrise_north": "日出之國北之地"    
 };
 
 let mobMapCache = {};
@@ -2056,6 +2196,9 @@ if (dropSearchInput) {
 
 // 初始化：啟動時只做必要設定，不預渲染大量道具列表
 function initWikiApp() {
+    // 注入特殊任務兌換到 CRAFT_RECIPES 中
+    injectSpecialWikiCrafts();
+
     // 若遊戲版本存在，顯示它
     if (typeof GAME_VERSION !== 'undefined') {
         const versionEl = document.getElementById('game-version-display');

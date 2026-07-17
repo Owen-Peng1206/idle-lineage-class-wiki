@@ -211,7 +211,11 @@ const mapNameTranslations = {
     "pride_f97": "傲慢之塔 97樓",
     "pride_f98": "傲慢之塔 98樓",
     "pride_f99": "傲慢之塔 99樓",
-    "pride_f100": "傲慢之塔 100樓"    
+    "pride_f100": "傲慢之塔 100樓",
+    "sunrise_castle": "日出之國城墎",
+    "sunrise_east": "日出之國東之地",
+    "sunrise_west": "日出之國西之地",
+    "sunrise_north": "日出之國北之地"
 };
 
 const mapSelector = document.getElementById('map-selector');
@@ -427,8 +431,21 @@ function renderMonsters() {
         // 如果選擇 "all"，顯示所有怪物
         targetMobs = Object.keys(DB.mobs);
     } else {
-        // 取得該地圖的怪物清單
-        targetMobs = DB.maps[currentMapId] || [];
+        // 取得該地圖的怪物清單，並追溯變身怪物
+        const baseMobs = DB.maps[currentMapId] || [];
+        const expandedMobs = new Set(baseMobs);
+        let changed = true;
+        while(changed) {
+            changed = false;
+            for (const mId of expandedMobs) {
+                const transformTarget = DB.mobs[mId]?.transformTo;
+                if (transformTarget && !expandedMobs.has(transformTarget)) {
+                    expandedMobs.add(transformTarget);
+                    changed = true;
+                }
+            }
+        }
+        targetMobs = Array.from(expandedMobs);
     }
     
     const keyword = currentMonsterSearchQuery.toLowerCase();
@@ -556,9 +573,22 @@ function renderMonsters() {
                             return '';
                         })()}
                         ${(function(){
+                            // 找尋所有相關聯的源頭怪物，讓變身後的怪物也能顯示出沒地圖
+                            const relatedMobs = new Set([mobId]);
+                            let changed = true;
+                            while(changed) {
+                                changed = false;
+                                for (const mId in DB.mobs) {
+                                    if (DB.mobs[mId].transformTo && relatedMobs.has(DB.mobs[mId].transformTo) && !relatedMobs.has(mId)) {
+                                        relatedMobs.add(mId);
+                                        changed = true;
+                                    }
+                                }
+                            }
+                            
                             const mobMaps = [];
                             for (const mapId in DB.maps) {
-                                if (DB.maps[mapId].includes(mobId)) {
+                                if (DB.maps[mapId].some(mId => relatedMobs.has(mId))) {
                                     mobMaps.push(getMapName(mapId));
                                 }
                             }
