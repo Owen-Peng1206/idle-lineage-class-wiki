@@ -1475,7 +1475,8 @@ const RELIC_WEAPON_TAGS = {
     relic_ghoul_fang:['單手劍'], relic_sparto_shard:['單手劍'], relic_pirate_dual:['雙刀'], relic_lava_fists:['單手鈍器'],
     relic_fireking_blast:['雙手劍'], relic_waterking_caress:['鋼爪'],
     relic_cerberus_pin:['鋼爪'], relic_dark_metal_club:['單手鈍器'], relic_ash_fist:['單手鈍器'], relic_ant_pincer:['單手劍','武士刀'], relic_reaper_scythe:['雙手劍'],
-    relic_mage_dagger:['匕首']
+    relic_mage_dagger:['匕首'],
+    relic_bk_lance:['矛']
 };
 
 function getRelicCatKey(item) {
