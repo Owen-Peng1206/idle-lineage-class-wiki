@@ -1049,7 +1049,7 @@ function createItemCard(item) {
         mcritDmg: '近距離爆擊率傷害(%)', magicHit: '魔法命中',
         atkDoubleChance: '雙重攻擊機率(%)', painReflect: '反彈痛苦',
         magicDrNonEle: '無屬性魔法減免', stormInterval: '風暴間隔縮短',
-        dragonStrike: '屠龍額外傷害', skillAddDmg: '技能額外傷害', skillDmgMult: '技能傷害倍率',
+        skillAddDmg: '技能額外傷害', skillDmgMult: '技能傷害倍率',
         comboRate: '雙擊機率(%)', vampPct: '吸血機率(%)',
         healPct: '治癒量(%)', heal: '治癒加成', healBase: '治癒基數', healDice: '治癒骰數',
         extraDmg: '泛用額外傷害', extraHit: '泛用額外命中',
@@ -1059,7 +1059,7 @@ function createItemCard(item) {
         pierceChance: '穿透機率(%)',
         lifesteal: '吸血', vamp: '吸血', drain: '吸收生命/魔力', potionBonus: '藥水恢復量(%)',
         expBonus: '經驗值加成(%)', goldBonus: '金幣加成(%)',
-        mpRPerEn: 'MP自然恢復量(每階)', extraMpPerEn: '額外魔法點數(每階)', mpROverSafe: '突破安定值：每超過1階，MP自然恢復量',
+        extraMpPerEn: '額外魔法點數(每階)', mpROverSafe: '突破安定值：每超過1階，MP自然恢復量',
         mpOnHitAmt: '命中回魔量', dmgMult: '總傷害倍率', multiDmg: '多段傷害次數',
         teamDmgReducePct: '隊伍減傷(%)',
         sleepResist: '抗睡眠(%)',
@@ -1117,6 +1117,8 @@ function createItemCard(item) {
     }
 
     // 整合 relicPurposeLabels 的詳細描述
+    if (item.frozenBonusDmg) effArr.push(`一般攻擊命中冰凍中的敵人時，追加 ${item.frozenBonusDmg} 點固定傷害`);
+    if (item.waterFreezeProc) effArr.push(`施放原本不具冰凍效果的水屬性傷害魔法時，${item.waterFreezeProc.pct}% 機率附加冰凍 ${item.waterFreezeProc.dur} 秒`);
     if (item.relicRole) effArr.push(`用途定位（${item.relicRole}）`);
     if (item.reqAvatar) effArr.push(`裝備限制（僅限${item.reqAvatar}；其他角色無法裝備）`);
     if (item.petDmgReduce) effArr.push(`寵物護甲（裝備的寵物受到傷害-${Math.round(item.petDmgReduce * 100)}%）`);
@@ -1126,6 +1128,26 @@ function createItemCard(item) {
     if (item.mrPerWis) effArr.push(`精神屏障（每1點最終精神，MR+${item.mrPerWis}）`);
     if (item.type === 'wpn' && item.mr) effArr.push(`魔防(MR)+${item.mr}`);
     
+    if (item.qigu) effArr.push('奇古獸攻擊（一般攻擊必定命中並視為魔法傷害，受MR減免；奇古獸精通時無視MR）');
+    if (item.qiguProc === 'phantom') effArr.push('幻影衝擊 1%＋每強化1%（造成基礎80～160的無屬性魔法傷害，不受MR減免）');
+    if (item.qiguProc === 'mindbreak') effArr.push('心靈破壞 1%＋每強化1%（以自身最大MP 5%為基礎魔法傷害，不消耗MP；奇古獸精通時無視MR）');
+    if (item.mpRPerEn) effArr.push(`MP自然恢復每強化+${item.mpRPerEn}`);
+    if (item.mdmgEnFrom7Max3) effArr.push('魔法傷害成長（+7起魔法傷害+1，之後每強化+1，最高+3）');
+    if (item.equipHaste) effArr.push('裝備加速（常駐加速，與加速術／自我加速藥水不重疊）');
+    if (item.dragonStrike) effArr.push(`龍的一擊 ${item.dragonStrike}%（每次一般攻擊皆判定且不論命中；對全體造成1D力量+25固定物理傷害）`);
+    if (item.procBurstPoison) {
+        let p = item.procBurstPoison;
+        effArr.push(`猛爆劇毒 ${p.rateBase == null ? 1 : p.rateBase}%＋每強化${p.ratePerEn == null ? 1 : p.ratePerEn}%（每秒100點真實傷害，持續5秒，最多1層）`);
+    }
+    if (item.hardWear) effArr.push(`碎甲（命中時額外削減${item.hardWear}點硬皮）`);
+    if (item.strawCurse) effArr.push(`稻草詛咒 ${item.strawCurse.rate}%（命中時附加${item.strawCurse.stacks || 3}層；後續每次受攻擊消耗1層並追加80點水屬性固定魔法傷害）`);
+    if (item.stunHitBonus) effArr.push(`衝擊之暈強化（暈眩命中率+${item.stunHitBonus}%）`);
+    if (item.vanderStunHit) effArr.push('范德劍術（施放衝擊之暈時，本次近距離命中+1）');
+    if (item.killHealHp) effArr.push(`擊殺敵人時吞噬其殘存的生氣，恢復 ${item.killHealHp}點 HP）`);
+    if (item.firePrisonMult) effArr.push(`餘燼與咒火共鳴，使「火牢」造成的傷害加倍。`);
+    if (item.immSilence) effArr.push(`罩不住頭顱卻護住了心神——免疫沉默。`);
+
+    if (item.statusHealHp) effArr.push(`受到異常狀態侵襲時反而激發生機，恢復 ${item.statusHealHp}點 HP）`);
 
     if (item.mpReduce) effArr.push(`MP消耗減免 ${item.mpReduce}`);
     if (item.equipExtraAtk) effArr.push(`一般攻擊次數+${item.equipExtraAtk}`);
@@ -1180,7 +1202,7 @@ function createItemCard(item) {
     if (item.eleWpnMult) effArr.push(`${eleName(item.eleWpnMult.ele)}武器強化（對應屬性一般攻擊傷害×${item.eleWpnMult.mult}）`);
     if (item.hardSkinMult) effArr.push(`破甲專攻（攻擊有硬皮的敵人傷害×${item.hardSkinMult}）`);
     if (item.softMult) effArr.push(`柔軟專攻（攻擊無硬皮的敵人傷害×${item.softMult}）`);
-    if (item.hardWear) effArr.push(`碎甲（命中時額外削減${item.hardWear}點硬皮）`);
+    
     if (item.heavyRatePct) effArr.push(`重擊率額外+${item.heavyRatePct}%`);
     if (item.heavyMult) effArr.push(`重擊威力（重擊傷害×${item.heavyMult}）`);
     if (item.missGrazeRate) effArr.push(`擦傷補正（未命中時${item.missGrazeRate}%改判為擦傷，造成50%傷害且不會爆擊）`);
@@ -1193,7 +1215,7 @@ function createItemCard(item) {
     if (item.selfBreakProc) effArr.push(`易碎爆發（3%造成1.5倍傷害，但自身傷害降低${item.selfBreakProc.dur || 5}秒）`);
     if (item.stoneInstakill) effArr.push('石化斬殺（命中石化中的非首領敵人時即死）');
     if (item.instakillFull) effArr.push(`滿血斬殺 ${pctText(item.instakillFull)}（命中滿血非首領敵人時即死）`);
-    if (item.strawCurse) effArr.push(`稻草詛咒 ${item.strawCurse.rate}%（命中時附加${item.strawCurse.stacks || 3}層追加傷害）`);
+    
     if (item.procFireSkillRate) effArr.push(`火焰法術 ${item.procFireSkillRate}%（攻擊時隨機施放火屬性傷害魔法）`);
     if (item.procHealFlat) effArr.push(`命中治癒 ${item.procHealFlat.rate}%（恢復${item.procHealFlat.hp}點HP）`);
     if (item.rapidMax) effArr.push('最大連射（連射發動時，固定射出目前可用的最大額外箭數）');
@@ -1223,8 +1245,7 @@ function createItemCard(item) {
     if (item.unBonus) effArr.push("不死系加成");
     if (item.stunResist) effArr.push(`抗暈+${item.stunResist}`);
     if (item.freezeResist) effArr.push(`抗冰+${item.freezeResist}`);
-    if (item.vanderStunHit) effArr.push("衝暈命中+1");
-    if (item.dragonStrike) effArr.push("龍的一擊");
+
     if (item.rapidfire) effArr.push(`連射`);
     if (item.noConsume) effArr.push(`不會消耗`);
     // if (item.relic) effArr.push(`遺物`);
@@ -1239,7 +1260,6 @@ function createItemCard(item) {
     if (item.blueSpecter) effArr.push(`藍惡靈奪魔`);
     if (item.shatter) effArr.push(`粉碎`);
     if (item.allLures) effArr.push(`持有全部誘捕狀態`);
-    if (item.equipHaste) effArr.push(`裝備自帶加速`);
     if (item.darkPoison) effArr.push(`一般攻擊命中 50% 機率使目標中毒：每秒該次攻擊 60% 傷害、持續 5 秒、最多 1 層（取較高傷害並刷新；劇毒精通→100%、每秒 200%）`);
     if (item.noBleed) effArr.push(`不觸發出血`);
     if (item.mpOnHit) effArr.push(`命中恢復MP`);
