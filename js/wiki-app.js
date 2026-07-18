@@ -1151,6 +1151,8 @@ function createItemCard(item) {
 
     if (item.mpReduce) effArr.push(`MP消耗減免 ${item.mpReduce}`);
     if (item.equipExtraAtk) effArr.push(`一般攻擊次數+${item.equipExtraAtk}`);
+    if (item.reqJustice) effArr.push(`限正義性向施放（性向值 ≥ 1000）`);
+    if (item.justiceHeal) effArr.push(`受施法者性向影響：正義值越高恢復量越高（滿正義 +20%・中立/邪惡無提升）`);
 
     if (item.abnormalResist) effArr.push(`異常狀態抵抗+${item.abnormalResist}%`);
     if (item.immStone) effArr.push('免疫石化');
