@@ -164,7 +164,9 @@ function buildSkillTipHTML(sid){
     { let _costs = []; if(sk.hpCost) _costs.push('HP '+sk.hpCost); if(sk.mp) _costs.push('MP '+sk.mp); if(sk.costItem){ let _ci = DB.items[sk.costItem.id]; _costs.push((_ci ? _ci.n : '材料')+'×'+(sk.costItem.qty||1)); }  }
     if(sk.dur) meta.push('持續 '+sk.dur+' 秒');
     if(sk.cd) meta.push('冷卻 '+(sk.cd/10)+' 秒');
-    if(meta.length) parts.push(`<div class="text-slate-300">${meta.join(' ・ ')}</div>`);
+    if(meta.length) {
+        parts.push(`<div class="text-[13px] font-medium text-emerald-400 mb-2.5 flex items-center gap-1.5"><i class="fa-regular fa-clock opacity-80"></i>${meta.join('<span class="text-gray-600 mx-1">|</span>')}</div>`);
+    }
     let eff = [];
     if(sk.dmgDice) eff.push((sk.target==='all'?'範圍':'')+'傷害 '+sk.dmgDice[0]+'d'+sk.dmgDice[1]+(sk.ele&&sk.ele!=='none'?'（'+SK_ELE[sk.ele]+'屬）':''));
     if(sk.multiDmg) eff.push('多段傷害 '+sk.multiDmg.map(function(x){return x[0]+'d'+x[1];}).join('＋')+(sk.ele&&sk.ele!=='none'?'（'+SK_ELE[sk.ele]+'屬）':''));
@@ -215,11 +217,23 @@ function buildSkillTipHTML(sid){
     if(sk.d && typeof sk.d === 'string') eff.push(sk.d);
     
     if(eff.length) {
-        let ehtml = eff.map(function(e){ return '<div style="padding-left:10px;position:relative;"><span style="position:absolute;left:0;top:0;">・</span>'+e+'</div>'; }).join('');
-        parts.push(`<div class="text-rose-300" style="font-size:12px;margin-top:4px;">${ehtml}</div>`);
+        let ehtml = eff.map(e => {
+            let styledText = e
+                .replace(/([+-]?\d+(?:\.\d+)?%?|d\d+)/g, '<span class="text-amber-300 font-semibold drop-shadow-[0_0_2px_rgba(252,211,77,0.5)]">$&</span>')
+                .replace(/(範圍|即死|暈眩|吸取生命|無敵|全屬性抗性|中毒|恐懼|疾病|弱化|緩速|石化|沉睡)/g, '<span class="text-purple-300 font-bold drop-shadow-[0_0_2px_rgba(216,180,254,0.5)]">$&</span>')
+                .replace(/(火)屬/g, '<span class="text-red-400 font-bold drop-shadow-[0_0_2px_rgba(248,113,113,0.5)]">火</span>屬')
+                .replace(/(水)屬/g, '<span class="text-blue-400 font-bold drop-shadow-[0_0_2px_rgba(96,165,250,0.5)]">水</span>屬')
+                .replace(/(地)屬/g, '<span class="text-emerald-500 font-bold drop-shadow-[0_0_2px_rgba(16,185,129,0.5)]">地</span>屬')
+                .replace(/(風)屬/g, '<span class="text-cyan-300 font-bold drop-shadow-[0_0_2px_rgba(103,232,249,0.5)]">風</span>屬')
+                .replace(/(神聖)力量/g, '<span class="text-yellow-200 font-bold drop-shadow-[0_0_3px_rgba(253,230,138,0.7)]">神聖</span>力量');
+            return `<li class="flex items-start text-[14px] text-blue-100/90 leading-relaxed"><span class="text-cyan-400 mr-2 mt-[4px] text-[11px] drop-shadow-[0_0_3px_rgba(34,211,238,0.8)]">✦</span><span class="flex-1 tracking-wide">${styledText}</span></li>`;
+        }).join('');
+        parts.push(`<ul class="space-y-1.5 mb-3">${ehtml}</ul>`);
     }
-    if(sk.msg) parts.push(`<div class="text-slate-400" style="font-size:11px;margin-top:4px;">${sk.msg}</div>`);
-    return parts.join('');
+    if(sk.msg) {
+        parts.push(`<div class="mt-3 pt-2.5 border-t border-gray-700/60 text-[13px] italic text-gray-400 leading-relaxed tracking-wide">"${sk.msg}"</div>`);
+    }
+    return parts.length > 0 ? parts.join('') : '<div class="text-[14px] text-gray-500 italic text-center py-2">無詳細說明</div>';
 }
 
 function renderMagics() {
