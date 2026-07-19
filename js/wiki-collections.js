@@ -339,6 +339,36 @@ const WikiCollections = (() => {
                     if (state.currentType === 'relic') badge = '<span class="absolute top-1 right-1 text-[9px] px-1 rounded text-yellow-500 border border-yellow-600/50 bg-black/50 font-bold">遺物</span>';
                     else if (item.legend) badge = '<span class="absolute top-1 right-1 text-[9px] px-1 rounded text-amber-300 bg-black/50 font-bold">傳說</span>';
 
+                    let itemDescHtml = '';
+                    if (typeof buildItemDescHTML === 'function') {
+                        // 避免 Wiki 未載入完整遊戲模組導致 ReferenceError
+                        window.getAttrAffix = window.getAttrAffix || function() { return null; };
+                        window.attrCanon = window.attrCanon || function() { return null; };
+                        window.reqAllowsClass = window.reqAllowsClass || function(d, cls) { return !d || !d.req || d.req === 'all' || (typeof d.req === 'string' && d.req.split(',').includes(cls)); };
+                        window.darkEquipOk = window.darkEquipOk || window.reqAllowsClass;
+                        window.illusionEquipOk = window.illusionEquipOk || window.reqAllowsClass;
+                        window.dragonEquipOk = window.dragonEquipOk || window.reqAllowsClass;
+                        window.warriorEquipOk = window.warriorEquipOk || window.reqAllowsClass;
+                        window.royalEquipOk = window.royalEquipOk || window.reqAllowsClass;
+                        window.atkSpdApm = window.atkSpdApm || function() { return null; };
+                        window.atkSpdFamily = window.atkSpdFamily || function() { return null; };
+                        window.hitstunTicks = window.hitstunTicks || function() { return null; };
+                        window.castIntervalTicks = window.castIntervalTicks || function() { return null; };
+                        window.capEn = window.capEn || function() { return 0; };
+                        window.mpOnHitAmount = window.mpOnHitAmount || function() { return 0; };
+                        window.weaponHasBleed = window.weaponHasBleed || function() { return false; };
+                        window.getWeaponTags = window.getWeaponTags || function() { return []; };
+
+                        try {
+                            let rawHtml = buildItemDescHTML({id: item.id});
+                            if (rawHtml) {
+                                itemDescHtml = `<div class="mb-2 p-1.5 bg-gray-800/80 rounded border border-gray-700 text-[12px] leading-relaxed text-slate-300 break-words">${rawHtml}</div>`;
+                            }
+                        } catch (e) {
+                            console.error('buildItemDescHTML error:', e);
+                        }
+                    }
+
                     let sourceHtml = `
                     <div class="text-left">
                         <div class="text-sm font-bold ${color} mb-2 border-b border-gray-700 pb-1 flex items-center gap-2">
@@ -347,6 +377,7 @@ const WikiCollections = (() => {
                         </div>
                         ${item.relicRole ? `<div class="text-[11px] text-sky-300 font-bold mb-1.5 leading-tight bg-sky-900/20 border-l-2 border-sky-700 pl-1.5 py-0.5"><i class="fa-solid fa-crosshairs mr-1"></i>${item.relicRole}</div>` : ''}
                         ${item.d ? `<div class="text-[11px] text-gray-400 mb-2 leading-tight">${item.d}</div>` : ''}
+                        ${itemDescHtml}
                         ${getItemSourceHtml(item.id)}
                     </div>`;
 
