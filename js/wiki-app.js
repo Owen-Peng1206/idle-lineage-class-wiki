@@ -949,7 +949,17 @@ function getItemDropsHtml(itemId) {
     // 5. 初始裝備
     const initSources = [];
     if (itemId === 'wpn_11') {
-        initSources.push('創立新角色(王族/騎士/法師/黑妖)時自動取得');
+        initSources.push('創立新角色(王族/騎士/法師/妖精/黑妖)時自動取得');
+    } else if (itemId === 'wpn_shortbow') {
+        initSources.push('創立新角色(妖精)時自動取得');
+    } else if (itemId === 'wpn_10') {
+        initSources.push('創立新角色(幻術士/龍騎士)時自動取得');
+    } else if (itemId === 'wpn_1') {
+        initSources.push('創立新角色(戰士)時自動取得');
+    } else if (itemId === 'arm_74') {
+        initSources.push('創立新角色(妖精)時自動取得');
+    } else if (itemId === 'amr_jacket') {
+        initSources.push('創立新角色(妖精除外)時自動取得');
     }
 
     if (shopSources.length > 0 || craftSources.length > 0 || questSources.length > 0 || boxSources.length > 0 || initSources.length > 0) {

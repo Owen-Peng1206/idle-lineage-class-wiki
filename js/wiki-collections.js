@@ -501,9 +501,17 @@ const WikiCollections = (() => {
                 `</div></div>`);
         }
         
-        if (itemId === 'wpn_11') {
+        let initText = '';
+        if (itemId === 'wpn_11') initText = '創立新角色(王族/騎士/法師/妖精/黑妖)時自動取得';
+        else if (itemId === 'wpn_shortbow') initText = '創立新角色(妖精)時自動取得';
+        else if (itemId === 'wpn_10') initText = '創立新角色(幻術士/龍騎士)時自動取得';
+        else if (itemId === 'wpn_1') initText = '創立新角色(戰士)時自動取得';
+        else if (itemId === 'arm_74') initText = '創立新角色(妖精)時自動取得';
+        else if (itemId === 'amr_jacket') initText = '創立新角色(妖精除外)時自動取得';
+        
+        if (initText) {
             sources.push(`<div class="mb-2"><div class="text-xs font-semibold text-pink-400 mb-1">✨ 初始裝備</div><div class="flex flex-wrap gap-1">` +
-                `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">創立新角色(王族/騎士/法師/黑妖)時自動取得</span>` +
+                `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">${initText}</span>` +
                 `</div></div>`);
         }
 
