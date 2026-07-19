@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Wiki Application Logic
  * 負責處理資料轉換、渲染圖鑑、與搜尋功能
  */
@@ -192,7 +192,9 @@ let currentFilterSubType = 'all';
 let currentFilterSubSubType = 'all';
 let currentSearchQuery = '';
 let currentPropertyFilters = [];
-let currentClassFilter = ''; // '' means all
+let propertyFilterMode = 'AND'; // 'AND' or 'OR'
+let currentClassFilters = []; // empty = all classes
+let filterRelicOnly = false;
 const propertyFiltersContainer = document.getElementById('item-property-filters-container');
 
 // 子分類設定
@@ -528,7 +530,8 @@ function getItemEffectsHtml(item) {
     return `<div class="mt-2 flex flex-wrap gap-1">${effects.join('')}</div>`;
 }
 
-const wikiMapNames = {    "town_silver_knight": "銀騎士村莊",
+const wikiMapNames = {
+    "town_silver_knight": "銀騎士村莊",
     "town_elf": "妖精森林村莊",
     "town_talking": "說話之島村莊",
     "town_gludio": "燃柳村莊",
@@ -1755,42 +1758,41 @@ function renderItems() {
             || (item.n && item.n.toLowerCase().includes(keyword))
             || (item.d && item.d.toLowerCase().includes(keyword))
             || (item.id.toLowerCase().includes(keyword));
-        // 屬性篩選 (AND 邏輯)
+        // 屬性篩選 (AND / OR 邏輯)
         let matchProperty = true;
         if (currentPropertyFilters.length > 0) {
-            for (const prop of currentPropertyFilters) {
-                if (prop === 'hasSpellProc') {
-                    if (!(item.spellProc || item.procSkill || item.meleeHitSpell || item.eff === 'magicstrike' || item.eff === 'magicburst' || item.procSkill2)) { matchProperty = false; break; }
-                } else if (prop === 'hasPierce') {
-                    if (!(item.eff === 'pierce' || item.alsoPierce)) { matchProperty = false; break; }
-                } else if (prop === 'hasVamp') {
-                    if (!(item.vampPct || item.eff === 'mp_drain')) { matchProperty = false; break; }
-                } else if (prop === 'hasCrushCleave') {
-                    if (!(item.eff === 'crush' || item.eff === 'cleave')) { matchProperty = false; break; }
-                } else if (prop === 'combo') {
-                    if (item.eff !== 'combo') { matchProperty = false; break; }
-                } else if (prop === 'petAc') {
-                    if (!item.petAc || item.petAc === 0) { matchProperty = false; break; }
-                } else if (['unBonus','ignHardSkin','weakExpose','immFreeze','immPoison','immParalyze','immStone','immSlow','immHold','summonCtrl','petBleed'].includes(prop)) {
-                    if (!item[prop]) { matchProperty = false; break; }
-                } else {
-                    if (!item[prop] || item[prop] <= 0) { matchProperty = false; break; }
-                }
+            const checkOneProp = (prop) => {
+                if (prop === 'hasSpellProc') return !!(item.spellProc || item.procSkill || item.meleeHitSpell || item.eff === 'magicstrike' || item.eff === 'magicburst' || item.procSkill2);
+                if (prop === 'hasPierce') return !!(item.eff === 'pierce' || item.alsoPierce);
+                if (prop === 'hasVamp') return !!(item.vampPct || item.eff === 'mp_drain');
+                if (prop === 'hasCrushCleave') return !!(item.eff === 'crush' || item.eff === 'cleave');
+                if (prop === 'combo') return item.eff === 'combo';
+                if (prop === 'petAc') return !!(item.petAc && item.petAc !== 0);
+                if (prop === 'skillDmgMult') return !!(item.skillDmgMult && Object.keys(item.skillDmgMult).length > 0);
+                if (['unBonus','ignHardSkin','weakExpose','immFreeze','immPoison','immParalyze','immStone','immSlow','immHold','summonCtrl','petBleed'].includes(prop)) return !!item[prop];
+                return !!(item[prop] && item[prop] > 0);
+            };
+            if (propertyFilterMode === 'OR') {
+                matchProperty = currentPropertyFilters.some(p => checkOneProp(p));
+            } else {
+                matchProperty = currentPropertyFilters.every(p => checkOneProp(p));
             }
         }
-        // 職業篩選
+        // 職業篩選 (複選 OR 邏輯)
         let matchClass = true;
-        if (currentClassFilter !== '') {
+        if (currentClassFilters.length > 0) {
             if (!item.req) {
                 matchClass = false;
             } else if (item.req === 'all') {
                 matchClass = true;
             } else {
                 const reqArr = item.req.split(',').map(s => s.trim());
-                matchClass = reqArr.includes(currentClassFilter);
+                matchClass = currentClassFilters.some(c => reqArr.includes(c));
             }
         }
-        return matchType && matchSearch && matchProperty && matchClass;
+        // 遗物篩選
+        const matchRelic = !filterRelicOnly || !!item.relic;
+        return matchType && matchSearch && matchProperty && matchClass && matchRelic;
     });
 
     if (itemsFilteredCache.length === 0) {
@@ -2470,7 +2472,9 @@ function initPropertyFilters() {
         { name: '戰鬥能力', options: [
             { id: 'meleeDmg', name: '近戰傷害' }, { id: 'meleeHit', name: '近戰命中' },
             { id: 'rangedDmg', name: '遠距傷害' }, { id: 'rangedHit', name: '遠距命中' },
-            { id: 'mdmg', name: '魔法傷害' }, { id: 'dr', name: '減傷' }, { id: 'er', name: '閃避(ER)' }
+            { id: 'mdmg', name: '魔法傷害' }, { id: 'dr', name: '減傷' }, { id: 'er', name: '閃避(ER)' },
+            { id: 'atkSpdPct', name: '攻擊速度(%)' }, { id: 'extraMp', name: '額外魔法加成' },
+            { id: 'skillDmgMult', name: '技能傷害倍率' }
         ]},
         { name: '生存屬性', options: [
             { id: 'mhp', name: '最大HP' }, { id: 'mmp', name: '最大MP' },
@@ -2514,6 +2518,39 @@ function initPropertyFilters() {
             + '<i class="fa-solid fa-chevron-down ml-2 transition-transform duration-300" id="filter-chevron"></i>'
             + '</button>';
         h += '<div id="property-filters-panel" class="hidden glass-panel p-4 rounded-xl border border-gray-800 mb-2">';
+        h += '<div class="flex items-center flex-wrap gap-2 mb-4 pb-3 border-b border-gray-800">';
+        h += '<span class="text-xs text-gray-500 mr-1">多條件邏輯：</span>';
+        h += '<button id="prop-mode-and" class="px-2.5 py-1 text-xs rounded border font-semibold transition-colors prop-mode-btn bg-primary-600 border-primary-500 text-white" data-mode="AND">AND</button>';
+        h += '<button id="prop-mode-or" class="px-2.5 py-1 text-xs rounded border font-semibold transition-colors prop-mode-btn bg-gray-800 border-gray-700 text-gray-400" data-mode="OR">OR</button>';
+        h += '<span id="prop-mode-desc" class="text-xs text-gray-400 ml-1">— 勾選條件<strong class="text-primary-400">全部符合</strong>才顯示</span>';
+        h += '<div class="ml-auto">';
+        h += '<button id="clear-property-filters" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-900/30 text-red-300 hover:bg-red-800/60 hover:text-red-100 border border-red-800/50 hover:border-red-600 text-xs font-semibold transition-all">';
+        h += '<i class="fa-solid fa-rotate-left"></i>清除所有篩選</button>';
+        h += '</div></div>';
+        // Class filter row (multi-select checkboxes)
+        h += '<div class="flex flex-wrap items-center gap-2 mt-4 mb-1 border-t border-gray-800 pt-3">';
+        h += '<span class="text-xs font-semibold text-gray-500 w-full mb-1">職業篩選 <span class="text-gray-600 font-normal">(可複選，不選 = 全部)</span></span>';
+        [
+          { id: 'royal',    name: '王族',   icon: 'fa-chess-king',    color: 'text-yellow-400' },
+          { id: 'knight',   name: '騎士',   icon: 'fa-shield-halved', color: 'text-blue-400'   },
+          { id: 'elf',      name: '妖精',   icon: 'fa-leaf',          color: 'text-green-400'  },
+          { id: 'mage',     name: '法師',   icon: 'fa-hat-wizard',    color: 'text-purple-400' },
+          { id: 'dark',     name: '黑妖',   icon: 'fa-moon',          color: 'text-gray-400'   },
+          { id: 'dragon',   name: '龍騎士', icon: 'fa-dragon',        color: 'text-red-400'    },
+          { id: 'illusion', name: '幻術士', icon: 'fa-eye',           color: 'text-pink-400'   },
+          { id: 'warrior',  name: '戰士',   icon: 'fa-gavel',         color: 'text-orange-400' }
+        ].forEach(cls => {
+            h += `<label class="flex items-center space-x-2 text-[13px] text-gray-300 bg-gray-900/50 px-2.5 py-1.5 rounded-lg cursor-pointer hover:bg-gray-700 hover:text-white transition-colors border border-gray-800 hover:border-gray-600 select-none"><input type="checkbox" value="${cls.id}" class="form-checkbox class-checkbox rounded border-gray-600 bg-gray-800 w-3.5 h-3.5"><i class="fa-solid ${cls.icon} ${cls.color} mr-1 ml-1"></i><span>${cls.name}</span></label>`;
+        });
+        h += '</div>';
+        // Relic-only toggle
+        h += '<div class="flex flex-wrap items-center gap-2 mt-3 mb-1 border-t border-gray-800 pt-3">';
+        h += '<span class="text-xs font-semibold text-gray-500 w-full mb-1">快捷篩選</span>';
+        h += '<label class="flex items-center space-x-2 text-[13px] text-amber-300 bg-amber-900/20 px-2.5 py-1.5 rounded-lg cursor-pointer hover:bg-amber-900/40 hover:text-amber-100 transition-colors border border-amber-800/40 hover:border-amber-600 select-none">';
+        h += '<input type="checkbox" id="relic-only-toggle" class="form-checkbox rounded border-gray-600 bg-gray-800 w-3.5 h-3.5 accent-amber-400">';
+        h += '<i class="fa-solid fa-scroll ml-1 mr-0.5"></i><span>只顯示遺物</span></label>';
+        h += '</div>';
+      
         h += '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">';
         propertyGroups.forEach(group => {
             h += '<div><h4 class="text-xs font-semibold text-gray-500 mb-3 border-b border-gray-800 pb-1">' + group.name + '</h4>';
@@ -2526,29 +2563,8 @@ function initPropertyFilters() {
             h += '</div></div>';
         });
         h += '</div>';
-        // Class filter row
-        h += '<div class="mt-4 pt-3 border-t border-gray-800">';
-        h += '<div class="text-xs font-semibold text-gray-500 mb-2">職業篩選</div>';
-        h += '<div class="flex flex-wrap gap-2">';
-        h += '<label class="flex items-center space-x-2 text-[13px] text-gray-300 bg-gray-900/50 px-2.5 py-1.5 rounded-lg cursor-pointer hover:bg-gray-700 hover:text-white transition-colors border border-gray-800 hover:border-gray-600 select-none"><input type="radio" name="class-filter" value="" class="class-radio accent-primary-500 w-3.5 h-3.5" checked><span>全部職業</span></label>';
-        [
-          { id: 'royal',    name: '王族',   icon: 'fa-chess-king',    color: 'text-yellow-400' },
-          { id: 'knight',   name: '騎士',   icon: 'fa-shield-halved', color: 'text-blue-400'   },
-          { id: 'elf',      name: '妖精',   icon: 'fa-leaf',          color: 'text-green-400'  },
-          { id: 'mage',     name: '法師',   icon: 'fa-hat-wizard',    color: 'text-purple-400' },
-          { id: 'dark',     name: '黑妖',   icon: 'fa-moon',          color: 'text-gray-400'   },
-          { id: 'dragon',   name: '龍騎士', icon: 'fa-dragon',        color: 'text-red-400'    },
-          { id: 'illusion', name: '幻術士', icon: 'fa-eye',           color: 'text-pink-400'   },
-          { id: 'warrior',  name: '戰士',   icon: 'fa-gavel',         color: 'text-orange-400' }
-        ].forEach(cls => {
-            h += `<label class="flex items-center space-x-2 text-[13px] text-gray-300 bg-gray-900/50 px-2.5 py-1.5 rounded-lg cursor-pointer hover:bg-gray-700 hover:text-white transition-colors border border-gray-800 hover:border-gray-600 select-none"><input type="radio" name="class-filter" value="${cls.id}" class="class-radio accent-primary-500 w-3.5 h-3.5"><i class="fa-solid ${cls.icon} ${cls.color} mr-1"></i><span>${cls.name}</span></label>`;
-        });
         h += '</div></div>';
-        h += '<div class="mt-3 pt-3 border-t border-gray-800 flex justify-between items-center">';
-        h += '<span class="text-xs text-gray-500">篩選條件必須 <strong class="text-gold-400">全部符合</strong> 才會顯示</span>';
-        h += '<button id="clear-property-filters" class="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-400 hover:bg-red-900/50 hover:text-red-300 border border-gray-700 hover:border-red-800/50 text-xs transition-colors">';
-        h += '<i class="fa-solid fa-xmark mr-1"></i>清除篩選</button>';
-        h += '</div></div>';
+        h += '</div>';  
         return h;
     };
 
@@ -2571,8 +2587,12 @@ function initPropertyFilters() {
     });
 
     panel.addEventListener('change', (e2) => {
-        if (e2.target.classList.contains('class-radio')) {
-            currentClassFilter = e2.target.value;
+        if (e2.target.classList.contains('class-checkbox')) {
+            currentClassFilters = Array.from(panel.querySelectorAll('.class-checkbox:checked')).map(cb => cb.value);
+            renderItems();
+        }
+        if (e2.target.id === 'relic-only-toggle') {
+            filterRelicOnly = e2.target.checked;
             renderItems();
         }
     });
@@ -2580,11 +2600,39 @@ function initPropertyFilters() {
     const clearBtn = document.getElementById('clear-property-filters');
     clearBtn.addEventListener('click', () => {
         panel.querySelectorAll('.property-checkbox').forEach(cb => { cb.checked = false; });
-        const allRadio = panel.querySelector('.class-radio[value=""]');
-        if (allRadio) allRadio.checked = true;
+        panel.querySelectorAll('.class-checkbox').forEach(cb => { cb.checked = false; });
+        const relicToggle = document.getElementById('relic-only-toggle');
+        if (relicToggle) relicToggle.checked = false;
         currentPropertyFilters = [];
-        currentClassFilter = '';
+        currentClassFilters = [];
+        filterRelicOnly = false;
+        propertyFilterMode = 'AND';
+        updateModeUI();
         renderItems();
+    });
+
+    // AND / OR toggle
+    const modeDesc = document.getElementById('prop-mode-desc');
+    const updateModeUI = () => {
+        panel.querySelectorAll('.prop-mode-btn').forEach(b => {
+            const active = b.getAttribute('data-mode') === propertyFilterMode;
+            b.className = 'px-2.5 py-1 text-xs rounded border font-semibold transition-colors prop-mode-btn '
+                + (active ? 'bg-primary-600 border-primary-500 text-white' : 'bg-gray-800 border-gray-700 text-gray-400');
+        });
+        if (modeDesc) {
+            if (propertyFilterMode === 'OR') {
+                modeDesc.innerHTML = '— 勾選條件<strong class="text-yellow-400">任一符合</strong>即顯示';
+            } else {
+                modeDesc.innerHTML = '— 勾選條件<strong class="text-primary-400">全部符合</strong>才顯示';
+            }
+        }
+    };
+    panel.querySelectorAll('.prop-mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            propertyFilterMode = btn.getAttribute('data-mode');
+            updateModeUI();
+            if (currentPropertyFilters.length > 0) renderItems();
+        });
     });
 }
 
