@@ -191,6 +191,8 @@ let currentFilterType = 'all'; // all, wpn, arm, acc, etc, relic
 let currentFilterSubType = 'all';
 let currentFilterSubSubType = 'all';
 let currentSearchQuery = '';
+let currentPropertyFilters = [];
+const propertyFiltersContainer = document.getElementById('item-property-filters-container');
 
 // 子分類設定
 const subFilterOptions = {
@@ -1752,7 +1754,30 @@ function renderItems() {
             || (item.n && item.n.toLowerCase().includes(keyword))
             || (item.d && item.d.toLowerCase().includes(keyword))
             || (item.id.toLowerCase().includes(keyword));
-        return matchType && matchSearch;
+        // 屬性篩選 (AND 邏輯)
+        let matchProperty = true;
+        if (currentPropertyFilters.length > 0) {
+            for (const prop of currentPropertyFilters) {
+                if (prop === 'hasSpellProc') {
+                    if (!(item.spellProc || item.procSkill || item.meleeHitSpell || item.eff === 'magicstrike' || item.eff === 'magicburst' || item.procSkill2)) { matchProperty = false; break; }
+                } else if (prop === 'hasPierce') {
+                    if (!(item.eff === 'pierce' || item.alsoPierce)) { matchProperty = false; break; }
+                } else if (prop === 'hasVamp') {
+                    if (!(item.vampPct || item.eff === 'mp_drain')) { matchProperty = false; break; }
+                } else if (prop === 'hasCrushCleave') {
+                    if (!(item.eff === 'crush' || item.eff === 'cleave')) { matchProperty = false; break; }
+                } else if (prop === 'combo') {
+                    if (item.eff !== 'combo') { matchProperty = false; break; }
+                } else if (prop === 'petAc') {
+                    if (!item.petAc || item.petAc === 0) { matchProperty = false; break; }
+                } else if (['unBonus','ignHardSkin','weakExpose','immFreeze','immPoison','immParalyze','immStone','immSlow','immHold'].includes(prop)) {
+                    if (!item[prop]) { matchProperty = false; break; }
+                } else {
+                    if (!item[prop] || item[prop] <= 0) { matchProperty = false; break; }
+                }
+            }
+        }
+        return matchType && matchSearch && matchProperty;
     });
 
     if (itemsFilteredCache.length === 0) {
@@ -2422,3 +2447,100 @@ function initWikiApp() {
 
 initWikiApp();
 document.addEventListener('wikiDataLoaded', initWikiApp);
+
+function initPropertyFilters() {
+    const propertyGroups = [
+        { name: '基本屬性', options: [
+            { id: 'str', name: '力量' }, { id: 'dex', name: '敏捷' }, { id: 'con', name: '體質' },
+            { id: 'int', name: '智力' }, { id: 'wis', name: '精神' }, { id: 'cha', name: '魅力' }
+        ]},
+        { name: '戰鬥能力', options: [
+            { id: 'meleeDmg', name: '近戰傷害' }, { id: 'meleeHit', name: '近戰命中' },
+            { id: 'rangedDmg', name: '遠距傷害' }, { id: 'rangedHit', name: '遠距命中' },
+            { id: 'mdmg', name: '魔法傷害' }, { id: 'dr', name: '減傷' }, { id: 'er', name: '閃避(ER)' }
+        ]},
+        { name: '生存屬性', options: [
+            { id: 'mhp', name: '最大HP' }, { id: 'mmp', name: '最大MP' },
+            { id: 'hpR', name: 'HP恢復' }, { id: 'mpR', name: 'MP恢復' },
+            { id: 'mr', name: '魔法防禦' }, { id: 'weightCap', name: '負重提升' }
+        ]},
+        { name: '屬性抗性', options: [
+            { id: 'resFire', name: '火抗' }, { id: 'resWater', name: '水抗' },
+            { id: 'resEarth', name: '地抗' }, { id: 'resWind', name: '風抗' },
+            { id: 'resNone', name: '無抗' }, { id: 'stunResist', name: '抗暈' }, { id: 'freezeResist', name: '抗冰' }
+        ]},
+        { name: '特殊效果', options: [
+            { id: 'hasSpellProc', name: '發動魔法' }, { id: 'unBonus', name: '不死/狼人加成' },
+            { id: 'hasPierce', name: '武器穿透' }, { id: 'hasVamp', name: '吸血/吸魔' },
+            { id: 'combo', name: '武器雙擊' }, { id: 'hasCrushCleave', name: '重擊/切割' },
+            { id: 'ignHardSkin', name: '貫穿硬皮' }, { id: 'weakExpose', name: '弱點曝光' },
+            { id: 'rapidfire', name: '遠距連射' }, { id: 'thorns', name: '反擊' }, { id: 'block', name: '盾牌格檔' }
+        ]},
+        { name: '免疫效果', options: [
+            { id: 'immFreeze', name: '免疫冰凍' }, { id: 'immPoison', name: '免疫中毒' },
+            { id: 'immParalyze', name: '免疫麻痺' }, { id: 'immStone', name: '免疫石化' },
+            { id: 'immSlow', name: '免疫緩速' }, { id: 'immHold', name: '免疫木乃伊' }
+        ]},
+        { name: '寵物屬性', options: [
+            { id: 'petDmg', name: '寵物傷害' }, { id: 'petHit', name: '寵物命中' },
+            { id: 'petAc', name: '寵物防禦(AC)' }, { id: 'petMr', name: '寵物魔防' },
+            { id: 'petInt', name: '寵物智力' }, { id: 'petWis', name: '寵物精神' }
+        ]}
+    ];
+
+    if (!propertyFiltersContainer) return;
+
+    const buildHtml = () => {
+        let h = '<button id="toggle-property-filters" class="flex items-center text-sm text-gray-400 hover:text-gold-400 mb-2 transition-colors focus:outline-none">'
+            + '<i class="fa-solid fa-filter mr-2"></i>進階屬性篩選'
+            + '<i class="fa-solid fa-chevron-down ml-2 transition-transform duration-300" id="filter-chevron"></i>'
+            + '</button>';
+        h += '<div id="property-filters-panel" class="hidden glass-panel p-4 rounded-xl border border-gray-800 mb-2">';
+        h += '<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">';
+        propertyGroups.forEach(group => {
+            h += '<div><h4 class="text-xs font-semibold text-gray-500 mb-3 border-b border-gray-800 pb-1">' + group.name + '</h4>';
+            h += '<div class="flex flex-wrap gap-2">';
+            group.options.forEach(opt => {
+                h += '<label class="flex items-center space-x-2 text-[13px] text-gray-300 bg-gray-900/50 px-2.5 py-1.5 rounded-lg cursor-pointer hover:bg-gray-700 hover:text-white transition-colors border border-gray-800 hover:border-gray-600 select-none">';
+                h += '<input type="checkbox" value="' + opt.id + '" class="form-checkbox text-primary-500 rounded border-gray-600 bg-gray-800 property-checkbox w-3.5 h-3.5 focus:ring-primary-500 focus:ring-offset-gray-900">';
+                h += '<span>' + opt.name + '</span></label>';
+            });
+            h += '</div></div>';
+        });
+        h += '</div>';
+        h += '<div class="mt-4 pt-3 border-t border-gray-800 flex justify-between items-center">';
+        h += '<span class="text-xs text-gray-500">篩選條件必須 <strong class="text-gold-400">全部符合</strong> 才會顯示</span>';
+        h += '<button id="clear-property-filters" class="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-400 hover:bg-red-900/50 hover:text-red-300 border border-gray-700 hover:border-red-800/50 text-xs transition-colors">';
+        h += '<i class="fa-solid fa-xmark mr-1"></i>清除篩選</button>';
+        h += '</div></div>';
+        return h;
+    };
+
+    propertyFiltersContainer.innerHTML = buildHtml();
+
+    const toggleBtn = document.getElementById('toggle-property-filters');
+    const panel = document.getElementById('property-filters-panel');
+    const chevron = document.getElementById('filter-chevron');
+
+    toggleBtn.addEventListener('click', () => {
+        panel.classList.toggle('hidden');
+        chevron.style.transform = panel.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+
+    panel.addEventListener('change', (e) => {
+        if (e.target.classList.contains('property-checkbox')) {
+            currentPropertyFilters = Array.from(panel.querySelectorAll('.property-checkbox:checked')).map(cb => cb.value);
+            renderItems();
+        }
+    });
+
+    const clearBtn = document.getElementById('clear-property-filters');
+    clearBtn.addEventListener('click', () => {
+        panel.querySelectorAll('.property-checkbox').forEach(cb => { cb.checked = false; });
+        currentPropertyFilters = [];
+        renderItems();
+    });
+}
+
+// 初始化屬性過濾器
+initPropertyFilters();
