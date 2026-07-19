@@ -946,7 +946,13 @@ function getItemDropsHtml(itemId) {
         boxSources.push('開啟上鎖的庫庫爾坎初級/高級寶箱獲得 (巴特爾製作)');
     }
 
-    if (shopSources.length > 0 || craftSources.length > 0 || questSources.length > 0 || boxSources.length > 0) {
+    // 5. 初始裝備
+    const initSources = [];
+    if (itemId === 'wpn_11') {
+        initSources.push('創立新角色(王族/騎士/法師/黑妖)時自動取得');
+    }
+
+    if (shopSources.length > 0 || craftSources.length > 0 || questSources.length > 0 || boxSources.length > 0 || initSources.length > 0) {
         finalHtml += `<div class="mt-3 border-t border-gray-800/50 pt-2">`;
         if (shopSources.length > 0) {
             finalHtml += `<div class="text-[11px] text-gray-400 mb-1 flex flex-wrap items-center">
@@ -966,6 +972,11 @@ function getItemDropsHtml(itemId) {
         if (boxSources.length > 0) {
             finalHtml += `<div class="text-[11px] text-gray-400 flex flex-wrap items-center ${(shopSources.length > 0 || craftSources.length > 0 || questSources.length > 0) ? 'mt-1' : ''}">
                 <i class="fa-solid fa-box-open mr-1.5 text-purple-400"></i>寶箱: ${boxSources.join('、')}
+            </div>`;
+        }
+        if (initSources.length > 0) {
+            finalHtml += `<div class="text-[11px] text-gray-400 flex flex-wrap items-center ${(shopSources.length > 0 || craftSources.length > 0 || questSources.length > 0 || boxSources.length > 0) ? 'mt-1' : ''}">
+                <i class="fa-solid fa-gift mr-1.5 text-pink-400"></i>初始: ${initSources.join('、')}
             </div>`;
         }
         finalHtml += `</div>`;

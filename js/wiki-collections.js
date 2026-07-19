@@ -500,6 +500,12 @@ const WikiCollections = (() => {
                 `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">${boxText}</span>` +
                 `</div></div>`);
         }
+        
+        if (itemId === 'wpn_11') {
+            sources.push(`<div class="mb-2"><div class="text-xs font-semibold text-pink-400 mb-1">✨ 初始裝備</div><div class="flex flex-wrap gap-1">` +
+                `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">創立新角色(王族/騎士/法師/黑妖)時自動取得</span>` +
+                `</div></div>`);
+        }
 
         if (sources.length === 0) {
             sources.push(`<div class="text-[11px] text-gray-500 italic mt-1">目前無已知的常規掉落或製作來源。</div>`);
