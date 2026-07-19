@@ -277,18 +277,6 @@ const WikiCollections = (() => {
                     let rDef = CARD_REGIONS.find(r => r.key === state.currentSubCat);
                     if (rDef) regionName = rDef.name;
 
-                    let sourceHtml = `
-                    <div class="text-left">
-                        <div class="text-sm font-bold text-white mb-2 border-b border-gray-700 pb-1 flex items-center gap-2">
-                            <img src="${imgUrl}" class="w-6 h-6 object-contain bg-gray-800 rounded border border-gray-600" onerror="${fallbackChain}">
-                            ${item.name} <span class="text-xs font-normal text-gray-400">的卡片</span>
-                        </div>
-                        <div class="mb-2"><div class="text-xs font-semibold text-primary-400 mb-1">🗺️ 出沒地區</div>
-                            <span class="px-2 py-0.5 bg-gray-800 rounded text-xs border border-gray-700">${regionName}</span>
-                        </div>
-                        <div class="text-[11px] text-gray-400 leading-tight">討伐 <span class="text-red-400 font-semibold">${item.name}</span> 有機率掉落其專屬卡片 (普/銀/金卡)。</div>
-                    </div>`;
-
                     const WIKI_CARD_ELE = { fire: '火', water: '水', wind: '風', earth: '地', none: '無', holy: '聖', dark: '闇', undead: '不死', light: '光' };
                     let ele = WIKI_CARD_ELE[item.e] || item.e || '無';
                     let mapsList = (typeof CARD_MOB_MAPS !== 'undefined' && CARD_MOB_MAPS[item.name]) ? CARD_MOB_MAPS[item.name] : (item.maps || []);
@@ -304,6 +292,23 @@ const WikiCollections = (() => {
                     });
                     
                     let seen = {}; mapsList = mapsList.filter(x => (seen[x] ? false : (seen[x] = true)));
+                    
+                    let tooltipMapsHtml = mapsList.length > 0 
+                        ? mapsList.map(m => `<span class="px-2 py-0.5 bg-gray-800 rounded text-xs border border-gray-700">${m}</span>`).join(' ')
+                        : `<span class="px-2 py-0.5 bg-gray-800 rounded text-xs border border-gray-700">${regionName}</span>`;
+
+                    let sourceHtml = `
+                    <div class="text-left">
+                        <div class="text-sm font-bold text-white mb-2 border-b border-gray-700 pb-1 flex items-center gap-2">
+                            <img src="${imgUrl}" class="w-6 h-6 object-contain bg-gray-800 rounded border border-gray-600" onerror="${fallbackChain}">
+                            ${item.name} <span class="text-xs font-normal text-gray-400">的卡片</span>
+                        </div>
+                        <div class="mb-2"><div class="text-xs font-semibold text-primary-400 mb-1">🗺️ 出沒地區</div>
+                            <div class="flex flex-wrap gap-1">${tooltipMapsHtml}</div>
+                        </div>
+                        <div class="text-[11px] text-gray-400 leading-tight">討伐 <span class="text-red-400 font-semibold">${item.name}</span> 有機率掉落其專屬卡片 (普/銀/金卡)。</div>
+                    </div>`;
+
                     let shownMaps = mapsList.slice(0, 5).join('、') + (mapsList.length > 5 ? ' …' : '');
 
                     let extraInfo = `
