@@ -1771,7 +1771,7 @@ function renderItems() {
                     if (item.eff !== 'combo') { matchProperty = false; break; }
                 } else if (prop === 'petAc') {
                     if (!item.petAc || item.petAc === 0) { matchProperty = false; break; }
-                } else if (['unBonus','ignHardSkin','weakExpose','immFreeze','immPoison','immParalyze','immStone','immSlow','immHold'].includes(prop)) {
+                } else if (['unBonus','ignHardSkin','weakExpose','immFreeze','immPoison','immParalyze','immStone','immSlow','immHold','summonCtrl','petBleed'].includes(prop)) {
                     if (!item[prop]) { matchProperty = false; break; }
                 } else {
                     if (!item[prop] || item[prop] <= 0) { matchProperty = false; break; }
@@ -2494,10 +2494,15 @@ function initPropertyFilters() {
             { id: 'immParalyze', name: '免疫麻痺' }, { id: 'immStone', name: '免疫石化' },
             { id: 'immSlow', name: '免疫緩速' }, { id: 'immHold', name: '免疫木乃伊' }
         ]},
-        { name: '寵物屬性', options: [
+        { name: '寵物/召喚屬性', options: [
             { id: 'petDmg', name: '寵物傷害' }, { id: 'petHit', name: '寵物命中' },
             { id: 'petAc', name: '寵物防禦(AC)' }, { id: 'petMr', name: '寵物魔防' },
-            { id: 'petInt', name: '寵物智力' }, { id: 'petWis', name: '寵物精神' }
+            { id: 'petInt', name: '寵物智力' }, { id: 'petWis', name: '寵物精神' },
+            { id: 'petDmgAll', name: '全體寵物傷害' }, { id: 'petHitAll', name: '全體寵物命中' },
+            { id: 'petSkillDmgMult', name: '寵物技能傷害倍率' },
+            { id: 'summonDmg', name: '召喚物傷害' }, { id: 'summonHit', name: '召喚物命中' },
+            { id: 'summonCtrl', name: '召喚控制' },
+            { id: 'petDmgReduce', name: '寵物護甲' }, { id: 'petBleed', name: '寵物出血' }
         ]}
     ];
 
