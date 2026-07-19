@@ -141,6 +141,30 @@ function injectSpecialWikiCrafts() {
         }));
         injectRecipes('npc_zeus_golem', { name: '宙斯之熔岩高崙', location: '威頓村', title: '製作', icon: 'fa-mountain-sun', color: 'text-orange-500' }, slayerRecipes);
     }
+    // 9. 炎魔之影 (惡魔王武器客製)
+    if (typeof DEMONKING_RECIPES !== 'undefined' && typeof DEMONKING_MATS !== 'undefined') {
+        const demonRecipes = DEMONKING_RECIPES.map(r => ({
+            result: r.result,
+            req: [
+                ...DEMONKING_MATS.map(m => ({ id: m.id, cnt: m.cnt })),
+                { id: `_demon_src_${r.src}`, cnt: 1, _displayName: `+11以上 ${r.srcName} ×1`, _special: true, _tooltip: '需要 +11 強化值以上的來源裝備', _icon: 'fa-khanda' }
+            ]
+        }));
+        injectRecipes('npc_flame_shadow', { name: '炎魔之影', location: '炎魔謁見所', title: '客製製作', icon: 'fa-fire', color: 'text-red-500' }, demonRecipes);
+    }
+
+    // 10. 琉米埃爾 (神聖執行團裝備)
+    if (typeof LUMIEL_RECIPES !== 'undefined') {
+        const lumielRecipes = LUMIEL_RECIPES.map(r => ({
+            result: r.result,
+            req: [
+                ...(r.mats || []).map(m => ({ id: m.id, cnt: m.cnt })),
+                { id: `_lumiel_src_${r.src}`, cnt: 1, _displayName: `+7以上 ${r.srcName} ×1`, _special: true, _tooltip: '需要 +7 強化值以上的來源裝備', _icon: 'fa-shield-halved' }
+            ]
+        }));
+        injectRecipes('npc_lumiel', { name: '琉米埃爾', location: '海音村莊', title: '客製製作', icon: 'fa-hammer', color: 'text-yellow-400' }, lumielRecipes);
+    }
+
 }
 
 // 將原本以 Key-Value 存放的物件，轉換為陣列，並將原 key 保留在 id 中
