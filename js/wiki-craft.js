@@ -293,16 +293,16 @@ function craftRenderRequirements(req) {
         const tooltipHtml = craftGetMaterialTooltipHtml(r.id);
         
         if (tooltipHtml) {
-            return `<div class="relative group/material cursor-help inline-block mr-1 mb-1">
+            return `<div class="relative group/material cursor-help inline-block mr-1 mb-1 js-tooltip-container">
                         <span class="inline-flex items-center gap-1 bg-gray-800/60 ${colorCls} text-xs px-2 py-1 rounded border border-gray-700/40 w-full hover:bg-gray-700/80 transition-colors">
                             ${iconHtml}${name} <span class="text-gray-500">×${r.cnt}</span>
                         </span>
                         <!-- 漂浮視窗 Tooltip -->
-                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/material:block w-64 p-3 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-50 pointer-events-none opacity-0 group-hover/material:opacity-100 transition-opacity duration-200" style="min-width: 16rem;">
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/material:block w-64 p-3 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-50 pointer-events-none opacity-0 group-hover/material:opacity-100 transition-opacity duration-200 js-tooltip" style="min-width: 16rem;">
                             ${tooltipHtml}
                             <!-- 下方箭頭 -->
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-600"></div>
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-[3px] border-transparent border-t-gray-900/95 mt-[-1px]"></div>
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-600 js-tooltip-arrow"></div>
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-[3px] border-transparent border-t-gray-900/95 mt-[-1px] js-tooltip-arrow"></div>
                         </div>
                     </div>`;
         } else {

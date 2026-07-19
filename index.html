@@ -1023,6 +1023,41 @@
                 });
             });
         });
+
+        // CSS Tooltip 自動邊界調整邏輯
+        document.addEventListener('mouseover', (e) => {
+            const container = e.target.closest('.js-tooltip-container');
+            if (container) {
+                const tooltip = container.querySelector('.js-tooltip');
+                if (tooltip) {
+                    // 先重置位移
+                    tooltip.style.marginLeft = '0px';
+                    const arrows = tooltip.querySelectorAll('.js-tooltip-arrow');
+                    arrows.forEach(a => a.style.marginLeft = '0px');
+                    
+                    // 確保元素已經 display:block 才能取得正確位置
+                    requestAnimationFrame(() => {
+                        const rect = tooltip.getBoundingClientRect();
+                        if (rect.width === 0) return;
+                        
+                        let shift = 0;
+                        const padding = 10;
+                        
+                        if (rect.left < padding) {
+                            shift = padding - rect.left;
+                        } else if (rect.right > window.innerWidth - padding) {
+                            shift = (window.innerWidth - padding) - rect.right;
+                        }
+                        
+                        if (shift !== 0) {
+                            tooltip.style.marginLeft = `${shift}px`;
+                            // 箭頭反向位移，使其保持對準原目標
+                            arrows.forEach(a => a.style.marginLeft = `${-shift}px`);
+                        }
+                    });
+                }
+            }
+        });
     </script>
     <!-- 懸浮圖片預覽 -->
     <div id="image-tooltip" class="hidden fixed z-50 pointer-events-none bg-gray-900 border border-gray-700 rounded-lg shadow-2xl p-2 transform -translate-x-1/2 -translate-y-[calc(100%+10px)] transition-opacity duration-200 opacity-0">
@@ -1064,6 +1099,10 @@
                     // 預設顯示在滑鼠上方
                     imageTooltip.style.transform = `translate(-50%, calc(-100% - 10px))`;
                 }
+
+                // 檢查左右邊界
+                if (x - tooltipRect.width/2 < 10) x = tooltipRect.width/2 + 10;
+                if (x + tooltipRect.width/2 > window.innerWidth - 10) x = window.innerWidth - tooltipRect.width/2 - 10;
 
                 imageTooltip.style.left = `${x}px`;
                 imageTooltip.style.top = `${y}px`;

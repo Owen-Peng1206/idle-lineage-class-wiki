@@ -317,7 +317,7 @@ const WikiCollections = (() => {
                         <div class="text-[11px] text-slate-400 leading-tight mt-0.5">出沒：${shownMaps || '—'}</div>
                     `;
 
-                    html += `<div class="relative bg-slate-800/70 border border-slate-600 rounded-lg p-2 flex flex-col items-center gap-1 w-[136px] group/card hover:bg-slate-700 transition-colors">
+                    html += `<div class="relative bg-slate-800/70 border border-slate-600 rounded-lg p-2 flex flex-col items-center gap-1 w-[136px] group/card hover:bg-slate-700 transition-colors js-tooltip-container">
                         <img src="${imgUrl}" alt="${item.name}" class="w-16 h-16 object-contain" onerror="${fallbackChain}">
                         <div class="text-center w-full mt-1">
                             <div class="text-sm font-bold text-white truncate" title="${item.name}">${item.name}</div>
@@ -325,9 +325,9 @@ const WikiCollections = (() => {
                             ${extraInfo}
                         </div>
                         <!-- 懸浮視窗 -->
-                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/card:block w-[260px] p-3 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-50 pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity duration-200">
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/card:block w-[260px] p-3 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-50 pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity duration-200 js-tooltip">
                             ${sourceHtml}
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-gray-600"></div>
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-gray-600 js-tooltip-arrow"></div>
                         </div>
                     </div>`;
                 } else {
@@ -381,16 +381,16 @@ const WikiCollections = (() => {
                         ${getItemSourceHtml(item.id)}
                     </div>`;
 
-                    html += `<div class="relative bg-slate-800/70 border ${state.currentType === 'relic' ? 'border-sky-700/70' : 'border-slate-600'} rounded-lg p-2 flex flex-col items-center gap-1 w-[112px] group/card hover:bg-slate-700 transition-colors">
+                    html += `<div class="relative bg-slate-800/70 border ${state.currentType === 'relic' ? 'border-sky-700/70' : 'border-slate-600'} rounded-lg p-2 flex flex-col items-center gap-1 w-[112px] group/card hover:bg-slate-700 transition-colors js-tooltip-container">
                         ${badge}
                         <img src="${imgUrl}" alt="${item.n}" class="w-14 h-14 object-contain" onerror="this.onerror=null;this.src='https://placehold.co/56x56/1e293b/334155?text=%3F';">
                         <div class="text-center w-full">
                             <div class="text-xs font-bold ${color} truncate" title="${item.n}">${item.n}</div>
                         </div>
                         <!-- 懸浮視窗 -->
-                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/card:block w-[280px] p-3 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-[100] pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity duration-200">
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/card:block w-[280px] p-3 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-[100] pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity duration-200 js-tooltip">
                             ${sourceHtml}
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-gray-600"></div>
+                            <div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-gray-600 js-tooltip-arrow"></div>
                         </div>
                     </div>`;
                 }
