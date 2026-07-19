@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Wiki Application Logic
  * 負責處理資料轉換、渲染圖鑑、與搜尋功能
  */
@@ -2473,8 +2473,8 @@ function initPropertyFilters() {
             { id: 'meleeDmg', name: '近戰傷害' }, { id: 'meleeHit', name: '近戰命中' },
             { id: 'rangedDmg', name: '遠距傷害' }, { id: 'rangedHit', name: '遠距命中' },
             { id: 'mdmg', name: '魔法傷害' }, { id: 'dr', name: '減傷' }, { id: 'er', name: '閃避(ER)' },
-            { id: 'atkSpdPct', name: '攻擊速度(%)' }, { id: 'extraMp', name: '額外魔法加成' },
-            { id: 'skillDmgMult', name: '技能傷害倍率' }
+            { id: 'atkSpdPct', name: '攻擊速度(%)' }, { id: 'moveSpeedPct', name: '移動速度(%)' },
+            { id: 'extraMp', name: '額外魔法加成' }, { id: 'skillDmgMult', name: '技能傷害倍率' }
         ]},
         { name: '生存屬性', options: [
             { id: 'mhp', name: '最大HP' }, { id: 'mmp', name: '最大MP' },
@@ -2491,7 +2491,8 @@ function initPropertyFilters() {
             { id: 'hasPierce', name: '武器穿透' }, { id: 'hasVamp', name: '吸血/吸魔' },
             { id: 'combo', name: '武器雙擊' }, { id: 'hasCrushCleave', name: '重擊/切割' },
             { id: 'ignHardSkin', name: '貫穿硬皮' }, { id: 'weakExpose', name: '弱點曝光' },
-            { id: 'rapidfire', name: '遠距連射' }, { id: 'thorns', name: '反擊' }, { id: 'block', name: '盾牌格檔' }
+            { id: 'rapidfire', name: '遠距連射' }, { id: 'thorns', name: '反擊' }, { id: 'block', name: '盾牌格檔' },
+            { id: 'thorns', name: '受擊反傷' },{ id: 'softMult', name: '柔軟專攻' },{ id: 'hardSkinMult', name: '破甲專攻' }
         ]},
         { name: '免疫效果', options: [
             { id: 'immFreeze', name: '免疫冰凍' }, { id: 'immPoison', name: '免疫中毒' },
