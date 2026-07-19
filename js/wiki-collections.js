@@ -289,11 +289,44 @@ const WikiCollections = (() => {
                         <div class="text-[11px] text-gray-400 leading-tight">討伐 <span class="text-red-400 font-semibold">${item.name}</span> 有機率掉落其專屬卡片 (普/銀/金卡)。</div>
                     </div>`;
 
+                    const WIKI_CARD_ELE = { fire: '火', water: '水', wind: '風', earth: '地', none: '無', holy: '聖', dark: '闇', undead: '不死', light: '光' };
+                    let ele = WIKI_CARD_ELE[item.e] || item.e || '無';
+                    let mapsList = (typeof CARD_MOB_MAPS !== 'undefined' && CARD_MOB_MAPS[item.name]) ? CARD_MOB_MAPS[item.name] : (item.maps || []);
+                    
+                    // Lazy-load map names to ensure all global variables (MAP_REGIONS, etc.) are fully initialized by the time this is called
+                    if (typeof window._WIKI_MAP_NAMES === 'undefined') {
+                        window._WIKI_MAP_NAMES = {};
+                        if (typeof MAP_REGIONS !== 'undefined') MAP_REGIONS.forEach(r => r.maps.forEach(m => { window._WIKI_MAP_NAMES[m.v] = m.t; }));
+                        if (typeof HIDDEN_AREA_NAMES !== 'undefined') for (let k in HIDDEN_AREA_NAMES) window._WIKI_MAP_NAMES[k] = HIDDEN_AREA_NAMES[k];
+                        if (typeof SANCTUARY_MAP_NAMES !== 'undefined') for (let k in SANCTUARY_MAP_NAMES) window._WIKI_MAP_NAMES[k] = SANCTUARY_MAP_NAMES[k];
+                        if (!window._WIKI_MAP_NAMES['oblivion_travel']) window._WIKI_MAP_NAMES['oblivion_travel'] = '遺忘之島途中';
+                        if (!window._WIKI_MAP_NAMES['oblivion_island']) window._WIKI_MAP_NAMES['oblivion_island'] = '遺忘之島';
+                        window._WIKI_MAP_NAMES['windwood_dungeon'] = '風木地監';
+                    }
+                    
+                    mapsList = mapsList.map(k => {
+                        if (window._WIKI_MAP_NAMES[k]) return window._WIKI_MAP_NAMES[k];
+                        let sp = k.match(/^__special_(.+)$/); if (sp && typeof CARD_SPECIAL_MOBS !== 'undefined' && CARD_SPECIAL_MOBS[sp[1]]) return CARD_SPECIAL_MOBS[sp[1]].mapLabel;
+                        let m = k.match(/^pride_f(\d+)$/); if (m) return '傲慢之塔' + m[1] + '樓';
+                        m = k.match(/^pride_(\d+)_(\d+)$/); if (m) return '傲慢之塔' + m[1] + '~' + m[2] + '樓';
+                        return typeof _cardMapName === 'function' ? _cardMapName(k) : k;
+                    });
+                    
+                    let seen = {}; mapsList = mapsList.filter(x => (seen[x] ? false : (seen[x] = true)));
+                    let shownMaps = mapsList.slice(0, 5).join('、') + (mapsList.length > 5 ? ' …' : '');
+
+                    let extraInfo = `
+                        <div class="text-[11px] text-slate-300 mt-1">HP ${item.hp != null ? item.hp : '?'}・屬性 ${ele}</div>
+                        <div class="text-[11px] text-slate-300">AC ${item.ac != null ? item.ac : '?'}・MR ${item.mr != null ? item.mr : '?'}</div>
+                        <div class="text-[11px] text-slate-400 leading-tight mt-0.5">出沒：${shownMaps || '—'}</div>
+                    `;
+
                     html += `<div class="relative bg-slate-800/70 border border-slate-600 rounded-lg p-2 flex flex-col items-center gap-1 w-[136px] group/card hover:bg-slate-700 transition-colors">
                         <img src="${imgUrl}" alt="${item.name}" class="w-16 h-16 object-contain" onerror="${fallbackChain}">
                         <div class="text-center w-full mt-1">
                             <div class="text-sm font-bold text-white truncate" title="${item.name}">${item.name}</div>
                             <div class="text-[11px] text-slate-500">Lv ${item.lv || '?'}</div>
+                            ${extraInfo}
                         </div>
                         <!-- 懸浮視窗 -->
                         <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/card:block w-[260px] p-3 bg-gray-900/95 backdrop-blur-md border border-gray-600 rounded-lg shadow-2xl z-50 pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity duration-200">
