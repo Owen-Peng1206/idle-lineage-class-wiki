@@ -293,20 +293,11 @@ const WikiCollections = (() => {
                     let ele = WIKI_CARD_ELE[item.e] || item.e || '無';
                     let mapsList = (typeof CARD_MOB_MAPS !== 'undefined' && CARD_MOB_MAPS[item.name]) ? CARD_MOB_MAPS[item.name] : (item.maps || []);
                     
-                    // Lazy-load map names to ensure all global variables (MAP_REGIONS, etc.) are fully initialized by the time this is called
-                    if (typeof window._WIKI_MAP_NAMES === 'undefined') {
-                        window._WIKI_MAP_NAMES = {};
-                        if (typeof MAP_REGIONS !== 'undefined') MAP_REGIONS.forEach(r => r.maps.forEach(m => { window._WIKI_MAP_NAMES[m.v] = m.t; }));
-                        if (typeof HIDDEN_AREA_NAMES !== 'undefined') for (let k in HIDDEN_AREA_NAMES) window._WIKI_MAP_NAMES[k] = HIDDEN_AREA_NAMES[k];
-                        if (typeof SANCTUARY_MAP_NAMES !== 'undefined') for (let k in SANCTUARY_MAP_NAMES) window._WIKI_MAP_NAMES[k] = SANCTUARY_MAP_NAMES[k];
-                        if (!window._WIKI_MAP_NAMES['oblivion_travel']) window._WIKI_MAP_NAMES['oblivion_travel'] = '遺忘之島途中';
-                        if (!window._WIKI_MAP_NAMES['oblivion_island']) window._WIKI_MAP_NAMES['oblivion_island'] = '遺忘之島';
-                        window._WIKI_MAP_NAMES['windwood_dungeon'] = '風木地監';
-                    }
-                    
+                    // 改用 wiki-maps.js 提供的 getMapName 函式與 mapNameTranslations 表，確保能完整翻譯所有地圖
                     mapsList = mapsList.map(k => {
-                        if (window._WIKI_MAP_NAMES[k]) return window._WIKI_MAP_NAMES[k];
                         let sp = k.match(/^__special_(.+)$/); if (sp && typeof CARD_SPECIAL_MOBS !== 'undefined' && CARD_SPECIAL_MOBS[sp[1]]) return CARD_SPECIAL_MOBS[sp[1]].mapLabel;
+                        if (typeof getMapName === 'function') return getMapName(k);
+                        if (typeof mapNameTranslations !== 'undefined' && mapNameTranslations[k]) return mapNameTranslations[k];
                         let m = k.match(/^pride_f(\d+)$/); if (m) return '傲慢之塔' + m[1] + '樓';
                         m = k.match(/^pride_(\d+)_(\d+)$/); if (m) return '傲慢之塔' + m[1] + '~' + m[2] + '樓';
                         return typeof _cardMapName === 'function' ? _cardMapName(k) : k;
