@@ -2529,7 +2529,7 @@ function initPropertyFilters() {
         h += '</div></div>';
         // Class filter row (multi-select checkboxes)
         h += '<div class="flex flex-wrap items-center gap-2 mt-4 mb-1 border-t border-gray-800 pt-3">';
-        h += '<span class="text-xs font-semibold text-gray-500 w-full mb-1">職業篩選 <span class="text-gray-600 font-normal">(可複選，不選 = 全部)</span></span>';
+        h += '<span class="text-xs font-semibold text-gray-500 w-full mb-1">職業篩選 <span class="text-gray-600 font-normal">(可複選，不選 = 全部)  篩選邏輯：OR（勾選的職業任一符合即顯示）</span></span>';
         [
           { id: 'royal',    name: '王族',   icon: 'fa-chess-king',    color: 'text-yellow-400' },
           { id: 'knight',   name: '騎士',   icon: 'fa-shield-halved', color: 'text-blue-400'   },
