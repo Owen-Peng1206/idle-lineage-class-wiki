@@ -935,7 +935,18 @@ function getItemDropsHtml(itemId) {
         }
     }
 
-    if (shopSources.length > 0 || craftSources.length > 0 || questSources.length > 0) {
+    // 4. 搜尋寶箱
+    const boxSources = [];
+    const thebesItems = ['wpn_thebes_bow', 'wpn_thebes_dual', 'wpn_thebes_2hsword', 'wpn_thebes_wand', 'blt_thebes_osiris', 'acc_thebes_horus', 'acc_thebes_anubis', 'relic_mandra_spirit', 'relic_death_leaf', 'relic_scarab_shin'];
+    if (thebesItems.includes(itemId)) {
+        boxSources.push('開啟上鎖的歐西里斯初級/高級寶箱獲得 (巴特爾製作)');
+    }
+    const tikalItems = ['wpn_kukulkan_spear', 'wpn_kukulkan_gauntlet', 'shd_kukulkan', 'hlm_kukulkan'];
+    if (tikalItems.includes(itemId)) {
+        boxSources.push('開啟上鎖的庫庫爾坎初級/高級寶箱獲得 (巴特爾製作)');
+    }
+
+    if (shopSources.length > 0 || craftSources.length > 0 || questSources.length > 0 || boxSources.length > 0) {
         finalHtml += `<div class="mt-3 border-t border-gray-800/50 pt-2">`;
         if (shopSources.length > 0) {
             finalHtml += `<div class="text-[11px] text-gray-400 mb-1 flex flex-wrap items-center">
@@ -950,6 +961,11 @@ function getItemDropsHtml(itemId) {
         if (questSources.length > 0) {
             finalHtml += `<div class="text-[11px] text-gray-400 flex flex-wrap items-center ${(shopSources.length > 0 || craftSources.length > 0) ? 'mt-1' : ''}">
                 <i class="fa-solid fa-scroll mr-1.5 text-emerald-400"></i>任務: ${questSources.join('、')}
+            </div>`;
+        }
+        if (boxSources.length > 0) {
+            finalHtml += `<div class="text-[11px] text-gray-400 flex flex-wrap items-center ${(shopSources.length > 0 || craftSources.length > 0 || questSources.length > 0) ? 'mt-1' : ''}">
+                <i class="fa-solid fa-box-open mr-1.5 text-purple-400"></i>寶箱: ${boxSources.join('、')}
             </div>`;
         }
         finalHtml += `</div>`;

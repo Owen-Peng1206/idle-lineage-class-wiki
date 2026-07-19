@@ -484,6 +484,23 @@ const WikiCollections = (() => {
             }
         }
 
+        // Boxes
+        const thebesItems = ['wpn_thebes_bow', 'wpn_thebes_dual', 'wpn_thebes_2hsword', 'wpn_thebes_wand', 'blt_thebes_osiris', 'acc_thebes_horus', 'acc_thebes_anubis', 'relic_mandra_spirit', 'relic_death_leaf', 'relic_scarab_shin'];
+        const tikalItems = ['wpn_kukulkan_spear', 'wpn_kukulkan_gauntlet', 'shd_kukulkan', 'hlm_kukulkan'];
+        
+        let boxText = '';
+        if (thebesItems.includes(itemId)) {
+            boxText = '開啟上鎖的歐西里斯初級/高級寶箱獲得 (巴特爾製作)';
+        } else if (tikalItems.includes(itemId)) {
+            boxText = '開啟上鎖的庫庫爾坎初級/高級寶箱獲得 (巴特爾製作)';
+        }
+        
+        if (boxText) {
+            sources.push(`<div class="mb-2"><div class="text-xs font-semibold text-purple-400 mb-1">🎁 寶箱取得</div><div class="flex flex-wrap gap-1">` +
+                `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">${boxText}</span>` +
+                `</div></div>`);
+        }
+
         if (sources.length === 0) {
             sources.push(`<div class="text-[11px] text-gray-500 italic mt-1">目前無已知的常規掉落或製作來源。</div>`);
         }
