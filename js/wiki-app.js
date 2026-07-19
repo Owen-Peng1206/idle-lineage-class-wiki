@@ -192,6 +192,7 @@ let currentFilterSubType = 'all';
 let currentFilterSubSubType = 'all';
 let currentSearchQuery = '';
 let currentPropertyFilters = [];
+let currentClassFilter = ''; // '' means all
 const propertyFiltersContainer = document.getElementById('item-property-filters-container');
 
 // 子分類設定
@@ -1777,7 +1778,19 @@ function renderItems() {
                 }
             }
         }
-        return matchType && matchSearch && matchProperty;
+        // 職業篩選
+        let matchClass = true;
+        if (currentClassFilter !== '') {
+            if (!item.req) {
+                matchClass = false;
+            } else if (item.req === 'all') {
+                matchClass = true;
+            } else {
+                const reqArr = item.req.split(',').map(s => s.trim());
+                matchClass = reqArr.includes(currentClassFilter);
+            }
+        }
+        return matchType && matchSearch && matchProperty && matchClass;
     });
 
     if (itemsFilteredCache.length === 0) {
@@ -2508,7 +2521,25 @@ function initPropertyFilters() {
             h += '</div></div>';
         });
         h += '</div>';
-        h += '<div class="mt-4 pt-3 border-t border-gray-800 flex justify-between items-center">';
+        // Class filter row
+        h += '<div class="mt-4 pt-3 border-t border-gray-800">';
+        h += '<div class="text-xs font-semibold text-gray-500 mb-2">職業篩選</div>';
+        h += '<div class="flex flex-wrap gap-2">';
+        h += '<label class="flex items-center space-x-2 text-[13px] text-gray-300 bg-gray-900/50 px-2.5 py-1.5 rounded-lg cursor-pointer hover:bg-gray-700 hover:text-white transition-colors border border-gray-800 hover:border-gray-600 select-none"><input type="radio" name="class-filter" value="" class="class-radio accent-primary-500 w-3.5 h-3.5" checked><span>全部職業</span></label>';
+        [
+          { id: 'royal',    name: '王族',   icon: 'fa-chess-king',    color: 'text-yellow-400' },
+          { id: 'knight',   name: '騎士',   icon: 'fa-shield-halved', color: 'text-blue-400'   },
+          { id: 'elf',      name: '妖精',   icon: 'fa-leaf',          color: 'text-green-400'  },
+          { id: 'mage',     name: '法師',   icon: 'fa-hat-wizard',    color: 'text-purple-400' },
+          { id: 'dark',     name: '黑妖',   icon: 'fa-moon',          color: 'text-gray-400'   },
+          { id: 'dragon',   name: '龍騎士', icon: 'fa-dragon',        color: 'text-red-400'    },
+          { id: 'illusion', name: '幻術士', icon: 'fa-eye',           color: 'text-pink-400'   },
+          { id: 'warrior',  name: '戰士',   icon: 'fa-gavel',         color: 'text-orange-400' }
+        ].forEach(cls => {
+            h += `<label class="flex items-center space-x-2 text-[13px] text-gray-300 bg-gray-900/50 px-2.5 py-1.5 rounded-lg cursor-pointer hover:bg-gray-700 hover:text-white transition-colors border border-gray-800 hover:border-gray-600 select-none"><input type="radio" name="class-filter" value="${cls.id}" class="class-radio accent-primary-500 w-3.5 h-3.5"><i class="fa-solid ${cls.icon} ${cls.color} mr-1"></i><span>${cls.name}</span></label>`;
+        });
+        h += '</div></div>';
+        h += '<div class="mt-3 pt-3 border-t border-gray-800 flex justify-between items-center">';
         h += '<span class="text-xs text-gray-500">篩選條件必須 <strong class="text-gold-400">全部符合</strong> 才會顯示</span>';
         h += '<button id="clear-property-filters" class="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-400 hover:bg-red-900/50 hover:text-red-300 border border-gray-700 hover:border-red-800/50 text-xs transition-colors">';
         h += '<i class="fa-solid fa-xmark mr-1"></i>清除篩選</button>';
@@ -2534,10 +2565,20 @@ function initPropertyFilters() {
         }
     });
 
+    panel.addEventListener('change', (e2) => {
+        if (e2.target.classList.contains('class-radio')) {
+            currentClassFilter = e2.target.value;
+            renderItems();
+        }
+    });
+
     const clearBtn = document.getElementById('clear-property-filters');
     clearBtn.addEventListener('click', () => {
         panel.querySelectorAll('.property-checkbox').forEach(cb => { cb.checked = false; });
+        const allRadio = panel.querySelector('.class-radio[value=""]');
+        if (allRadio) allRadio.checked = true;
         currentPropertyFilters = [];
+        currentClassFilter = '';
         renderItems();
     });
 }
