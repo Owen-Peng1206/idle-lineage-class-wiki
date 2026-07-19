@@ -2492,7 +2492,7 @@ function initPropertyFilters() {
             { id: 'combo', name: '武器雙擊' }, { id: 'hasCrushCleave', name: '重擊/切割' },
             { id: 'ignHardSkin', name: '貫穿硬皮' }, { id: 'weakExpose', name: '弱點曝光' },
             { id: 'rapidfire', name: '遠距連射' }, { id: 'thorns', name: '反擊' }, { id: 'block', name: '盾牌格檔' },
-            { id: 'thorns', name: '受擊反傷' },{ id: 'softMult', name: '柔軟專攻' },{ id: 'hardSkinMult', name: '破甲專攻' }
+            { id: 'softMult', name: '柔軟專攻' },{ id: 'hardSkinMult', name: '破甲專攻' }
         ]},
         { name: '免疫效果', options: [
             { id: 'immFreeze', name: '免疫冰凍' }, { id: 'immPoison', name: '免疫中毒' },
