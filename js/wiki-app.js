@@ -384,30 +384,123 @@ const effNamesMap = {
 function getItemEffectsHtml(item) {
     let effects = [];
     
-    if (item.eff && effNamesMap[item.eff]) {
-        effects.push(`<span class="bg-indigo-900/40 text-indigo-300 text-[11px] px-2 py-1 rounded border border-indigo-700/50"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>${effNamesMap[item.eff]}</span>`);
+    const addBadge = (text, icon = 'fa-wand-magic-sparkles', color = 'indigo') => {
+        effects.push(`<span class="bg-${color}-900/40 text-${color}-300 text-[11px] px-2 py-1 rounded border border-${color}-700/50"><i class="fa-solid ${icon} mr-1"></i>${text}</span>`);
+    };
+
+    if (item.unBonus) addBadge('不死／狼人加成', 'fa-skull', 'orange');
+    if (item.eff === 'pierce') addBadge(`穿透 ${item.pierceChance !== undefined ? item.pierceChance : 100}%`, 'fa-arrows-down-to-line', 'indigo');
+    if (item.alsoPierce) addBadge(`穿透 ${item.pierceChance !== undefined ? item.pierceChance : 100}%`, 'fa-arrows-down-to-line', 'indigo');
+    if (item.eff === 'moonburst') addBadge('月光爆裂', 'fa-moon', 'indigo');
+    if (item.eff === 'dice_death') addBadge('即死', 'fa-skull-crossbones', 'red');
+    if (item.eff === 'haste') addBadge('自我加速', 'fa-person-running', 'indigo');
+    if (item.eff === 'crush') addBadge('重擊', 'fa-hammer', 'indigo');
+    if (item.eff === 'cleave') addBadge('切割', 'fa-scissors', 'indigo');
+    if (item.eff === 'combo') addBadge(`雙擊 ${item.comboRate || 0}%`, 'fa-khanda', 'indigo');
+    if (item.weakExpose) addBadge('弱點曝光', 'fa-eye', 'purple');
+    if (item.vampPct) addBadge(`吸取HP ${Math.round(item.vampPct * 100)}%`, 'fa-droplet', 'red');
+    if (item.ignHardSkin) addBadge('貫穿硬皮', 'fa-burst', 'orange');
+    if (item.redSpecter) addBadge('紅惡靈逆襲', 'fa-ghost', 'red');
+    if (item.blueSpecter) addBadge('藍惡靈奪魔', 'fa-ghost', 'blue');
+    if (item.rapidfire) addBadge(`連射 ${item.rapidfire}%`, 'fa-angles-right', 'green');
+    if (item.block) addBadge(`格檔 ${item.block}%`, 'fa-shield', 'blue');
+    if (item.immStone) addBadge('免疫石化', 'fa-hill-rockslide', 'stone');
+    if (item.immPoison) addBadge('免疫中毒', 'fa-skull', 'emerald');
+    if (item.unique) addBadge('唯一', 'fa-star', 'yellow');
+    if (item.eff === 'magicstrike') addBadge('魔擊', 'fa-bolt', 'indigo');
+    if (item.eff === 'magicburst') addBadge('魔爆', 'fa-bomb', 'indigo');
+    if (item.eff === 'mp_drain') addBadge('吸收魔力', 'fa-droplet', 'blue');
+    
+    if (item.meleeHitSpell) addBadge(`命中施法 (${item.meleeHitSpell.skn || '附加法術'})`, 'fa-bolt', 'indigo');
+    if (item.spellProc) addBadge(`攻擊施法 (${item.spellProc.skn || '附加法術'})`, 'fa-bolt', 'indigo');
+    
+    if (item.procSkill) {
+        let _procName = (typeof DB !== 'undefined' && DB.skills && DB.skills[item.procSkill]) ? DB.skills[item.procSkill].n : '技能';
+        addBadge(`${item.procOnHit ? '命中施法' : '攻擊施法'} (${_procName})`, 'fa-fire', 'indigo');
+    }
+    if (item.procSkill2 && item.procSkill2.skId) {
+        let _procName = (typeof DB !== 'undefined' && DB.skills && DB.skills[item.procSkill2.skId]) ? DB.skills[item.procSkill2.skId].n : '技能';
+        addBadge(`攻擊施法 (${_procName})`, 'fa-fire', 'indigo');
+    }
+    if (item.procPoisonPct) addBadge('附毒', 'fa-vial-virus', 'green');
+    if (item.iaiCrit) addBadge('居合必定爆擊', 'fa-bolt', 'indigo');
+    if (item.heavyBonusDmg) addBadge(`重擊額外傷害 +${item.heavyBonusDmg}`, 'fa-hammer', 'indigo');
+    
+    if (item.procStatusSkill) {
+        let _statusName = (typeof DB !== 'undefined' && DB.skills && DB.skills[item.procStatusSkill.skId]) ? DB.skills[item.procStatusSkill.skId].n : '異常狀態';
+        addBadge(`異常攻擊 (${_statusName})`, 'fa-skull', 'purple');
     }
     
-    let magicObj1 = item.spellProc || item.meleeHitSpell;
-    if (magicObj1) {
-        let spellName = magicObj1.skn || '魔法';
-        effects.push(`<span class="bg-indigo-900/40 text-indigo-300 text-[11px] px-2 py-1 rounded border border-indigo-700/50"><i class="fa-solid fa-bolt mr-1"></i>發動: ${spellName}</span>`);
-    }
-    let procSkillId1 = item.procSkill || (item.procStatusSkill && item.procStatusSkill.skId);
-    if (procSkillId1) {
-        let skillName = (typeof DB !== 'undefined' && DB.skills && DB.skills[procSkillId1]) ? DB.skills[procSkillId1].n : '技能';
-        effects.push(`<span class="bg-indigo-900/40 text-indigo-300 text-[11px] px-2 py-1 rounded border border-indigo-700/50"><i class="fa-solid fa-fire mr-1"></i>發動: ${skillName}</span>`);
-    }
-    if (item.procPoison) effects.push(`<span class="bg-green-900/40 text-green-300 text-[11px] px-2 py-1 rounded border border-green-700/50"><i class="fa-solid fa-skull mr-1"></i>毒素發動</span>`);
-    if (item.ignHardSkin) effects.push(`<span class="bg-orange-900/40 text-orange-300 text-[11px] px-2 py-1 rounded border border-orange-700/50"><i class="fa-solid fa-burst mr-1"></i>貫穿硬皮</span>`);
-    if (item.set) effects.push(`<span class="bg-yellow-900/40 text-yellow-300 text-[11px] px-2 py-1 rounded border border-yellow-700/50"><i class="fa-solid fa-layer-group mr-1"></i>套裝效果</span>`);
+    if (item.procPoison) addBadge(`中毒 ${item.procPoison.rate || 0}%`, 'fa-skull', 'green');
+    else if (item.procPoisonRate) addBadge(`中毒 ${item.procPoisonRate}%`, 'fa-skull', 'green');
     
+    if (item.procInstakill) {
+        let _ikCond = item.procInstakill.tag === 'undead' ? '不死系' : (item.procInstakill.hpBelow ? '低HP' : '非首領');
+        addBadge(`即死 (${_ikCond})`, 'fa-skull-crossbones', 'red');
+    }
+    
+    if (item.procBonusDmg) addBadge(`額外傷害 ${item.procBonusDmg.rate}%`, 'fa-plus', 'red');
+    if (item.procDmgReduce) addBadge(`傷害減免 ${item.procDmgReduce.rate}%`, 'fa-minus', 'blue');
+    if (item.allLures) addBadge('全部誘捕狀態', 'fa-magnet', 'purple');
+    
+    if (item.eleBonusDmg) {
+        let _bonusEleName = { fire:'火', water:'水', wind:'風', earth:'地' }[item.eleBonusDmg.ele] || '特定屬性';
+        addBadge(`屬性專攻 (${_bonusEleName})`, 'fa-fire-flame-curved', 'orange');
+    }
+    if (item.counterAllEle) addBadge('剋制所有屬性', 'fa-arrows-to-circle', 'orange');
+    if (item.counterEles) {
+        let _eleNames = item.counterEles.map(e => ({ earth: '地', wind: '風', fire: '火', water: '水' }[e] || e)).join('、');
+        addBadge(`剋制 (${_eleNames})`, 'fa-arrows-to-circle', 'orange');
+    }
+    
+    if (item.procBurn) addBadge(`灼燒${item.procBurn.rate ? ` ${item.procBurn.rate}%` : ''}`, 'fa-fire', 'red');
+    if (item.onHitEleDmg) {
+        let _eleName = { fire:'火焰', water:'寒冰', wind:'風雷', earth:'大地', none:'無屬性' }[item.onHitEleDmg.ele] || '屬性';
+        addBadge(`${_eleName}附傷`, 'fa-bolt', 'indigo');
+    }
+    
+    if (item.freeChill) addBadge('施放寒冰氣息免魔', 'fa-snowflake', 'blue');
+    if (item.windHelm) addBadge('施放加速免魔', 'fa-wind', 'teal');
+    if (item.noConsume && item.isArrow) addBadge('箭矢不消耗', 'fa-infinity', 'gray');
+    if (item.oneHand && item.isBow) addBadge('單手持握', 'fa-hand', 'amber');
+    
+    if (item.ele && item.ele !== 'none') {
+        let _wpnEleName = { fire:'火', water:'水', wind:'風', earth:'地' }[item.ele] || item.ele;
+        addBadge(`攻擊轉${_wpnEleName}屬性`, 'fa-wand-magic-sparkles', 'indigo');
+    }
+    
+    if (item.skillDmgMult) {
+        let _skillNames = Object.keys(item.skillDmgMult).map(skId => (typeof DB !== 'undefined' && DB.skills && DB.skills[skId]) ? DB.skills[skId].n : skId);
+        addBadge(`技能增幅 (${_skillNames.join('、')})`, 'fa-arrow-trend-up', 'indigo');
+    }
+    
+    if (item.autoCastMpMult && item.autoCastMpMult > 1) addBadge(`自動施法代價 (MP×${item.autoCastMpMult})`, 'fa-droplet-slash', 'blue');
+    if (item.autoCastDmgMult && item.autoCastDmgMult > 1) addBadge(`自動施法增幅 (傷害×${item.autoCastDmgMult})`, 'fa-arrow-trend-up', 'indigo');
+    
+    if (item.silencedBonusDmg) addBadge('沉默專攻', 'fa-comment-slash', 'purple');
+    if (item.poisonedBonusDmg) addBadge('中毒專攻', 'fa-skull', 'green');
+    if (item.slowedBonusDmg) addBadge('緩速專攻', 'fa-person-walking-with-cane', 'blue');
+    if (item.immParalyzeBonusDmg) addBadge('強韌專攻', 'fa-dumbbell', 'orange');
+    
+    if (typeof weaponHasBleed === 'function' && weaponHasBleed(item.id)) addBadge('出血', 'fa-droplet', 'red');
+    if (typeof getWeaponTags === 'function') {
+        let tags = getWeaponTags(item.id);
+        if (tags.includes('單手劍')) addBadge('反擊', 'fa-shield-halved', 'blue');
+        if (tags.includes('武士刀')) addBadge('居合', 'fa-khanda', 'indigo');
+        if (tags.includes('單手鈍器')) addBadge('鈍擊', 'fa-gavel', 'orange');
+        if (tags.includes('雙刀')) addBadge('雙刃', 'fa-swords', 'red');
+        if (tags.includes('鋼爪')) addBadge('重擊 +5%', 'fa-hand-back-fist', 'indigo');
+    }
+    
+    if (typeof WAND_LIGHTARROW_IDS !== 'undefined' && WAND_LIGHTARROW_IDS.includes(item.id)) addBadge('共鳴 (免費光箭)', 'fa-star', 'yellow');
+
+    if (item.set) addBadge('套裝效果', 'fa-layer-group', 'yellow');
+
     if (effects.length === 0) return '';
     return `<div class="mt-2 flex flex-wrap gap-1">${effects.join('')}</div>`;
 }
 
-const wikiMapNames = {
-    "town_silver_knight": "銀騎士村莊",
+const wikiMapNames = {    "town_silver_knight": "銀騎士村莊",
     "town_elf": "妖精森林村莊",
     "town_talking": "說話之島村莊",
     "town_gludio": "燃柳村莊",
@@ -419,9 +512,10 @@ const wikiMapNames = {
     "town_witon": "威頓村莊",
     "town_sherine": "席琳神殿",
     "town_silent": "沉默洞穴",
-    "town_hyperia": "希培利亞",
+    "town_hyperia": "希培利亞村莊",
     "town_behemoth": "貝希摩斯",
     "town_flame_audience": "炎魔謁見所",
+    "town_elder_council": "長老會議廳",
     "silver_knight": "銀騎士村周邊",
     "talking_island": "說話之島周邊",
     "zone_01": "妖精森林周邊",
@@ -493,10 +587,9 @@ const wikiMapNames = {
     "dark_magic_lab": "黑魔法研究室",
     "necro_training": "冥法軍訓練場",
     "elder_room": "格蘭肯神殿．長老之室",
-    "town_elder_council": "長老會議廳",
-    "collapsed_elder_council_hall": "崩壞的長老會議廳",     
     "dark_elf_sanctuary": "黑暗妖精聖地",
     "cursed_dark_elf_sanctuary": "受詛咒的黑暗妖精聖地",
+    "collapsed_elder_council_hall": "崩壞的長老會議廳",
     "demon_temple": "魔族神殿",
     "shadow_temple": "暗影神殿",
     "training": "新兵修練場",
@@ -529,14 +622,24 @@ const wikiMapNames = {
     "town_pirate_village": "海賊島村莊",
     "pirate_wild": "海賊島周邊",
     "pirate_dungeon": "海賊島地監",
+    "kent_outer": "肯特外門區",
+    "kent_inner": "肯特內城",
+    "town_kent_castle": "肯特城",
+    "ww_outer": "風木外門區",
+    "ww_inner": "風木內城",
     "town_windwood_castle": "風木城",
     "windwood_dungeon": "風木地監",
+    "heine_outer": "海音外門區",
+    "heine_inner": "海音內城",
+    "town_heine_castle": "海音城",
     "hidden_lab_nolife": "無生命體研究室",
     "hidden_lab_darkmagic": "黑魔法研究室",
     "hidden_seal_spirit": "精靈的封印地",
     "hidden_seal_monster": "魔獸的封印地",
     "hidden_seal_demon": "惡魔的封印地",
     "hidden_antqueen": "螞蟻女王藏身處",
+    "oblivion_travel": "前往遺忘之島的船隻",
+    "oblivion_island": "遺忘之島",
     "pride_f2": "傲慢之塔 2樓",
     "pride_f3": "傲慢之塔 3樓",
     "pride_f4": "傲慢之塔 4樓",
@@ -639,7 +742,7 @@ const wikiMapNames = {
     "sunrise_castle": "日出之國城墎",
     "sunrise_east": "日出之國東之地",
     "sunrise_west": "日出之國西之地",
-    "sunrise_north": "日出之國北之地"    
+    "sunrise_north": "日出之國北之地"
 };
 
 let mobMapCache = {};
