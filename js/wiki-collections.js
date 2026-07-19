@@ -27,7 +27,6 @@ const WikiCollections = (() => {
         if (MISC_BOOK_EXCLUDED[id]) return null;
         var t = d.type;
         if (t === 'wpn' || t === 'arm' || t === 'acc') return null;
-        if (id === 'item_card_book' || id === 'item_equip_book') return null;
         if (d.eff === 'card' || id.startsWith('card_')) return null;
         if (t === 'pot' || id.startsWith('potion_')) return 'pot';
         if (t === 'scroll' || id.startsWith('scroll_') || (d.n && d.n.includes('卷軸'))) return 'scroll';
@@ -61,6 +60,7 @@ const WikiCollections = (() => {
         } catch (e) {}
         ['new_item_164', 'new_item_195', 'new_item_165'].forEach(add);
         ['scroll_weapon_b', 'scroll_armor_b', 'new_item_uncurse'].forEach(add);
+        ['doll_bag', 'doll_box_high'].forEach(add);
         OBTAINABLE_MISC = S;
     }
 
@@ -105,17 +105,39 @@ const WikiCollections = (() => {
         CARD_REGIONS.forEach(reg => {
             let maps = (reg.maps === '__pride__') ? prideMaps : reg.maps;
             let added = new Set();
+            
+            function regMob(mid, mob, mk) {
+                if (added.has(mob.n)) return;
+                added.add(mob.n);
+                INDEX.monster[reg.key].push({ id: mid, name: mob.n, ...mob, maps: maps });
+            }
+
             maps.forEach(mk => {
                 let pool = DB.maps[mk]; 
                 if (!pool) return;
                 pool.forEach(mid => {
                     let mob = DB.mobs[mid]; 
                     if (!mob || !mob.n || mob.race === '血盟' || mob.race === '建築') return;
-                    if (added.has(mob.n)) return;
-                    added.add(mob.n);
-                    INDEX.monster[reg.key].push({ id: mid, name: mob.n, ...mob, maps: maps });
+                    regMob(mid, mob, mk);
+                    
+                    let seen = {}; seen[mid] = 1; let t = mob.transformTo;
+                    while (t && DB.mobs[t] && DB.mobs[t].n && !seen[t]) { 
+                        seen[t] = 1; 
+                        regMob(t, DB.mobs[t], mk); 
+                        t = DB.mobs[t].transformTo; 
+                    }
                 });
             });
+
+            if (typeof CARD_SPECIAL_MOBS !== 'undefined') {
+                for (let sid in CARD_SPECIAL_MOBS) {
+                    let sp = CARD_SPECIAL_MOBS[sid];
+                    if (sp.region === reg.key && DB.mobs[sid] && DB.mobs[sid].n) {
+                        regMob(sid, DB.mobs[sid], '__special_' + sid);
+                    }
+                }
+            }
+
             // 依等級排序
             INDEX.monster[reg.key].sort((a, b) => (a.lv || 0) - (b.lv || 0));
         });
@@ -197,13 +219,13 @@ const WikiCollections = (() => {
         let bonusStr = '';
         if (state.currentType === 'equip' || state.currentType === 'relic') {
             titleStr = `<div class="text-xl font-bold ${state.currentType === 'relic' ? 'text-yellow-500' : 'text-sky-200'}">${curCatDef.group}・${curCatDef.name}</div>`;
-            if (state.currentType === 'equip' && curCatDef.bonus) {
-                bonusStr = `<div class="text-sm font-bold text-amber-300 bg-amber-900/30 px-3 py-1 rounded-full border border-amber-700/50">全收集完成加成：${curCatDef.bonus}</div>`;
+            if (state.currentType === 'equip' && typeof EQUIP_CAT_BONUS !== 'undefined' && EQUIP_CAT_BONUS[curCatDef.key]) {
+                bonusStr = `<div class="text-sm font-bold text-amber-300 bg-amber-900/30 px-3 py-1 rounded-full border border-amber-700/50">全收集完成加成：${EQUIP_CAT_BONUS[curCatDef.key].label}</div>`;
             }
         } else if (state.currentType === 'item') {
             titleStr = `<div class="text-xl font-bold text-amber-200">${curCatDef.name}</div>`;
-            if (curCatDef.bonus) {
-                bonusStr = `<div class="text-sm font-bold text-amber-300 bg-amber-900/30 px-3 py-1 rounded-full border border-amber-700/50">全收集完成加成：${curCatDef.bonus}</div>`;
+            if (typeof MISC_CAT_BONUS !== 'undefined' && MISC_CAT_BONUS[curCatDef.key]) {
+                bonusStr = `<div class="text-sm font-bold text-amber-300 bg-amber-900/30 px-3 py-1 rounded-full border border-amber-700/50">全收集完成加成：${MISC_CAT_BONUS[curCatDef.key].label}</div>`;
             }
         } else if (state.currentType === 'monster') {
             titleStr = `<div class="text-xl font-bold text-amber-200">${curCatDef.name}</div>`;
@@ -264,7 +286,7 @@ const WikiCollections = (() => {
                         <div class="mb-2"><div class="text-xs font-semibold text-primary-400 mb-1">🗺️ 出沒地區</div>
                             <span class="px-2 py-0.5 bg-gray-800 rounded text-xs border border-gray-700">${regionName}</span>
                         </div>
-                        <div class="text-[11px] text-gray-400 leading-tight">討伐 <span class="text-red-400 font-semibold">${item.name}</span> 有機率掉落其專屬卡片 (普/銀/金卡)。也可至威頓村魔法娃娃商人進行合成。</div>
+                        <div class="text-[11px] text-gray-400 leading-tight">討伐 <span class="text-red-400 font-semibold">${item.name}</span> 有機率掉落其專屬卡片 (普/銀/金卡)。</div>
                     </div>`;
 
                     html += `<div class="relative bg-slate-800/70 border border-slate-600 rounded-lg p-2 flex flex-col items-center gap-1 w-[136px] group/card hover:bg-slate-700 transition-colors">
