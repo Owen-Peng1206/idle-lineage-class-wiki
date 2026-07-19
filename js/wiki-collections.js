@@ -443,21 +443,33 @@ const WikiCollections = (() => {
         }
         
         // Craft
+        const crafts = [];
         if (typeof CRAFT_RECIPES !== 'undefined') {
-            const crafts = [];
             for (let cn in CRAFT_RECIPES) {
                 let recs = CRAFT_RECIPES[cn];
                 if (!Array.isArray(recs)) continue;
                 recs.forEach(r => { if (r && r.result === itemId) crafts.push(getTranslateName(cn)); });
             }
-            if (crafts.length > 0) {
-                const uniqueCrafts = [...new Set(crafts)];
-                sources.push(`<div class="mb-2"><div class="text-xs font-semibold text-amber-400 mb-1">🔨 製作來源</div><div class="flex flex-wrap gap-1">` +
-                    uniqueCrafts.map(c => `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">${c}</span>`).join('') +
-                    `</div></div>`);
-            }
         }
-
+        // 客製化製作區塊 (14-craft-pandora.js)
+        if (typeof DEMONKING_RECIPES !== 'undefined') {
+            DEMONKING_RECIPES.forEach(r => { if (r && r.result === itemId) crafts.push(getTranslateName('npc_flame_shadow')); });
+        }
+        if (typeof LUMIEL_RECIPES !== 'undefined') {
+            LUMIEL_RECIPES.forEach(r => { if (r && r.result === itemId) crafts.push(getTranslateName('npc_lumiel')); });
+        }
+        if (typeof MYSTICWAND_RECIPES !== 'undefined') {
+            MYSTICWAND_RECIPES.forEach(r => { if (r && r.result === itemId) crafts.push(getTranslateName('npc_mystic_mage')); });
+        }
+        if (typeof SLAYER_RECIPES !== 'undefined') {
+            SLAYER_RECIPES.forEach(r => { if (r && r.result === itemId) crafts.push(getTranslateName('npc_zeus_golem')); });
+        }
+        if (crafts.length > 0) {
+            const uniqueCrafts = [...new Set(crafts)];
+            sources.push(`<div class="mb-2"><div class="text-xs font-semibold text-amber-400 mb-1">🔨 製作來源</div><div class="flex flex-wrap gap-1">` +
+                uniqueCrafts.map(c => `<span class="px-1.5 py-0.5 bg-gray-800 rounded text-[10px] border border-gray-700">${c}</span>`).join('') +
+                `</div></div>`);
+        }
         // Shop
         if (typeof SHOP_LISTS !== 'undefined') {
             const shops = [];
