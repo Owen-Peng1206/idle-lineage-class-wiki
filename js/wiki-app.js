@@ -307,6 +307,7 @@ function generateItemBadges(item) {
     if (item.resWater) badges += `<span class="text-xs px-2 py-1 rounded bg-blue-900/40 text-blue-400 mr-2 mb-2 inline-block border border-blue-700/50">水抗 ${item.resWater > 0 ? '+' : ''}${item.resWater}</span>`;
     if (item.resEarth) badges += `<span class="text-xs px-2 py-1 rounded bg-yellow-900/40 text-yellow-400 mr-2 mb-2 inline-block border border-yellow-700/50">地抗 ${item.resEarth > 0 ? '+' : ''}${item.resEarth}</span>`;
     if (item.resWind) badges += `<span class="text-xs px-2 py-1 rounded bg-green-900/40 text-green-400 mr-2 mb-2 inline-block border border-green-700/50">風抗 ${item.resWind > 0 ? '+' : ''}${item.resWind}</span>`;
+    if (item.resNone) badges += `<span class="text-xs px-2 py-1 rounded bg-purple-900/40 text-purple-400 mr-2 mb-2 inline-block border border-purple-700/50">無抗 ${item.resNone > 0 ? '+' : ''}${item.resNone}%</span>`;
 
     // 異常抗性與免疫
     if (item.stunResist) badges += `<span class="text-xs px-2 py-1 rounded bg-orange-900/40 text-orange-300 mr-2 mb-2 inline-block border border-orange-700/50">抗暈 ${item.stunResist > 0 ? '+' : ''}${item.stunResist}</span>`;
@@ -1051,7 +1052,7 @@ function createItemCard(item) {
 
     // 3. 防具、飾品防禦與生存區
     let defStatsHtml = '';
-    let hasDefStats = item.ac || item.mr || item.resFire || item.resWater || item.resEarth || item.resWind || item.dr || item.er;
+    let hasDefStats = item.ac || item.mr || item.resFire || item.resWater || item.resEarth || item.resWind || item.resNone || item.dr || item.er;
     if (hasDefStats) {
         defStatsHtml = `
             <div class="mt-2.5 border border-gray-700/50 rounded bg-gray-900/50 p-2 shadow-inner">
@@ -1064,6 +1065,7 @@ function createItemCard(item) {
                     ${item.resFire ? `<div class="flex justify-between"><span>火屬性抗性:</span> <span class="text-red-400">${item.resFire > 0 ? '+' : ''}${item.resFire}</span></div>` : ''}
                     ${item.resWater ? `<div class="flex justify-between"><span>水屬性抗性:</span> <span class="text-blue-400">${item.resWater > 0 ? '+' : ''}${item.resWater}</span></div>` : ''}
                     ${item.resEarth ? `<div class="flex justify-between"><span>地屬性抗性:</span> <span class="text-yellow-600">${item.resEarth > 0 ? '+' : ''}${item.resEarth}</span></div>` : ''}
+                    ${item.resNone ? `<div class="flex justify-between col-span-2"><span>無屬性魔法抗性:</span> <span class="text-purple-400">${item.resNone > 0 ? '+' : ''}${item.resNone}%</span></div>` : ''}
                     ${item.resWind ? `<div class="flex justify-between"><span>風屬性抗性:</span> <span class="text-green-400">${item.resWind > 0 ? '+' : ''}${item.resWind}</span></div>` : ''}
                 </div>
                 ${(item.slot === 'shield' && item.n && item.n.includes('臂甲')) ? `
@@ -1126,12 +1128,12 @@ function createItemCard(item) {
             <div class="mt-2.5 border border-orange-900/40 rounded bg-orange-950/20 p-2 shadow-inner">
                 <div class="text-[11px] text-orange-400 font-bold mb-1.5 flex items-center border-b border-orange-900/50 pb-1"><i class="fa-solid fa-paw mr-1.5"></i>寵物/召喚 專屬屬性加成</div>
                 <div class="grid grid-cols-2 gap-y-1 gap-x-2 text-[11px] text-orange-300">
-                    ${item.petDmg ? `<div class="flex justify-between"><span>寵物傷害:</span> <span class="text-orange-200">${item.petDmg > 0 ? '+' : ''}${item.petDmg}</span></div>` : ''}
-                    ${item.petHit ? `<div class="flex justify-between"><span>寵物命中:</span> <span class="text-orange-200">${item.petHit > 0 ? '+' : ''}${item.petHit}</span></div>` : ''}
-                    ${item.petAc ? `<div class="flex justify-between"><span>寵物防禦(AC):</span> <span class="text-orange-200">${item.petAc < 0 ? item.petAc : '-'+Math.abs(item.petAc)}</span></div>` : ''}
+                    ${item.petDmg ? `<div class="flex justify-between col-span-2"><span>寵物傷害:</span> <span class="text-orange-200">${item.petDmg > 0 ? '+' : ''}${item.petDmg} <span class="text-[9px] text-orange-400/80 ml-1">(每強化+1額外+1,上限+5)</span></span></div>` : ''}
+                    ${item.petHit ? `<div class="flex justify-between col-span-2"><span>寵物命中:</span> <span class="text-orange-200">${item.petHit > 0 ? '+' : ''}${item.petHit} <span class="text-[9px] text-orange-400/80 ml-1">(每強化+1額外+1,上限+5)</span></span></div>` : ''}
+                    ${item.petAc ? `<div class="flex justify-between col-span-2"><span>寵物防禦(AC):</span> <span class="text-orange-200">${item.petAc < 0 ? item.petAc : '-'+Math.abs(item.petAc)} <span class="text-[9px] text-orange-400/80 ml-1">(每強化防禦再-1,上限-5)</span></span></div>` : ''}
                     ${item.petMr ? `<div class="flex justify-between"><span>寵物魔防:</span> <span class="text-orange-200">${item.petMr > 0 ? '+' : ''}${item.petMr}</span></div>` : ''}
-                    ${item.petInt ? `<div class="flex justify-between"><span>寵物智力:</span> <span class="text-orange-200">${item.petInt > 0 ? '+' : ''}${item.petInt}</span></div>` : ''}
-                    ${item.petWis ? `<div class="flex justify-between"><span>寵物精神:</span> <span class="text-orange-200">${item.petWis > 0 ? '+' : ''}${item.petWis}</span></div>` : ''}
+                    ${item.petInt ? `<div class="flex justify-between col-span-2"><span>寵物智力:</span> <span class="text-orange-200">${item.petInt > 0 ? '+' : ''}${item.petInt} <span class="text-[9px] text-orange-400/80 ml-1">(技能傷害+${item.petInt})</span></span></div>` : ''}
+                    ${item.petWis ? `<div class="flex justify-between col-span-2"><span>寵物精神:</span> <span class="text-orange-200">${item.petWis > 0 ? '+' : ''}${item.petWis} <span class="text-[9px] text-orange-400/80 ml-1">(MP上限+${item.petWis * 5}·MP恢復+${item.petWis})</span></span></div>` : ''}
                     ${item.summonDmg ? `<div class="flex justify-between"><span>召喚物傷害:</span> <span class="text-orange-200">${item.summonDmg > 0 ? '+' : ''}${item.summonDmg}</span></div>` : ''}
                     ${item.summonHit ? `<div class="flex justify-between"><span>召喚物命中:</span> <span class="text-orange-200">${item.summonHit > 0 ? '+' : ''}${item.summonHit}</span></div>` : ''}
                     ${item.petDmgAll ? `<div class="flex justify-between"><span>全體寵物傷害:</span> <span class="text-orange-200">${item.petDmgAll > 0 ? '+' : ''}${item.petDmgAll}</span></div>` : ''}
@@ -1226,10 +1228,24 @@ function createItemCard(item) {
     if (item.reqAvatar) effArr.push(`裝備限制（僅限${item.reqAvatar}；其他角色無法裝備）`);
     if (item.petDmgReduce) effArr.push(`寵物護甲（裝備的寵物受到傷害-${Math.round(item.petDmgReduce * 100)}%）`);
     if (item.petBleed) effArr.push('寵物出血（一般攻擊命中疊加8秒出血；每層每秒造成該次傷害20%，最多5層）');
-    if (item.armguard) effArr.push('臂甲（裝於副手，可與雙手武器並用）');
-    if (item.resNone) effArr.push(`無屬性魔法抗性+${item.resNone}%`);
+    if (item.armguard) {
+        if (!item.noEnhance) {
+            let ag = item.armguard;
+            if (ag.stat === 'mhp') effArr.push(`臂甲（每強化+1 HP+10。特效隨強化解鎖：+5時 HP+${ag.th[0]} / +7時 HP+${ag.th[1]} / +9時 HP+${ag.th[2]}）`);
+            else if (ag.stat && ag.stat !== 'none') {
+                let _agLbl = ag.stat === 'dr' ? '額外減傷' : ag.stat === 'magicDmg' ? '魔法傷害' : ag.stat === 'rangedDmg' ? '遠距離傷害' : ag.stat === 'meleeDmg' ? '近距離傷害' : ag.stat;
+                effArr.push(`臂甲（每強化+1 HP+10。特效隨強化解鎖：+5時 ${_agLbl}+${ag.th[0]} / +7時 ${_agLbl}+${ag.th[1]} / +9時 ${_agLbl}+${ag.th[2]}）`);
+            } else effArr.push('臂甲（每強化+1 HP+10）');
+        } else {
+            effArr.push('臂甲（裝於副手，可與雙手武器並用）');
+        }
+    }
     if (item.mrPerWis) effArr.push(`精神屏障（每1點最終精神，MR+${item.mrPerWis}）`);
     if (item.type === 'wpn' && item.mr) effArr.push(`魔防(MR)+${item.mr}`);
+    if (item.freeChill) effArr.push('施放寒冰氣息不消耗魔力');
+    if (item.windHelm) effArr.push('施放加速術／強力加速術不消耗魔力（裝備或放在背包皆有效）');
+    if (item.noConsume && item.isArrow) effArr.push('箭矢不會消耗');
+    if (item.oneHand && item.isBow) effArr.push('可單手持握');
     
     if (item.qigu) effArr.push('奇古獸攻擊（一般攻擊必定命中並視為魔法傷害，受MR減免；奇古獸精通時無視MR）');
     if (item.qiguProc === 'phantom') effArr.push('幻影衝擊 1%＋每強化1%（造成基礎80～160的無屬性魔法傷害，不受MR減免）');
