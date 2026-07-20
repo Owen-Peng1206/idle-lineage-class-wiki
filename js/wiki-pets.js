@@ -232,8 +232,8 @@
                     <ul class="list-disc ml-5 space-y-1 text-gray-300 mt-2">
                         <li><b class="text-purple-300">充滿破滅氣息的蛋：</b> 擊敗 <b class="text-white">遺忘之島 飛龍</b> 獲得。孵化 <b class="text-blue-300">破滅蜥蜴</b>。</li>
                         <li><b class="text-purple-300">充滿災厄氣息的蛋：</b> 擊敗 精靈墓穴的<b class="text-white">深淵地靈</b> 獲得。孵化 <b class="text-blue-300">災厄蜥蜴</b>。</li>
-                        <li><b class="text-purple-300">充滿厄運氣息的蛋：</b> 擊敗 飛龍巢穴的 <b class="text-white">飛龍</b> 獲得。孵化 <b class="text-blue-300">厄運蜥蜴</b>。</li>
-                        <li><b class="text-purple-300">充滿詛咒氣息的蛋：</b> 擊敗 骨龍巢穴的 <b class="text-white">骨龍</b> 獲得。孵化 <b class="text-blue-300">詛咒蜥蜴</b>。</li>
+                        <li><b class="text-purple-300">充滿厄運氣息的蛋：</b> 擊敗 飛龍巢穴(龍之谷)的 <b class="text-white">飛龍</b> 獲得。孵化 <b class="text-blue-300">厄運蜥蜴</b>。</li>
+                        <li><b class="text-purple-300">充滿詛咒氣息的蛋：</b> 擊敗 骨龍巢穴(奧塔41-50F)的 <b class="text-white">骨龍</b> 獲得。孵化 <b class="text-blue-300">詛咒蜥蜴</b>。</li>
                     </ul>
                 </div>
             </div>
