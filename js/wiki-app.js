@@ -1678,7 +1678,12 @@ const RELIC_WEAPON_TAGS = {
     relic_fireking_blast:['雙手劍'], relic_waterking_caress:['鋼爪'],
     relic_cerberus_pin:['鋼爪'], relic_dark_metal_club:['單手鈍器'], relic_ash_fist:['單手鈍器'], relic_ant_pincer:['單手劍','武士刀'], relic_reaper_scythe:['雙手劍'],
     relic_mage_dagger:['匕首'],
-    relic_bk_lance:['矛']
+    relic_bk_lance:['矛'],
+    // 🏺 v3.6.44 遺物第十九批武器 tag（鎖鏈劍 relic_cold_blueflame 靠 chainsword 旗標自判免 tag）
+    relic_earthshatter_sword: ['單手劍'], relic_gale_fistblade: ['鋼爪'], relic_hellfire_hammer: ['單手鈍器'], relic_blood_ritual_dagger: ['匕首'],
+    relic_scorch_greatsword: ['雙手劍'], relic_bloodknight_dual: ['雙刀'], relic_elmo_spear: ['矛'],
+    // 🏺 v3.6.47 遺物第二十批（鎖鏈劍 relic_lava_nozzle 靠 chainsword 旗標自判免 tag；雙手鈍器 tag 自帶貫穿）
+    relic_crusher_hammer: ['雙手鈍器']
 };
 
 function getRelicCatKey(item) {
