@@ -75,73 +75,75 @@
     function renderPetBook() {
         const grid = document.getElementById('pets-grid');
         let htmlContent = '';
+        requestAnimationFrame(() => {
+            Object.entries(PET_BOOK).forEach(([name, def]) => {
+                if (currentTierFilter !== 'all' && def.tier.toString() !== currentTierFilter) return;
 
-        Object.entries(PET_BOOK).forEach(([name, def]) => {
-            if (currentTierFilter !== 'all' && def.tier.toString() !== currentTierFilter) return;
+                const isRelic = def.tier === 3;
+                const isGold = def.tier === 2;
+                const borderClass = isRelic ? 'border-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.3)]' : (isGold ? 'border-gold-500 shadow-[0_0_8px_rgba(245,158,11,0.3)]' : (def.tier === 1 ? 'border-emerald-600/50' : 'border-gray-700'));
+                const bgClass = isRelic ? 'bg-gradient-to-br from-gray-900 to-blue-900/20' : (isGold ? 'bg-gradient-to-br from-gray-900 to-yellow-900/20' : 'bg-gray-800/80');
+                const nameColor = isRelic ? 'text-blue-400' : (isGold ? 'text-gold-400' : (def.tier === 1 ? 'text-emerald-300' : 'text-gray-200'));
+                const tierLabel = def.tier === 0 ? '一般型態' : (def.tier === 1 ? '高等型態' : (def.tier === 2 ? '黃金龍' : '遺物寵物'));
 
-            const isGold = def.tier === 2;
-            const borderClass = isGold ? 'border-gold-500 shadow-[0_0_8px_rgba(245,158,11,0.3)]' : (def.tier === 1 ? 'border-emerald-600/50' : 'border-gray-700');
-            const bgClass = isGold ? 'bg-gradient-to-br from-gray-900 to-yellow-900/20' : 'bg-gray-800/80';
-            const nameColor = isGold ? 'text-gold-400' : (def.tier === 1 ? 'text-emerald-300' : 'text-gray-200');
-            const tierLabel = def.tier === 0 ? '一般型態' : (def.tier === 1 ? '高等型態' : '黃金龍');
+                let hpGrowth = def.hpUp ? `${def.hpUp[0]}~${def.hpUp[1]}` : '0';
+                let mpGrowth = def.mpUp ? `${def.mpUp[0]}~${def.mpUp[1]}` : '0';
+                
+                let skillsHtml = '';
+                if (def.sk && def.sk.length > 0) {
+                    let sTags = def.sk.map(s => {
+                        let d = s.d ? `(傷害 ${s.d[0]}~${s.d[1]})` : '';
+                        let e = s.ele && s.ele !== 'none' ? ` [${s.ele}]` : '';
+                        return `<span class="bg-gray-900 text-gray-300 text-[11px] px-2 py-1 rounded border border-gray-700 inline-block mr-1 mb-1">${s.n} ${d}${e}</span>`;
+                    }).join('');
+                    skillsHtml = `<div class="mt-2"><div class="text-[11px] text-gray-500 mb-1">自帶技能:</div>${sTags}</div>`;
+                }
 
-            let hpGrowth = def.hpUp ? `${def.hpUp[0]}~${def.hpUp[1]}` : '0';
-            let mpGrowth = def.mpUp ? `${def.mpUp[0]}~${def.mpUp[1]}` : '0';
-            
-            let skillsHtml = '';
-            if (def.sk && def.sk.length > 0) {
-                let sTags = def.sk.map(s => {
-                    let d = s.d ? `(傷害 ${s.d[0]}~${s.d[1]})` : '';
-                    let e = s.ele && s.ele !== 'none' ? ` [${s.ele}]` : '';
-                    return `<span class="bg-gray-900 text-gray-300 text-[11px] px-2 py-1 rounded border border-gray-700 inline-block mr-1 mb-1">${s.n} ${d}${e}</span>`;
-                }).join('');
-                skillsHtml = `<div class="mt-2"><div class="text-[11px] text-gray-500 mb-1">自帶技能:</div>${sTags}</div>`;
-            }
+                let evoHtml = '';
+                if (def.evo) {
+                    evoHtml = `<div class="text-[11px] text-emerald-400/80 mt-2"><i class="fa-solid fa-arrow-turn-up mr-1 transform rotate-90"></i>可進化為 ${def.evo}</div>`;
+                }
 
-            let evoHtml = '';
-            if (def.evo) {
-                evoHtml = `<div class="text-[11px] text-emerald-400/80 mt-2"><i class="fa-solid fa-arrow-turn-up mr-1 transform rotate-90"></i>可進化為 ${def.evo}</div>`;
-            }
-
-            htmlContent += `
-                <div class="${bgClass} border ${borderClass} rounded-xl p-4 flex flex-col hover:border-emerald-500 transition-colors relative overflow-hidden">
-                    <div class="flex justify-between items-start mb-2">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-lg bg-gray-950/80 border border-gray-700/80 flex items-center justify-center overflow-hidden shrink-0">
-                                <img src="idle-lineage-class/assets/anim/${encodeURIComponent(name)}/d4/idle_0.png" alt="${name}" loading="lazy" class="w-full h-full object-contain scale-[1.2] cursor-pointer" data-hover-image onerror="this.style.display='none'">
+                htmlContent += `
+                    <div class="${bgClass} border ${borderClass} rounded-xl p-4 flex flex-col hover:border-emerald-500 transition-colors relative overflow-hidden">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-lg bg-gray-950/80 border border-gray-700/80 flex items-center justify-center overflow-hidden shrink-0">
+                                    <img src="idle-lineage-class/assets/anim/${encodeURIComponent(name)}/d4/idle_0.png" alt="${name}" loading="lazy" class="w-full h-full object-contain scale-[1.2] cursor-pointer" data-hover-image onerror="this.style.display='none'">
+                                </div>
+                                <div class="font-bold text-base ${nameColor}">${name}</div>
                             </div>
-                            <div class="font-bold text-base ${nameColor}">${name}</div>
+                            <div class="text-xs px-2 py-1 bg-gray-900/60 rounded text-gray-400 border border-gray-700">魅力 ${def.cha || 6}</div>
                         </div>
-                        <div class="text-xs px-2 py-1 bg-gray-900/60 rounded text-gray-400 border border-gray-700">魅力 ${def.cha || 6}</div>
-                    </div>
-                    <div class="text-xs text-gray-400 mb-3 flex gap-2">
-                        <span class="bg-gray-900 px-2 py-0.5 rounded">${getKindLabel(def.kind)}</span>
-                        <span class="bg-gray-900 px-2 py-0.5 rounded">${tierLabel}</span>
-                    </div>
+                        <div class="text-xs text-gray-400 mb-3 flex gap-2">
+                            <span class="bg-gray-900 px-2 py-0.5 rounded">${getKindLabel(def.kind)}</span>
+                            <span class="bg-gray-900 px-2 py-0.5 rounded">${tierLabel}</span>
+                        </div>
 
-                    <div class="grid grid-cols-2 gap-2 text-xs text-gray-300 bg-gray-900/50 p-2 rounded border border-gray-700/50 mb-2">
-                        <div class="flex justify-between"><span class="text-gray-500">起始Lv:</span> <span>${def.lv0 || 1}</span></div>
-                        <div class="flex justify-between"><span class="text-red-400/80">基礎HP:</span> <span>${def.hp0 || '-'}</span></div>
-                        <div class="flex justify-between"><span class="text-blue-400/80">基礎MP:</span> <span>${def.mp0 || '-'}</span></div>
-                        <div class="flex justify-between"><span class="text-red-400/80">HP成長/級:</span> <span>${hpGrowth}</span></div>
-                        <div class="flex justify-between"><span class="text-blue-400/80">MP成長/級:</span> <span>${mpGrowth}</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">HP自然恢復:</span> <span>${def.hpReg || 0}</span></div>
-                        <div class="flex justify-between"><span class="text-gray-500">MP自然恢復:</span> <span>${def.mpReg || 0}</span></div>
-                    </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs text-gray-300 bg-gray-900/50 p-2 rounded border border-gray-700/50 mb-2">
+                            <div class="flex justify-between"><span class="text-gray-500">起始Lv:</span> <span>${def.lv0 || 1}</span></div>
+                            <div class="flex justify-between"><span class="text-red-400/80">基礎HP:</span> <span>${def.hp0 || '-'}</span></div>
+                            <div class="flex justify-between"><span class="text-blue-400/80">基礎MP:</span> <span>${def.mp0 || '-'}</span></div>
+                            <div class="flex justify-between"><span class="text-red-400/80">HP成長/級:</span> <span>${hpGrowth}</span></div>
+                            <div class="flex justify-between"><span class="text-blue-400/80">MP成長/級:</span> <span>${mpGrowth}</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">HP自然恢復:</span> <span>${def.hpReg || 0}</span></div>
+                            <div class="flex justify-between"><span class="text-gray-500">MP自然恢復:</span> <span>${def.mpReg || 0}</span></div>
+                        </div>
 
-                    <div class="grid grid-cols-2 gap-2 text-xs text-gray-300 bg-gray-900/50 p-2 rounded border border-gray-700/50">
-                        <div class="flex justify-between"><span class="text-gray-500">攻擊頻率:</span> <span>${def.apm} 次/分</span></div>
-                        ${def.capm > 0 ? `<div class="flex justify-between"><span class="text-purple-400/80">施法頻率:</span> <span>${def.capm} 次/分</span></div>` : '<div></div>'}
-                        <div class="flex justify-between"><span class="text-gray-500">硬直時間:</span> <span>${def.stun}秒</span></div>
-                    </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs text-gray-300 bg-gray-900/50 p-2 rounded border border-gray-700/50">
+                            <div class="flex justify-between"><span class="text-gray-500">攻擊頻率:</span> <span>${def.apm} 次/分</span></div>
+                            ${def.capm > 0 ? `<div class="flex justify-between"><span class="text-purple-400/80">施法頻率:</span> <span>${def.capm} 次/分</span></div>` : '<div></div>'}
+                            <div class="flex justify-between"><span class="text-gray-500">硬直時間:</span> <span>${def.stun}秒</span></div>
+                        </div>
 
-                    ${skillsHtml}
-                    ${evoHtml}
-                </div>
-            `;
+                        ${skillsHtml}
+                        ${evoHtml}
+                    </div>
+                `;
+            });
+            
+            grid.innerHTML = htmlContent;
         });
-        
-        grid.innerHTML = htmlContent;
     }
 
     function renderCaptureAndRaising() {

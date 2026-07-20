@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Wiki Application Logic
  * 負責處理資料轉換、渲染圖鑑、與搜尋功能
  */
@@ -1079,8 +1079,17 @@ function getSetTranslation(setId) {
  */
 function createItemCard(item) {
     const isLegend = item.legend ? true : false;
-    const borderClass = isLegend ? 'border-gold-500 shadow-[0_0_10px_rgba(245,158,11,0.3)]' : 'border-gray-800';
-    const titleClass = isLegend ? 'text-gold-400 font-bold' : 'text-gray-200 font-semibold';
+    const isRelic = item.relic ? true : false;
+    let borderClass = 'border-gray-800';
+    let titleClass = 'text-gray-200 font-semibold';
+    
+    if (isLegend) {
+        borderClass = 'border-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.3)]';
+        titleClass = 'text-orange-400 font-bold';
+    } else if (isRelic) {
+        borderClass = 'border-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.3)]';
+        titleClass = 'text-blue-400 font-bold';
+    }
     
     // 1. 標題與特殊標籤區塊
     let setEffectHtml = item.set ? `<div class="text-green-400 text-[11px] font-bold mt-1.5"><i class="fa-solid fa-layer-group mr-1"></i>${getSetTranslation(item.set)} 套裝效果</div>` : '';
@@ -1573,21 +1582,26 @@ function appendNextPageItems() {
     }
     itemsIsLoading = true;
     itemsCurrentPage++;
-    const frag = document.createDocumentFragment();
-    batch.forEach(item => {
-        const w = document.createElement('div');
-        w.innerHTML = createItemCard(item);
-        frag.appendChild(w.firstElementChild);
+    
+    // 使用 requestAnimationFrame 避免阻塞主執行緒
+    requestAnimationFrame(() => {
+        const frag = document.createDocumentFragment();
+        batch.forEach(item => {
+            const w = document.createElement('div');
+            w.innerHTML = createItemCard(item);
+            frag.appendChild(w.firstElementChild);
+        });
+        const sentinel = document.getElementById('items-scroll-sentinel');
+        if (sentinel) itemsGrid.insertBefore(frag, sentinel);
+        else itemsGrid.appendChild(frag);
+        
+        const countEl = document.getElementById('items-count-display');
+        if (countEl) {
+            const shown = Math.min(itemsCurrentPage * ITEMS_PER_PAGE, itemsFilteredCache.length);
+            countEl.textContent = '顯示 ' + shown + ' / ' + itemsFilteredCache.length + ' 件';
+        }
+        itemsIsLoading = false;
     });
-    const sentinel = document.getElementById('items-scroll-sentinel');
-    if (sentinel) itemsGrid.insertBefore(frag, sentinel);
-    else itemsGrid.appendChild(frag);
-    const countEl = document.getElementById('items-count-display');
-    if (countEl) {
-        const shown = Math.min(itemsCurrentPage * ITEMS_PER_PAGE, itemsFilteredCache.length);
-        countEl.textContent = '顯示 ' + shown + ' / ' + itemsFilteredCache.length + ' 件';
-    }
-    itemsIsLoading = false;
 }
 
 /**
