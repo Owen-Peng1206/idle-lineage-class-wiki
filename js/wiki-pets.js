@@ -77,14 +77,16 @@
         let htmlContent = '';
         requestAnimationFrame(() => {
             Object.entries(PET_BOOK).forEach(([name, def]) => {
-                if (currentTierFilter !== 'all' && def.tier.toString() !== currentTierFilter) return;
+                const isRelic = def.tier === 3 || ['厄運蜥蜴', '災厄蜥蜴', '破滅蜥蜴', '詛咒蜥蜴'].includes(name);
+                const effectiveTier = isRelic ? '3' : def.tier.toString();
+                
+                if (currentTierFilter !== 'all' && effectiveTier !== currentTierFilter) return;
 
-                const isRelic = def.tier === 3;
-                const isGold = def.tier === 2;
-                const borderClass = isRelic ? 'border-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.3)]' : (isGold ? 'border-gold-500 shadow-[0_0_8px_rgba(245,158,11,0.3)]' : (def.tier === 1 ? 'border-emerald-600/50' : 'border-gray-700'));
+                const isGold = effectiveTier === '2';
+                const borderClass = isRelic ? 'border-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.3)]' : (isGold ? 'border-gold-500 shadow-[0_0_8px_rgba(245,158,11,0.3)]' : (effectiveTier === '1' ? 'border-emerald-600/50' : 'border-gray-700'));
                 const bgClass = isRelic ? 'bg-gradient-to-br from-gray-900 to-blue-900/20' : (isGold ? 'bg-gradient-to-br from-gray-900 to-yellow-900/20' : 'bg-gray-800/80');
-                const nameColor = isRelic ? 'text-blue-400' : (isGold ? 'text-gold-400' : (def.tier === 1 ? 'text-emerald-300' : 'text-gray-200'));
-                const tierLabel = def.tier === 0 ? '一般型態' : (def.tier === 1 ? '高等型態' : (def.tier === 2 ? '黃金龍' : '遺物寵物'));
+                const nameColor = isRelic ? 'text-blue-400' : (isGold ? 'text-gold-400' : (effectiveTier === '1' ? 'text-emerald-300' : 'text-gray-200'));
+                const tierLabel = effectiveTier === '0' ? '一般型態' : (effectiveTier === '1' ? '高等型態' : (effectiveTier === '2' ? '黃金龍' : '遺物寵物'));
 
                 let hpGrowth = def.hpUp ? `${def.hpUp[0]}~${def.hpUp[1]}` : '0';
                 let mpGrowth = def.mpUp ? `${def.mpUp[0]}~${def.mpUp[1]}` : '0';
@@ -224,6 +226,15 @@
                 </div>
                 <div class="mt-4 p-3 bg-gray-900/50 border border-amber-900/50 rounded-lg text-amber-200 text-xs">
                     <i class="fa-solid fa-egg mr-1"></i> <b>頑皮幼龍蛋：</b> 擊敗地龍/水龍/火龍（<b class="text-white">安塔瑞斯、法利昂、巴拉卡斯</b>）必得。若使用「頑皮幼龍蛋」，將消耗蛋並隨機直接孵化出「淘氣龍」或「頑皮龍」。
+                </div>
+                <div class="mt-2 p-3 bg-gray-900/50 border border-purple-900/50 rounded-lg text-purple-200 text-xs shadow-[0_0_8px_rgba(168,85,247,0.15)]">
+                    <div class="mb-1"><i class="fa-solid fa-meteor mr-1 text-purple-400"></i> <b>遺物級蜥蜴蛋：</b> 擊敗特定區域的首領或強大怪物有極低機率獲得，使用後直接孵化為強大的遺物蜥蜴寵物。</div>
+                    <ul class="list-disc ml-5 space-y-1 text-gray-300 mt-2">
+                        <li><b class="text-purple-300">充滿破滅氣息的蛋：</b> 擊敗 <b class="text-white">遺忘之島 飛龍</b> 獲得。孵化 <b class="text-blue-300">破滅蜥蜴</b>。</li>
+                        <li><b class="text-purple-300">充滿災厄氣息的蛋：</b> 擊敗 精靈墓穴的<b class="text-white">深淵地靈</b> 獲得。孵化 <b class="text-blue-300">災厄蜥蜴</b>。</li>
+                        <li><b class="text-purple-300">充滿厄運氣息的蛋：</b> 擊敗 飛龍巢穴的 <b class="text-white">飛龍</b> 獲得。孵化 <b class="text-blue-300">厄運蜥蜴</b>。</li>
+                        <li><b class="text-purple-300">充滿詛咒氣息的蛋：</b> 擊敗 骨龍巢穴的 <b class="text-white">骨龍</b> 獲得。孵化 <b class="text-blue-300">詛咒蜥蜴</b>。</li>
+                    </ul>
                 </div>
             </div>
 
