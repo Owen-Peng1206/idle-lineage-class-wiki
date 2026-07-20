@@ -358,6 +358,7 @@ const WikiCollections = (() => {
                         window.mpOnHitAmount = window.mpOnHitAmount || function() { return 0; };
                         window.weaponHasBleed = window.weaponHasBleed || function() { return false; };
                         window.getWeaponTags = window.getWeaponTags || function() { return []; };
+                        window.getAttrMagicProc = window.getAttrMagicProc || function() { return null; };
 
                         try {
                             let rawHtml = buildItemDescHTML({id: item.id});
