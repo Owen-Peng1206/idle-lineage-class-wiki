@@ -7,6 +7,12 @@
 // 1. 資料處理與轉換 (Data Management)
 // ==========================================
 
+// Wiki 專用 Polyfill：提供給遊戲模組 (如 16-equip-book.js) 分類時使用
+window.isWandWeapon = function(d) {
+    return !!(d && d.type === 'wpn' && (d.isWand || /魔杖|法杖/.test(d.n || '') || (/杖/.test(d.n || '') && !/權杖/.test(d.n || ''))));
+};
+window.WAND_LIGHTARROW_IDS = ['wpn_oakwand', 'wpn_38', 'wpn_witchwand', 'wpn_manawand', 'wpn_crystalwand', 'wpn_baless', 'wpn_wand_rasta', 'wpn_red_crystalwand', 'wpn_laia_wand', 'wpn_icequeen_wand', 'wpn_demon_scythe', 'wpn_darkmage_wand', 'wpn_baphomet_wand', 'wpn_illu_wand', 'wpn_demon_wand_hidden', 'wpn_dark_crystalball', 'wpn_steel_manawand_blue', 'relic_amp_staff', 'relic_elder_thunder', 'relic_cerberus_wand', 'relic_evillizard_eye', 'relic_lightbeam_wand', 'relic_warlock_grimoire', 'relic_windking_roar', 'relic_rockmage_secret', 'wpn_onmyoji_fan', 'relic_sr_kyuubi_wand', 'relic_water_orb', 'relic_unsealed_baphomet_wand'];
+
 const CRAFT_NPC_INFO = {
     npc_moli:         { name: '茉莉',         location: '銀騎士村',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
     npc_finn:         { name: '芬',           location: '銀騎士村',   title: '製作',        icon: 'fa-hammer',           color: 'text-amber-400' },
