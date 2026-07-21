@@ -138,6 +138,16 @@
                             <div class="flex justify-between"><span class="text-gray-500">硬直時間:</span> <span>${def.stun}秒</span></div>
                         </div>
 
+                        ${(def.goldenAtk || def.goldenMagic || def.acMod || def.mrBonus || def.drPierce) ? `
+                        <div class="grid grid-cols-2 gap-2 text-[11px] text-amber-200/90 bg-amber-900/20 p-2 rounded border border-amber-700/50 mt-2">
+                            ${def.goldenAtk ? `<div class="flex justify-between"><span class="text-amber-600/90 font-bold">普攻倍率(金):</span> <span>${def.goldenAtk}</span></div>` : ''}
+                            ${def.goldenMagic ? `<div class="flex justify-between"><span class="text-blue-400/90 font-bold">魔法倍率(金):</span> <span>${def.goldenMagic}</span></div>` : ''}
+                            ${def.acMod ? `<div class="flex justify-between"><span class="text-gray-400 font-bold">額外AC:</span> <span>${def.acMod > 0 ? '+'+def.acMod : def.acMod}</span></div>` : ''}
+                            ${def.mrBonus ? `<div class="flex justify-between"><span class="text-purple-400 font-bold">額外MR:</span> <span>+${def.mrBonus}</span></div>` : ''}
+                            ${def.drPierce ? `<div class="flex justify-between"><span class="text-red-400 font-bold">減傷無視:</span> <span>+${def.drPierce}</span></div>` : ''}
+                        </div>
+                        ` : ''}
+
                         ${skillsHtml}
                         ${evoHtml}
                     </div>
@@ -376,19 +386,34 @@
 
                     <div class="mt-6 p-4 bg-gradient-to-r from-yellow-900/40 to-yellow-600/20 rounded-lg border border-yellow-600/50 relative overflow-hidden">
                         <div class="absolute -right-4 -top-4 opacity-10 text-6xl"><i class="fa-solid fa-trophy"></i></div>
-                        <h4 class="text-yellow-400 font-bold text-base mb-2 flex items-center"><i class="fa-solid fa-crown mr-2 text-yellow-300"></i>版本唯一真神推薦：50 級進化黃金龍 (虎男基底)</h4>
+                        <h4 class="text-yellow-400 font-bold text-base mb-2 flex items-center"><i class="fa-solid fa-crown mr-2 text-yellow-300"></i>50 級進化黃金龍 (虎男基底)</h4>
                         <p class="text-sm text-gray-200 mb-3 relative z-10">
-                            綜合所有底層機制與數據，遊戲中最強的寵物組合毫無爭議是：<b class="text-white bg-black/50 px-1 rounded">「將『虎男』練到 50 級再餵食勝利果實，進化而成的黃金龍」</b>。
+                            綜合所有底層機制與數據，：<b class="text-white bg-black/50 px-1 rounded">「將『虎男』練到 50 級再餵食勝利果實，進化而成的黃金龍」</b>。
                         </p>
                         <ul class="text-xs text-gray-300 list-disc list-inside space-y-1 relative z-10 ml-1">
-                            <li><b class="text-emerald-400">極致坦度：</b> 虎男擁有全遊戲頂尖的 HP 成長，50 級進化能替黃金龍提供極度龐大的基底血庫。</li>
-                            <li><b class="text-red-400">唯一群攻：</b> 黃金龍是全遊戲<b class="text-white">唯一擁有「範圍魔法 (AoE) - 火焰噴射」的寵物</b>，中後期面對暴走怪群的清怪效率無可取代。</li>
+                            <li><b class="text-emerald-400">極致坦度：</b> 虎男擁有頂尖的 HP 成長，50 級進化能替黃金龍提供極度龐大的基底血庫。</li>
+                            <li><b class="text-red-400">唯一群攻：</b> 黃金龍是全遊戲<b class="text-white">擁有「範圍魔法 (AoE) - 火焰噴射」的寵物</b>，中後期面對暴走怪群的清怪效率無可取代。</li>
                             <li><b class="text-blue-400">無弱點屬性：</b> 黃金龍與虎男皆為「特殊型 (Spec)」，擁有極高的魔法抗性 (MR) 與不俗的魔法倍率 (0.65)，能扛也能丟痛火球。</li>
                         </ul>
                         <div class="mt-3 pt-3 border-t border-yellow-700/50 text-xs text-gray-400 relative z-10 flex items-center">
                             <i class="fa-solid fa-medal text-gray-400 mr-2 text-lg"></i>
                             <span><b>備選極致單體推薦：</b> 若不需要範圍清怪，可選擇 <b class="text-gray-200">高等熊</b> (極致物理單體爆發、血厚高命中) 或 <b class="text-gray-200">高等頑皮龍</b> (極致魔法單體爆發、血厚高防禦)。</span>
                         </div>
+                    </div>
+
+                    <!-- 遺物蜥蜴評估 -->
+                    <div class="mt-6 p-4 bg-gradient-to-r from-blue-900/40 to-purple-900/20 rounded-lg border border-purple-500/50 relative overflow-hidden shadow-[0_0_15px_rgba(168,85,247,0.15)]">
+                        <div class="absolute -right-4 -top-4 opacity-10 text-6xl"><i class="fa-solid fa-dragon"></i></div>
+                        <h4 class="text-purple-400 font-bold text-base mb-2 flex items-center"><i class="fa-solid fa-meteor mr-2 text-purple-300"></i>全新天花板：遺物蜥蜴 (版本最強面板)</h4>
+                        <p class="text-sm text-gray-200 mb-3 relative z-10">
+                            隨著遺物級別寵物的登場，黃金龍的「唯一真神」地位受到了挑戰。遺物蜥蜴不吃「生存換輸出」的懲罰，而是<b>以「同級黃金龍」的基礎面板為底，再強制乘上專屬倍率 (goldenAtk / goldenMagic)</b>，其數值完全打破了既有平衡：
+                        </p>
+                        <ul class="text-xs text-gray-300 list-disc list-inside space-y-2 relative z-10 ml-1">
+                            <li><b class="text-red-400">破滅蜥蜴 (物理天花板)：</b> 擁有 <b class="text-white">2.10倍</b> 的普攻倍率與 <b class="text-white">drPierce: 0.35</b> (無視減傷)。搭配高達 90 的攻擊頻率 (APM)，在面對高減傷的首領時，物理輸出無人能及。</li>
+                            <li><b class="text-blue-400">詛咒蜥蜴 (魔法核彈)：</b> 擁有 <b class="text-white">2.60倍</b> 的魔法倍率！其專屬魔法「冰雪暴」不僅具備範圍傷害，還附帶控場冰凍效果，魔法爆發力突破天際。</li>
+                            <li><b class="text-yellow-400">災厄蜥蜴 (完美雙修與生存)：</b> 雙攻倍率皆為 <b class="text-white">2.05倍</b>，更額外獲得 <b class="text-white">AC -5</b> 與 <b class="text-white">MR +20</b> 的強大防禦補強，加上「堅硬」技能的額外減傷，是最全能的頂級寵物。</li>
+                            <li><b class="text-orange-400">厄運蜥蜴 (穩定群攻)：</b> 雙攻倍率 <b class="text-white">1.60倍</b>，自帶「火焰噴射」與「炎爪」，整體表現為黃金龍的全面上位替代。</li>
+                        </ul>
                     </div>
                 </div>
             </div>
