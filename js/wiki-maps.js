@@ -108,6 +108,7 @@ const mapNameTranslations = {    "town_silver_knight": "銀騎士村莊",
     "antharas_nest_2": "侵蝕的安塔瑞斯巢穴通道",
     "antharas_nest_3": "侵蝕的安塔瑞斯巢穴深處",
     "antharas_nest": "侵蝕的安塔瑞斯巢穴",
+    "antharas_lair": "侵蝕的安塔瑞斯棲息地", 
     "fafurion_lair": "法利昂洞穴",
     "valakas_lair": "巴拉卡斯巢穴",
     "town_pride": "傲慢之塔1樓",
@@ -521,7 +522,8 @@ function renderMonsters() {
             const titleClass = isBoss ? 'text-red-400 font-bold' : 'text-gray-200 font-semibold';
             const bgClass = isBoss ? 'bg-gradient-to-br from-gray-900 to-red-950/20' : 'bg-gray-900/40';
             
-            const encodedMobN = encodeURIComponent(mob.n);
+            const animName = (typeof getWikiMobAnimDir === 'function') ? getWikiMobAnimDir(mob.n, mob) : (mob.animDir || (typeof _animDir === 'function' ? _animDir(mob.n) : ((typeof MOB_ANIM_ALIAS !== 'undefined' && MOB_ANIM_ALIAS[mob.n]) ? MOB_ANIM_ALIAS[mob.n] : (typeof WIKI_MOB_ANIM_ALIAS !== 'undefined' && WIKI_MOB_ANIM_ALIAS[mob.n] ? WIKI_MOB_ANIM_ALIAS[mob.n] : mob.n))));
+            const encodedMobN = encodeURIComponent(animName);
             const fallbackImg = mob.img 
                 ? `this.onerror=null; this.src='${mob.img}'; this.onerror=function(){this.outerHTML='<i class=\\'fa-solid fa-ghost text-gray-500 text-xl\\'></i>'};`
                 : `this.outerHTML='<i class=\\'fa-solid fa-ghost text-gray-500 text-xl\\'></i>';`;
@@ -625,7 +627,18 @@ function renderMonsters() {
                             const mobMaps = [];
                             for (const mapId in DB.maps) {
                                 if (DB.maps[mapId].some(mId => relatedMobs.has(mId))) {
-                                    mobMaps.push(getMapName(mapId));
+                                    const mName = getMapName(mapId);
+                                    if (!mobMaps.includes(mName)) mobMaps.push(mName);
+                                }
+                            }
+                            const specMapDict = (typeof SPECIAL_MOB_MAPS !== 'undefined') ? SPECIAL_MOB_MAPS : (typeof window !== 'undefined' ? window.SPECIAL_MOB_MAPS : null);
+                            if (specMapDict) {
+                                for (const mId of relatedMobs) {
+                                    if (specMapDict[mId]) {
+                                        specMapDict[mId].forEach(mName => {
+                                            if (!mobMaps.includes(mName)) mobMaps.push(mName);
+                                        });
+                                    }
                                 }
                             }
                             if (mobMaps.length > 0) {

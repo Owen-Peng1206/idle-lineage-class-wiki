@@ -643,6 +643,7 @@ const wikiMapNames = {
     "antharas_nest_2": "侵蝕的安塔瑞斯巢穴通道",
     "antharas_nest_3": "侵蝕的安塔瑞斯巢穴深處",
     "antharas_nest": "侵蝕的安塔瑞斯巢穴",
+    "antharas_lair": "侵蝕的安塔瑞斯棲息地", 
     "fafurion_lair": "法利昂洞穴",
     "valakas_lair": "巴拉卡斯巢穴",
     "town_pride": "傲慢之塔1樓",
@@ -789,6 +790,44 @@ const wikiMapNames = {
     "sunrise_north": "日出之國北之地"
 };
 
+const SPECIAL_MOB_MAPS = {
+    'ant_antharas_eroded': ['侵蝕的安塔瑞斯棲息地'],
+    'ant_antharas_fury':   ['侵蝕的安塔瑞斯棲息地'],
+    'ant_antharas_mad':    ['侵蝕的安塔瑞斯棲息地'],
+    'ant_kama_flame_king': ['侵蝕的安塔瑞斯巢穴入口'],
+    'ant_kama_nan_king':   ['侵蝕的安塔瑞斯巢穴通道'],
+    'ant_kama_king':       ['侵蝕的安塔瑞斯巢穴深處'],
+    'ant_kama_flame':      ['侵蝕的安塔瑞斯巢穴'],
+    'ant_kama_nan':        ['侵蝕的安塔瑞斯巢穴'],
+    'ant_earth_wild_dragon': ['侵蝕的安塔瑞斯巢穴'],
+    'lindvior':            ['野外地圖（持有幼龍蛋遭遇）']
+};
+
+const WIKI_MOB_ANIM_ALIAS = {
+    '老虎': '虎男',
+    '被侵蝕的狂怒安塔瑞斯': '被侵蝕的安塔瑞斯',
+    '被侵蝕的瘋狂安塔瑞斯': '被侵蝕的安塔瑞斯',
+    '阿頓': '玩家男騎士', '鋼鐵阿頓': '玩家男騎士', '依詩蒂': '玩家女騎士',
+    '特羅斯王子': '玩家王子', '依詩蒂公主': '玩家公主',
+    '朱利安': '玩家男妖精', '月光朱利安': '玩家男妖精', '歐薇': '玩家女妖精', '月之精靈歐薇': '玩家女妖精',
+    '喬': '玩家男法師', '魔法師喬': '玩家男法師', '賽尼斯': '玩家女法師', '魔女賽尼斯': '玩家女法師',
+    '闇影格立特': '玩家男黑暗妖精'
+};
+
+function getWikiMobAnimDir(monsterName, mobData) {
+    if (mobData && mobData.animDir) return mobData.animDir;
+    if (typeof _animDir === 'function') return _animDir(monsterName);
+    if (typeof MOB_ANIM_ALIAS !== 'undefined' && MOB_ANIM_ALIAS[monsterName]) return MOB_ANIM_ALIAS[monsterName];
+    if (WIKI_MOB_ANIM_ALIAS[monsterName]) return WIKI_MOB_ANIM_ALIAS[monsterName];
+    return monsterName;
+}
+
+if (typeof window !== 'undefined') {
+    window.SPECIAL_MOB_MAPS = SPECIAL_MOB_MAPS;
+    window.WIKI_MOB_ANIM_ALIAS = WIKI_MOB_ANIM_ALIAS;
+    window.getWikiMobAnimDir = getWikiMobAnimDir;
+}
+
 let mobMapCache = {};
 function getMonsterMapsText(monsterNameStr) {
     if (mobMapCache[monsterNameStr]) return mobMapCache[monsterNameStr];
@@ -799,6 +838,29 @@ function getMonsterMapsText(monsterNameStr) {
     if (mobIds.length === 0) return '未知地圖';
     
     const mapsFound = [];
+
+    // 檢查特殊/副本怪物地圖（含追溯變身前身）
+    for (const mobId of mobIds) {
+        const relatedMobs = new Set([mobId]);
+        let changed = true;
+        while (changed) {
+            changed = false;
+            for (const mId in DB.mobs) {
+                if (DB.mobs[mId].transformTo && relatedMobs.has(DB.mobs[mId].transformTo) && !relatedMobs.has(mId)) {
+                    relatedMobs.add(mId);
+                    changed = true;
+                }
+            }
+        }
+        for (const rId of relatedMobs) {
+            if (SPECIAL_MOB_MAPS[rId]) {
+                SPECIAL_MOB_MAPS[rId].forEach(mName => {
+                    if (!mapsFound.includes(mName)) mapsFound.push(mName);
+                });
+            }
+        }
+    }
+    
     if (DB.maps) {
         for (const [mapKey, mobList] of Object.entries(DB.maps)) {
             if (mobList.some(id => mobIds.includes(id))) {
@@ -2430,7 +2492,8 @@ function renderDrops() {
 
             // 怪物圖示
             const mobImgFallback = d.mobData && d.mobData.img ? d.mobData.img : '';
-            const mobIconPath = `idle-lineage-class/assets/anim/${encodeURIComponent(d.monster)}/idle_0.png`;
+            const mobAnimDir = (d.mobData && d.mobData.animDir) || (typeof _animDir === 'function' ? _animDir(d.monster) : ((typeof MOB_ANIM_ALIAS !== 'undefined' && MOB_ANIM_ALIAS[d.monster]) ? MOB_ANIM_ALIAS[d.monster] : d.monster));
+            const mobIconPath = `idle-lineage-class/assets/anim/${encodeURIComponent(mobAnimDir)}/idle_0.png`;
             const mobIconHtml = `
                 <div class="w-10 h-10 rounded-lg bg-gray-950 border border-gray-800 flex items-center justify-center overflow-hidden flex-shrink-0 mr-3">
                     <img src="./${mobIconPath}" alt="${d.monster}" class="w-full h-full object-contain cursor-pointer" data-hover-image
