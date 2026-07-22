@@ -235,7 +235,7 @@
                     </table>
                 </div>
                 <div class="mt-4 p-3 bg-gray-900/50 border border-amber-900/50 rounded-lg text-amber-200 text-xs">
-                    <i class="fa-solid fa-egg mr-1"></i> <b>頑皮幼龍蛋：</b> 擊敗地龍/水龍/火龍（<b class="text-white">安塔瑞斯、法利昂、巴拉卡斯</b>）必得。若使用「頑皮幼龍蛋」，將消耗蛋並隨機直接孵化出「淘氣龍」或「頑皮龍」。
+                    <i class="fa-solid fa-egg mr-1"></i> <b>頑皮幼龍蛋／淘氣幼龍蛋：</b> 擊敗四大龍（<b class="text-white">安塔瑞斯、法利昂、巴拉卡斯、林德拜爾</b>）各有 10% 機率掉落「頑皮幼龍蛋」與「淘氣幼龍蛋」（兩顆獨立判定・不受經典掉率影響・可重複取得）。使用後可直接孵化出對應的「頑皮龍」或「淘氣龍」。
                 </div>
                 <div class="mt-2 p-3 bg-gray-900/50 border border-purple-900/50 rounded-lg text-purple-200 text-xs shadow-[0_0_8px_rgba(168,85,247,0.15)]">
                     <div class="mb-1"><i class="fa-solid fa-meteor mr-1 text-purple-400"></i> <b>遺物級蜥蜴蛋：</b> 擊敗特定區域的首領或強大怪物有極低機率獲得，使用後直接孵化為強大的遺物蜥蜴寵物。</div>

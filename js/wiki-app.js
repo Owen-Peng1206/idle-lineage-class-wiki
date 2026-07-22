@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Wiki Application Logic
  * 負責處理資料轉換、渲染圖鑑、與搜尋功能
  */
@@ -46,6 +46,7 @@ const CRAFT_NPC_INFO = {
     npc_mystic_mage:  { name: '神秘的魔法師', location: '象牙塔',     title: '魔杖改造',    icon: 'fa-wand-sparkles',    color: 'text-violet-400' },
     npc_keluya:       { name: '客盧亞',       location: '威頓村',     title: '製作',        icon: 'fa-hammer',           color: 'text-amber-300' },
     npc_zeus_golem:   { name: '宙斯之熔岩高崙',location:'威頓村',    title: '製作',        icon: 'fa-mountain-sun',     color: 'text-orange-500' },
+    npc_mimi:         { name: '米米',         location: '威頓村',     title: '製作',        icon: 'fa-dragon',           color: 'text-emerald-400' },
     npc_bartel:       { name: '巴特爾',       location: '希培利亞村莊',title: '製作',       icon: 'fa-gem',              color: 'text-violet-300' },
     npc_pir:          { name: '皮爾',         location: '貝希摩斯',   title: '製作',        icon: 'fa-fire',             color: 'text-red-500' },
     npc_kupu:         { name: '庫普',         location: '沉默洞穴',   title: '製作',        icon: 'fa-hammer',           color: 'text-gray-400' },
@@ -638,6 +639,10 @@ const wikiMapNames = {
     "necro_king_room": "冥法君王之室",
     "assassin_king_room": "暗殺君王之室",
     "antaras_lair": "安塔瑞斯棲息地",
+    "antharas_nest_1": "侵蝕的安塔瑞斯巢穴入口",
+    "antharas_nest_2": "侵蝕的安塔瑞斯巢穴通道",
+    "antharas_nest_3": "侵蝕的安塔瑞斯巢穴深處",
+    "antharas_nest": "侵蝕的安塔瑞斯巢穴",
     "fafurion_lair": "法利昂洞穴",
     "valakas_lair": "巴拉卡斯巢穴",
     "town_pride": "傲慢之塔1樓",
@@ -1077,7 +1082,7 @@ function getSetTranslation(setId) {
         'steel': '鋼鐵', 'mr': '抗魔', 'guard': '守護', 'kinglord': '四大軍王',
         'demon': '惡魔', 'darkelf': '黑暗妖精', 'orin': '歐林與西瑪',
         'icequeen_charm': '冰之女王魅力', 'frost': '寒冰', 'bluepirate': '藍海賊',
-        'emperor': '真．冥皇'
+        'emperor': '真．冥皇', 'priest': '司祭苦行'
     };
     return fallbackMap[setId] || setId;
 }
@@ -1337,7 +1342,7 @@ function createItemCard(item) {
     if (item.mpRPerEn) effArr.push(`MP自然恢復每強化+${item.mpRPerEn}`);
     if (item.mdmgEnFrom7Max3) effArr.push('魔法傷害成長（+7起魔法傷害+1，之後每強化+1，最高+3）');
     if (item.equipHaste) effArr.push('裝備加速（常駐加速，與加速術／自我加速藥水不重疊）');
-    if (item.dragonStrike) effArr.push(`龍的一擊 ${item.dragonStrike}%（每次一般攻擊皆判定且不論命中；對全體造成1D力量+25固定物理傷害）`);
+    if (item.dragonStrike) effArr.push(`龍的一擊 ${item.dragonStrike}%（每次一般攻擊皆判定且不論命中；對全體造成3D力量+30固定物理傷害）`);
     if (item.procBurstPoison) {
         let p = item.procBurstPoison;
         effArr.push(`猛爆劇毒 ${p.rateBase == null ? 1 : p.rateBase}%＋每強化${p.ratePerEn == null ? 1 : p.ratePerEn}%（每秒100點真實傷害，持續5秒，最多1層）`);
@@ -1691,13 +1696,17 @@ const RELIC_WEAPON_TAGS = {
     relic_earthshatter_sword: ['單手劍'], relic_gale_fistblade: ['鋼爪'], relic_hellfire_hammer: ['單手鈍器'], relic_blood_ritual_dagger: ['匕首'],
     relic_scorch_greatsword: ['雙手劍'], relic_bloodknight_dual: ['雙刀'], relic_elmo_spear: ['矛'],
     // 🏺 v3.6.47 遺物第二十批（鎖鏈劍 relic_lava_nozzle 靠 chainsword 旗標自判免 tag；雙手鈍器 tag 自帶貫穿）
-    relic_crusher_hammer: ['雙手鈍器']
+    relic_crusher_hammer: ['雙手鈍器'],
+    relic_serrated_fangs: ['雙刀'],
+    relic_mageblade_knife: ['單手劍', '武士刀'],
+    relic_true_dragonslayer: ['雙手劍'],
+    relic_flame_dk_sword: ['單手劍', '武士刀']
 };
 
 function getRelicCatKey(item) {
     if (!item) return null;
     let d = item;
-    let id = item.id;
+    let id = item.id || item.itemId || item.key;
     if (d.type === 'wpn') {
         if (d.isArrow) return d.relic ? 'quiver' : null;
         if (d.isBow) return /十字弓|弩/.test(d.n || '') ? 'xbow' : 'bow';
@@ -1888,7 +1897,8 @@ async function renderSets() {
                 'emperor': '真．冥皇',
                 'frost': '寒冰',
                 'icequeen_charm': '冰之女王魅力',
-                'orin': '歐林與西瑪'
+                'orin': '歐林與西瑪',
+                'priest': '司祭苦行'
             };
             
             window.realSetEffectMap = {
@@ -1910,7 +1920,8 @@ async function renderSets() {
                 'icequeen_charm': 'AC-5、HP+100、MP自然恢復+4、水屬抗性+20',
                 'frost': 'AC-5、HP+100、HP自然恢復+8、MP自然恢復+4、MR+15、水屬抗性+20',
                 'bluepirate': 'AC-1、HP+10',
-                'emperor': '防禦-20、HP+100、MP+20、HP自然恢復+10、攻速額外+30%、近/遠額外傷害+5'
+                'emperor': '防禦-20、HP+100、MP+20、HP自然恢復+10、攻速額外+30%、近/遠額外傷害+5',
+                'priest': 'AC-50、MR+50、HP+300、MP自然恢復+30、近/遠/魔法爆擊率+5%、近/遠/魔法爆擊傷害+50%'
             };
         }
     }
