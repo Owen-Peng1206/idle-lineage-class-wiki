@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Wiki Application Logic
  * 負責處理資料轉換、渲染圖鑑、與搜尋功能
  */
@@ -540,6 +540,8 @@ const wikiMapNames = {
     "town_silver_knight": "銀騎士村莊",
     "town_elf": "妖精森林村莊",
     "town_talking": "說話之島村莊",
+    "town_gludin": "古魯丁村莊",
+    "arena_pvp": "決鬥競技場",    
     "town_gludio": "燃柳村莊",
     "town_giran": "奇岩城鎮",
     "town_heine": "海音城鎮",
